@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1614030138492.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2009412213",
+    "id" : "E5F64262",
+    "lastKnownWriteTime" : 1614033652,
+    "last_content_update" : 1614033652830,
+    "path" : "D:/Research/Projects/ant_habitat_coexistence/scripts/cleaning.R",
+    "project_path" : "scripts/cleaning.R",
+    "properties" : {
+        "cursorPosition" : "5,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
