@@ -1,0 +1,30 @@
+---
+title: "Ant species coexistence"
+output: html_document
+---
+
+```{r setup}
+library(dplyr)
+library(ggplot2)
+
+ants <- read.csv("Clean Data/ants_clean.csv")
+
+m1 <- glm(abun ~ Microsite + month + dry.veg.percent + dominant.type, family = "poisson", data = ants)
+summary(m1)
+```
+
+
+
+```{r}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

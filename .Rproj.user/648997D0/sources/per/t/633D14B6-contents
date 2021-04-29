@@ -1,3 +1,7 @@
+library(dplyr)
+library(performance)
+library(ggplot2)
+
 #quick PCA to display differences in vegetation
 veg <- read.csv("raw data/vegetation.csv")
 
@@ -19,9 +23,25 @@ var <- select(var, -sampleID)
 
 
 
+
+ggplot(veg, aes(Microsite, dry.veg.percent)) + geom_violin() + geom_boxplot(width = 0.05) 
+  
+
+
+
+
+
 pca1<- prcomp(var)
 summary(pca1)
 pca1
 
 library(ggfortify)
 autoplot(pca1, data = cov, colour = "Microsite", loadings = TRUE, loadings.label = TRUE)
+
+
+
+m1 <- glm(dry.veg.percent ~ Microsite, data = veg, family = poisson)
+summary(m1)
+check_overdispersion(m1)
+m2 <- MASS::glm.nb(dry.veg.percent ~ Microsite, data = veg)
+summary(m2)
