@@ -6,17 +6,84 @@ output: html_document
 ```{r setup}
 library(dplyr)
 library(ggplot2)
-
+library(MASS)
+library(performance)
 ants <- read.csv("Clean Data/ants_clean.csv")
+wide <- read.csv("Clean Data/wide_clean.csv")
+veg <- read.csv("Clean Data/veg_clean.csv")
+#m1 <- glm(abun ~ Microsite + dry.veg.percent + Site, family = "poisson", data = ants)
+#summary(m1)
 
-m1 <- glm(abun ~ Microsite + month + dry.veg.percent + dominant.type, family = "poisson", data = ants)
+m1 <- glm.nb(abun ~ Microsite + dry.veg.percent + Site, data = ants)
 summary(m1)
+car::Anova(m1)
+
+m1.1 <- glm.nb(abun ~ Microsite * dry.veg.percent, data = ants)
+summary(m1.1)
+m1.m11 <- glmmTMB(abun ~ dry.veg.percent + Microsite + (1|Site), family = "poisson", data = ants)
+summary(m1.m11)
+check_overdispersion(m1.m11)
+
+m1.mnb <- glmmTMB(abun ~ dry.veg.percent + Microsite + (1|Site), family = "nbinom2", data = ants)
+summary(m1.mnb)
+
+
+m2<- glm(S ~ Microsite + dry.veg.percent, data = ants)
+summary(m2)
+
+m2.2<- glm(S ~ dry.veg.percent + Microsite + Site, family = "poisson", data = ants)
+summary(m2.2)
+check_overdispersion(m2.2)
+aov(m2.2)
+car::Anova(m2.2)
+
+m2.m22 <- glmmTMB(S ~ dry.veg.percent + Microsite + (1|Site), family = "poisson", data = ants)
+summary(m2.m22)
+
+m3 <- glm(H ~ Microsite + dry.veg.percent, data = ants)
+summary(m3)
+shapiro.test(resid(m3))
+library(glmmTMB)
+m3.3 <- glm(H ~ Microsite * dry.veg.percent + Site, data = ants)
+summary(m3.3)
+shapiro.test(resid(m3.3))
+
+str(ants)
+library(sjPlot)
+plot_model(m2.2, type = "int")
+plot_model(m1.1, type = "int")
+plot_model(m3.3, type = "int")
+
+library(vegan)
+a1 <- anosim(wide, ants$Microsite, permutations = 999, distance = "bray")
+summary(a1)
 ```
 
 
 
 ```{r}
-summary(cars)
+ggplot(veg, aes(Microsite, dry.veg.percent)) + geom_violin() + geom_boxplot(width = 0.05) + theme(axis.text.x=element_text(angle=90, vjust=.5)) + ylab("Percent Cover Vegetation") + xlab("")  + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+  
+var <- dplyr::select(ants,1, 11:15, 17)
+row.names(var) <- var$X
+var <- dplyr::select(var, -X)
+var$veg..height[is.na(var$veg..height)] <- 0
+
+
+cov <- dplyr::select(ants, 1, 2, 3, 5)
+
+
+pca1<- prcomp(var)
+summary(pca1)
+pca1
+
+library(ggfortify)
+autoplot(pca1, data = cov, colour = "Microsite", loadings = TRUE, loadings.label = TRUE)
+
+
+
+
 ```
 
 ## Including Plots

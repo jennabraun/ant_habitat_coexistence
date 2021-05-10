@@ -50,22 +50,22 @@ reps <- unique(ants$uniID)
 #analyze ants only
 ants <- ants %>% filter(family == "Formicidae")
 sum(ants$quantity, na.rm = TRUE)
-unique(ants$highest.rtu)
-ants$highest.rtu <- gsub(" ", "", ants$highest.rtu)
+unique(ants$genus)
+ants$genus <- gsub(" ", "", ants$genus)
 unique(ants$highest.rtu)
 
 
 #ants <- filter(ants, site == "PaPl" | site == "CaS" | site == "Lok" | site == "SemiT" | site == "SiCr")
-ants.ag <- dplyr::select(ants, uniID, highest.rtu, quantity)
+ants.ag <- dplyr::select(ants, uniID, genus, quantity)
 #collapse and sum ants within species within rep
-ants.ag <- ants.ag %>% group_by(uniID, highest.rtu) %>% summarise(quantity = sum(quantity)) 
+ants.ag <- ants.ag %>% group_by(uniID, genus) %>% summarise(quantity = sum(quantity)) 
 
 #check to make sure everything adds correctin
 sum(ants.ag$quantity, na.rm = TRUE)
 
 #make a wide dataframe to calculate abundance and richness in vegan
 
-wide <- ants.ag %>% spread(highest.rtu, quantity)
+wide <- ants.ag %>% spread(genus, quantity)
 #replace NA with zero
 wide[is.na(wide)] <- 0
 
