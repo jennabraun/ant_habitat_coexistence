@@ -1,0 +1,123 @@
+,site,month,highest.rtu,abun
+1,Aven,Aug,Dorymyrmex bicolor,2
+2,Aven,Aug,Forelius pruinosis,44
+3,Aven,Aug,Solenopsis xyloni,174
+4,Aven,July,Cyphomyrmex wheeleri,1
+5,Aven,July,Dorymyrmex bicolor,5
+6,Aven,July,Messor pergandei,3
+7,Aven,July,Pheidole hyatti,64
+8,Aven,July,Solenopsis xyloni,138
+9,Aven,Sept,Forelius pruinosis,17
+10,Aven,Sept,Solenopsis xyloni,75
+11,CaS,Aug,Dorymyrmex insanus,9
+12,CaS,Aug,Forelius pruinosis,18
+13,CaS,Aug,Messor pergandei,1
+14,CaS,Aug,Myrmecocystus,15
+15,CaS,Aug,Pheidole hyatti,390
+16,CaS,Aug,Solenopsis xyloni,1598
+17,CaS,July,Dorymyrmex bicolor,1
+18,CaS,July,Dorymyrmex insanus,21
+19,CaS,July,Forelius pruinosis,7
+20,CaS,July,Messor andrei,37
+21,CaS,July,Messor pergandei,21
+22,CaS,July,Myrmecocystus,33
+23,CaS,July,Pheidole hyatti,227
+24,CaS,July,Solenopsis xyloni,283
+25,CaS,Sept,Dorymyrmex bicolor,12
+26,CaS,Sept,Dorymyrmex insanus,20
+27,CaS,Sept,Forelius pruinosis,5
+28,CaS,Sept,Myrmecocystus,11
+29,CaS,Sept,Pheidole hyatti,66
+30,CaS,Sept,Solenopsis xyloni,822
+31,CaSl,Aug,Messor andrei,43
+32,CaSl,Aug,Myrmecocystus,53
+33,CaSl,Aug,Pheidole hyatti,1
+34,CaSl,Aug,Solenopsis xyloni,1315
+35,CaSl,July,Dorymyrmex bicolor,7
+36,CaSl,July,Dorymyrmex insanus,53
+37,CaSl,July,Messor andrei,37
+38,CaSl,July,Myrmecocystus,72
+39,CaSl,July,Pogonomyrmex californicus,20
+40,CaSl,July,Pogonomyrmex californus,5
+41,CaSl,July,Solenopsis xyloni,798
+42,CaSl,Sept,Myrmecocystus,1
+43,CaSl,Sept,Pheidole hyatti,1
+44,CaSl,Sept,Solenopsis xyloni,263
+45,Coal,Aug,Cyphomyrmex wheeleri,2
+46,Coal,Aug,Dorymyrmex bicolor,42
+47,Coal,Aug,Dorymyrmex insanus?,1
+48,Coal,Aug,Pheidole hyatti,61
+49,Coal,Aug,Solenopsis xyloni,184
+50,Coal,July,Cyphomyrmex wheeleri,3
+51,Coal,July,Dorymyrmex bicolor,22
+52,Coal,July,Dorymyrmex insanus,1
+53,Coal,July,Pheidole,29
+54,Coal,July,Pheidole hyatti,151
+55,Coal,July,Solenopsis xyloni,200
+56,Coal,Sept,Dorymyrmex bicolor,34
+57,Coal,Sept,Pheidole hyatti,7
+58,Coal,Sept,Solenopsis xyloni,35
+59,Lok,Aug,Dorymyrmex bicolor,12
+60,Lok,Aug,Pheidole hyatti,1
+61,Lok,Aug,Solenopsis xyloni,402
+62,Lok,July,Dorymyrmex bicolor,20
+63,Lok,July,Messor pergandei,4
+64,Lok,July,Myrmecocystus,1
+65,Lok,July,Pheidole hyatti,1
+66,Lok,July,Solenopsis xyloni,91
+67,Lok,Sept,Dorymyrmex bicolor,9
+68,Lok,Sept,Messor pergandei,2
+69,Lok,Sept,Myrmecocystus,2
+70,Lok,Sept,Pheidole hyatti,1
+71,Lok,Sept,Solenopsis xyloni,241
+72,Mov,Aug,Dorymyrmex bicolor,16
+73,Mov,Aug,Myrmecocystus,4
+74,Mov,Aug,Solenopsis xyloni,488
+75,Mov,July,Myrmecocystus,17
+76,Mov,July,Pheidole hyatti,1
+77,Mov,July,Solenopsis xyloni,305
+78,Mov,July,Solenopsis xyloni - weird and yellow,1
+79,Mov,Sept,Dorymyrmex bicolor,27
+80,Mov,Sept,Messor pergandei,82
+81,Mov,Sept,Myrmecocystus,22
+82,Mov,Sept,Pheidole hyatti,14
+83,Mov,Sept,Solenopsis molesta,1
+84,Mov,Sept,Solenopsis xyloni,512
+85,PaPl,Aug,Cyphomyrmex wheeleri,4
+86,PaPl,Aug,Pheidole hyatti,251
+87,PaPl,Aug,Solenopsis xyloni,143
+88,PaPl,Aug,Solenposis xyloni,3
+89,PaPl,Aug,Temnothorax andrei,4
+90,PaPl,July,Messor andrei,1945
+91,PaPl,July,Myrmecocystus,10
+92,PaPl,July,Pheidole,6
+93,PaPl,July,Pheidole hyatti,418
+94,PaPl,July,Solenopsis xyloni,101
+95,PaPl,July,Temnothorax andrei,2
+96,PaPl,Sept,Messor andrei,4
+97,PaPl,Sept,Pheidole hyatti,138
+98,PaPl,Sept,Solenopsis aurea?,1
+99,PaPl,Sept,Solenopsis xyloni,54
+100,PaPl,Sept,Temnothorax andrei,1
+101,SemiT,Aug,Dorymyrmex bicolor,3
+102,SemiT,Aug,Dorymyrmex biocolor,1
+103,SemiT,Aug,Myrmecocystus,3
+104,SemiT,Aug,Pheidole hyatti,13
+105,SemiT,Aug,Pheidole hyattii,1
+106,SemiT,Aug,Solenopsis xyloni,28
+107,SemiT,July,Dorymyrmex bicolor,10
+108,SemiT,July,Pheidole hyatti,13
+109,SemiT,July,Solenopsis xyloni,262
+110,SemiT,Sept,Dorymyrmex bicolor,22
+111,SemiT,Sept,Solenopsis xyloni,104
+112,SiCr,Aug,Cyphomyrmex wheeleri,1
+113,SiCr,Aug,Forelius pruinosis,2
+114,SiCr,Aug,Pheidole hyatti,106
+115,SiCr,Aug,Solenopsis xyloni,245
+116,SiCr,July,Dorymyrmex bicolor,12
+117,SiCr,July,Forelius pruinosis,17
+118,SiCr,July,Pheidole,9
+119,SiCr,July,Pheidole hyatti,321
+120,SiCr,July,Solenopsis xyloni,325
+121,SiCr,Sept,Pheidole hyatti,234
+122,SiCr,Sept,Solenopsis xyloni,1114

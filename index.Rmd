@@ -8,6 +8,8 @@ library(dplyr)
 library(ggplot2)
 library(MASS)
 library(performance)
+library(glmmTMB)
+
 ants <- read.csv("Clean Data/ants_clean.csv")
 wide <- read.csv("Clean Data/wide_clean.csv")
 veg <- read.csv("Clean Data/veg_clean.csv")
@@ -27,17 +29,14 @@ check_overdispersion(m1.m11)
 m1.mnb <- glmmTMB(abun ~ dry.veg.percent + Microsite + (1|Site), family = "nbinom2", data = ants)
 summary(m1.mnb)
 
+m2<- glm(Species ~ dry.veg.percent + Microsite * Site + month, family = "poisson", data = ants)
 
-m2<- glm(S ~ Microsite + dry.veg.percent, data = ants)
 summary(m2)
+check_overdispersion(m2)
+aov(m2)
+car::Anova(m2)
 
-m2.2<- glm(S ~ dry.veg.percent + Microsite + Site, family = "poisson", data = ants)
-summary(m2.2)
-check_overdispersion(m2.2)
-aov(m2.2)
-car::Anova(m2.2)
-
-m2.m22 <- glmmTMB(S ~ dry.veg.percent + Microsite + (1|Site), family = "poisson", data = ants)
+m2.m22 <- glmmTMB(Species ~ dry.veg.percent + Microsite + (1|Site), family = "poisson", data = ants)
 summary(m2.m22)
 
 m3 <- glm(H ~ Microsite + dry.veg.percent, data = ants)
@@ -57,6 +56,10 @@ plot_model(m3.3, type = "int")
 library(vegan)
 a1 <- anosim(wide, ants$Microsite, permutations = 999, distance = "bray")
 summary(a1)
+
+c <- cca(wide ~ ants$Microsite + ants$dry.veg.percent)
+summary(c)
+anova(c, by = "terms")
 ```
 
 
