@@ -9,6 +9,30 @@ Aven 1.1,7,79.743,0.166,Eye length,Pheidole hyatti
 Aven 1.1,8,-7.326,0.11,Eye width,Pheidole hyatti
 Aven 1.1,9,-5.911,0.574,Head width,Pheidole hyatti
 Aven 1.1,10,32.876,0.912,Webers,Pheidole hyatti
+Aven 1.10.jpg,1,159.312,0.714,Femur,Solenopsis xyloni
+Aven 1.10.jpg,2,-82.093,0.51,Scape,Solenopsis xyloni
+Aven 1.10.jpg,3,108.99,0.407,Mandible length,Solenopsis xyloni
+Aven 1.10.jpg,4,176.135,0.693,Head length,Solenopsis xyloni
+Aven 1.10.jpg,5,-8.13,0.11,Eye length,Solenopsis xyloni
+Aven 1.10.jpg,6,-109.093,0.043,Eye width,Solenopsis xyloni
+Aven 1.10.jpg,7,-97.623,0.622,Head width,Solenopsis xyloni
+Aven 1.10.jpg,8,-103.643,0.825,Webers,Solenopsis xyloni
+Aven 1.11.jpg,1,-43.438,0.726,Femur,Solenopsis xyloni
+Aven 1.11.jpg,2,-11.211,0.528,Scape,Solenopsis xyloni
+Aven 1.11.jpg,3,122.645,0.355,Mandible length,Solenopsis xyloni
+Aven 1.11.jpg,4,160.303,0.692,Head length,Solenopsis xyloni
+Aven 1.11.jpg,5,157.479,0.138,Eye length,Solenopsis xyloni
+Aven 1.11.jpg,6,58.671,0.042,Eye width,Solenopsis xyloni
+Aven 1.11.jpg,7,69.651,0.604,Head width,Solenopsis xyloni
+Aven 1.11.jpg,8,147.175,0.657,Webers,Solenopsis xyloni
+Aven 1.12.jpg,1,-138.748,0.744,Femur,Solenopsis xyloni
+Aven 1.12.jpg,2,9.31,0.567,Scape,Solenopsis xyloni
+Aven 1.12.jpg,3,158.311,0.434,Mandible length,Solenopsis xyloni
+Aven 1.12.jpg,4,-142.293,0.753,Head length,Solenopsis xyloni
+Aven 1.12.jpg,5,39.036,0.109,Eye length,Solenopsis xyloni
+Aven 1.12.jpg,6,-51.953,0.067,Eye width,Solenopsis xyloni
+Aven 1.12.jpg,7,-54.534,0.636,Head width,Solenopsis xyloni
+Aven 1.12.jpg,8,-0.704,0.933,Webers,Solenopsis xyloni
 Aven 1.2.tif,1,-85.301,1.034,Femur,Pheidole hyatti
 Aven 1.2.tif,2,-15.282,0.893,Scape,Pheidole hyatti
 Aven 1.2.tif,3,27.618,0.401,Mandible length,Pheidole hyatti
@@ -73,30 +97,6 @@ Aven 1.9.jpg,5,61.557,0.129,Eye length,Solenopsis xyloni
 Aven 1.9.jpg,6,147.529,0.061,Eye width,Solenopsis xyloni
 Aven 1.9.jpg,7,-28.383,0.664,Head width,Solenopsis xyloni
 Aven 1.9.jpg,8,-58.707,0.844,Webers,Solenopsis xyloni
-Aven 1.10.jpg,1,159.312,0.714,Femur,Solenopsis xyloni
-Aven 1.10.jpg,2,-82.093,0.51,Scape,Solenopsis xyloni
-Aven 1.10.jpg,3,108.99,0.407,Mandible length,Solenopsis xyloni
-Aven 1.10.jpg,4,176.135,0.693,Head length,Solenopsis xyloni
-Aven 1.10.jpg,5,-8.13,0.11,Eye length,Solenopsis xyloni
-Aven 1.10.jpg,6,-109.093,0.043,Eye width,Solenopsis xyloni
-Aven 1.10.jpg,7,-97.623,0.622,Head width,Solenopsis xyloni
-Aven 1.10.jpg,8,-103.643,0.825,Webers,Solenopsis xyloni
-Aven 1.11.jpg,1,-43.438,0.726,Femur,Solenopsis xyloni
-Aven 1.11.jpg,2,-11.211,0.528,Scape,Solenopsis xyloni
-Aven 1.11.jpg,3,122.645,0.355,Mandible length,Solenopsis xyloni
-Aven 1.11.jpg,4,160.303,0.692,Head length,Solenopsis xyloni
-Aven 1.11.jpg,5,157.479,0.138,Eye length,Solenopsis xyloni
-Aven 1.11.jpg,6,58.671,0.042,Eye width,Solenopsis xyloni
-Aven 1.11.jpg,7,69.651,0.604,Head width,Solenopsis xyloni
-Aven 1.11.jpg,8,147.175,0.657,Webers,Solenopsis xyloni
-Aven 1.12.jpg,1,-138.748,0.744,Femur,Solenopsis xyloni
-Aven 1.12.jpg,2,9.31,0.567,Scape,Solenopsis xyloni
-Aven 1.12.jpg,3,158.311,0.434,Mandible length,Solenopsis xyloni
-Aven 1.12.jpg,4,-142.293,0.753,Head length,Solenopsis xyloni
-Aven 1.12.jpg,5,39.036,0.109,Eye length,Solenopsis xyloni
-Aven 1.12.jpg,6,-51.953,0.067,Eye width,Solenopsis xyloni
-Aven 1.12.jpg,7,-54.534,0.636,Head width,Solenopsis xyloni
-Aven 1.12.jpg,8,-0.704,0.933,Webers,Solenopsis xyloni
 Aven 2.1.jpg,1,-106.403,1.125,Femur,Dorymyrmex bicolor
 Aven 2.1.jpg,2,-40.978,0.832,Scape,Dorymyrmex bicolor
 Aven 2.1.jpg,4,-134.009,0.469,Mandible length,Dorymyrmex bicolor
@@ -217,6 +217,30 @@ CaS 1.1.jpg,5,-104.036,0.121,Eye length,Solenopsis xyloni
 CaS 1.1.jpg,6,142.125,0.048,Eye width,Solenopsis xyloni
 CaS 1.1.jpg,7,159.011,0.716,Head width,Solenopsis xyloni
 CaS 1.1.jpg,8,-122.065,0.863,Webers,Solenopsis xyloni
+CaS 1.10.jpg,1,-80.248,1.046,Femur,Pheidole hyatti
+CaS 1.10.jpg,2,123.366,0.791,Scape,Pheidole hyatti
+CaS 1.10.jpg,3,50.673,0.432,Mandible length,Pheidole hyatti
+CaS 1.10.jpg,4,-0.18,0.64,Head length,Pheidole hyatti
+CaS 1.10.jpg,5,1.909,0.181,Eye length,Pheidole hyatti
+CaS 1.10.jpg,6,-88.854,0.101,Eye width,Pheidole hyatti
+CaS 1.10.jpg,7,-90,0.582,Head width,Pheidole hyatti
+CaS 1.10.jpg,8,-62.418,0.913,Webers,Pheidole hyatti
+CaS 1.11.jpg,1,-31.242,1.028,Femur,Pheidole hyatti
+CaS 1.11.jpg,2,48.576,0.944,Scape,Pheidole hyatti
+CaS 1.11.jpg,3,-73.828,0.434,Mandible length,Pheidole hyatti
+CaS 1.11.jpg,4,-120.466,0.657,Head length,Pheidole hyatti
+CaS 1.11.jpg,5,-119.745,0.168,Eye length,Pheidole hyatti
+CaS 1.11.jpg,6,-30.964,0.097,Eye width,Pheidole hyatti
+CaS 1.11.jpg,7,-32.807,0.6,Head width,Pheidole hyatti
+CaS 1.11.jpg,8,136.378,0.857,Webers,Pheidole hyatti
+CaS 1.12.jpg,1,-19.781,1.018,Femur,Pheidole hyatti
+CaS 1.12.jpg,2,-85.744,0.906,Scape,Pheidole hyatti
+CaS 1.12.jpg,3,-49.8,0.391,Mandible length,Pheidole hyatti
+CaS 1.12.jpg,4,0.863,0.698,Head length,Pheidole hyatti
+CaS 1.12.jpg,5,0.707,0.17,Eye length,Pheidole hyatti
+CaS 1.12.jpg,6,-85.914,0.118,Eye width,Pheidole hyatti
+CaS 1.12.jpg,7,91.868,0.58,Head width,Pheidole hyatti
+CaS 1.12.jpg,8,170.603,0.913,Webers,Pheidole hyatti
 CaS 1.2.jpg,1,-10.414,0.797,Femur,Solenopsis xyloni
 CaS 1.2.jpg,2,-34.592,0.597,Scape,Solenopsis xyloni
 CaS 1.2.jpg,3,-114.55,0.377,Mandible length,Solenopsis xyloni
@@ -281,30 +305,6 @@ CaS 1.9.jpg,5,-27.824,0.17,Eye length,Pheidole hyatti
 CaS 1.9.jpg,6,62.526,0.117,Eye width,Pheidole hyatti
 CaS 1.9.jpg,7,63.613,0.6,Head width,Pheidole hyatti
 CaS 1.9.jpg,8,90.518,0.921,Webers,Pheidole hyatti
-CaS 1.10.jpg,1,-80.248,1.046,Femur,Pheidole hyatti
-CaS 1.10.jpg,2,123.366,0.791,Scape,Pheidole hyatti
-CaS 1.10.jpg,3,50.673,0.432,Mandible length,Pheidole hyatti
-CaS 1.10.jpg,4,-0.18,0.64,Head length,Pheidole hyatti
-CaS 1.10.jpg,5,1.909,0.181,Eye length,Pheidole hyatti
-CaS 1.10.jpg,6,-88.854,0.101,Eye width,Pheidole hyatti
-CaS 1.10.jpg,7,-90,0.582,Head width,Pheidole hyatti
-CaS 1.10.jpg,8,-62.418,0.913,Webers,Pheidole hyatti
-CaS 1.11.jpg,1,-31.242,1.028,Femur,Pheidole hyatti
-CaS 1.11.jpg,2,48.576,0.944,Scape,Pheidole hyatti
-CaS 1.11.jpg,3,-73.828,0.434,Mandible length,Pheidole hyatti
-CaS 1.11.jpg,4,-120.466,0.657,Head length,Pheidole hyatti
-CaS 1.11.jpg,5,-119.745,0.168,Eye length,Pheidole hyatti
-CaS 1.11.jpg,6,-30.964,0.097,Eye width,Pheidole hyatti
-CaS 1.11.jpg,7,-32.807,0.6,Head width,Pheidole hyatti
-CaS 1.11.jpg,8,136.378,0.857,Webers,Pheidole hyatti
-CaS 1.12.jpg,1,-19.781,1.018,Femur,Pheidole hyatti
-CaS 1.12.jpg,2,-85.744,0.906,Scape,Pheidole hyatti
-CaS 1.12.jpg,3,-49.8,0.391,Mandible length,Pheidole hyatti
-CaS 1.12.jpg,4,0.863,0.698,Head length,Pheidole hyatti
-CaS 1.12.jpg,5,0.707,0.17,Eye length,Pheidole hyatti
-CaS 1.12.jpg,6,-85.914,0.118,Eye width,Pheidole hyatti
-CaS 1.12.jpg,7,91.868,0.58,Head width,Pheidole hyatti
-CaS 1.12.jpg,8,170.603,0.913,Webers,Pheidole hyatti
 CaS 2.1.jpg,1,-85.959,0.782,Femur,Dorymyrmex insanus
 CaS 2.1.jpg,2,-131.326,0.655,Scape,Dorymyrmex insanus
 CaS 2.1.jpg,3,-131.035,0.303,Mandible length,Dorymyrmex insanus
@@ -322,9 +322,9 @@ CaS 2.2.jpg,6,54.293,0.084,Eye width,Dorymyrmex insanus
 CaS 2.2.jpg,7,56.31,0.555,Head width,Dorymyrmex insanus
 CaS 2.2.jpg,8,127.991,0.743,Webers,Dorymyrmex insanus
 CaS 2.3.jpg,1,-52.696,0.873,Femur,Dorymyrmex insanus
-CaS 2.3.jpg,2,-130.844,0.847,Webers,Dorymyrmex insanus
 CaS 2.3.jpg,1,36.237,0.73,Scape,Dorymyrmex insanus
 CaS 2.3.jpg,2,90,0.302,Mandible length,Dorymyrmex insanus
+CaS 2.3.jpg,2,-130.844,0.847,Webers,Dorymyrmex insanus
 CaS 2.3.jpg,3,7.983,0.668,Head length,Dorymyrmex insanus
 CaS 2.3.jpg,4,0,0.165,Eye length,Dorymyrmex insanus
 CaS 2.3.jpg,5,-87.879,0.109,Eye width,Dorymyrmex insanus
@@ -363,6 +363,30 @@ CaS 2.7.jpg,7,-0.937,0.978,Head width,Messor pergandei
 CaS 2.7.jpg,8,22.39,1.229,Webers,Messor pergandei
 CaS 3.1.jpg,1,-56.478,1.203,Femur,Dorymyrmex bicolor
 CaS 3.1.jpg,2,-0.871,1.113,Webers,Dorymyrmex bicolor
+CaS 3.10.jpg,1,-11.31,0.7,Femur,Forelius pruinosis
+CaS 3.10.jpg,2,-41.748,0.518,Scape,Forelius pruinosis
+CaS 3.10.jpg,3,150.461,0.287,Mandible length,Forelius pruinosis
+CaS 3.10.jpg,4,-131.6,0.595,Head length,Forelius pruinosis
+CaS 3.10.jpg,5,-124.186,0.133,Eye length,Forelius pruinosis
+CaS 3.10.jpg,6,-37.999,0.084,Eye width,Forelius pruinosis
+CaS 3.10.jpg,7,139.374,0.52,Head width,Forelius pruinosis
+CaS 3.10.jpg,8,165.964,0.849,Webers,Forelius pruinosis
+CaS 3.11.jpg,1,-104.036,0.681,Femur,Forelius pruinosis
+CaS 3.11.jpg,2,62.85,0.557,Scape,Forelius pruinosis
+CaS 3.11.jpg,3,133.905,0.235,Mandible length,Forelius pruinosis
+CaS 3.11.jpg,4,-172.754,0.621,Head length,Forelius pruinosis
+CaS 3.11.jpg,5,5.964,0.143,Eye length,Forelius pruinosis
+CaS 3.11.jpg,6,-81.254,0.084,Eye width,Forelius pruinosis
+CaS 3.11.jpg,7,-83.61,0.532,Head width,Forelius pruinosis
+CaS 3.11.jpg,8,18.871,0.792,Webers,Forelius pruinosis
+CaS 3.12.jpg,1,-66.89,0.7,Femur,Forelius pruinosis
+CaS 3.12.jpg,2,-165.66,0.563,Scape,Forelius pruinosis
+CaS 3.12.jpg,3,-40.006,0.3,Mandible length,Forelius pruinosis
+CaS 3.12.jpg,4,-113.102,0.637,Head length,Forelius pruinosis
+CaS 3.12.jpg,5,-110.556,0.14,Eye length,Forelius pruinosis
+CaS 3.12.jpg,6,150.945,0.084,Eye width,Forelius pruinosis
+CaS 3.12.jpg,7,-29.588,0.556,Head width,Forelius pruinosis
+CaS 3.12.jpg,8,119.511,0.749,Webers,Forelius pruinosis
 CaS 3.2.jpg,1,-119.137,1.264,Femur,Dorymyrmex bicolor
 CaS 3.2.jpg,2,60.255,0.973,Scape,Dorymyrmex bicolor
 CaS 3.2.jpg,3,143.334,0.467,Mandible length,Dorymyrmex bicolor
@@ -427,30 +451,6 @@ CaS 3.9.jpg,5,-2.643,0.14,Eye length,Forelius pruinosis
 CaS 3.9.jpg,6,-92.437,0.101,Eye width,Forelius pruinosis
 CaS 3.9.jpg,7,-92.684,0.552,Head width,Forelius pruinosis
 CaS 3.9.jpg,8,58.065,0.742,Webers,Forelius pruinosis
-CaS 3.10.jpg,1,-11.31,0.7,Femur,Forelius pruinosis
-CaS 3.10.jpg,2,-41.748,0.518,Scape,Forelius pruinosis
-CaS 3.10.jpg,3,150.461,0.287,Mandible length,Forelius pruinosis
-CaS 3.10.jpg,4,-131.6,0.595,Head length,Forelius pruinosis
-CaS 3.10.jpg,5,-124.186,0.133,Eye length,Forelius pruinosis
-CaS 3.10.jpg,6,-37.999,0.084,Eye width,Forelius pruinosis
-CaS 3.10.jpg,7,139.374,0.52,Head width,Forelius pruinosis
-CaS 3.10.jpg,8,165.964,0.849,Webers,Forelius pruinosis
-CaS 3.11.jpg,1,-104.036,0.681,Femur,Forelius pruinosis
-CaS 3.11.jpg,2,62.85,0.557,Scape,Forelius pruinosis
-CaS 3.11.jpg,3,133.905,0.235,Mandible length,Forelius pruinosis
-CaS 3.11.jpg,4,-172.754,0.621,Head length,Forelius pruinosis
-CaS 3.11.jpg,5,5.964,0.143,Eye length,Forelius pruinosis
-CaS 3.11.jpg,6,-81.254,0.084,Eye width,Forelius pruinosis
-CaS 3.11.jpg,7,-83.61,0.532,Head width,Forelius pruinosis
-CaS 3.11.jpg,8,18.871,0.792,Webers,Forelius pruinosis
-CaS 3.12.jpg,1,-66.89,0.7,Femur,Forelius pruinosis
-CaS 3.12.jpg,2,-165.66,0.563,Scape,Forelius pruinosis
-CaS 3.12.jpg,3,-40.006,0.3,Mandible length,Forelius pruinosis
-CaS 3.12.jpg,4,-113.102,0.637,Head length,Forelius pruinosis
-CaS 3.12.jpg,5,-110.556,0.14,Eye length,Forelius pruinosis
-CaS 3.12.jpg,6,150.945,0.084,Eye width,Forelius pruinosis
-CaS 3.12.jpg,7,-29.588,0.556,Head width,Forelius pruinosis
-CaS 3.12.jpg,8,119.511,0.749,Webers,Forelius pruinosis
 CaS 4.1.jpg,1,-36.394,2.169,Femur,Messor andrei
 CaS 4.1.jpg,2,162.585,1.383,Scape,Messor andrei
 CaS 4.1.jpg,3,163.108,0.818,Mandible length,Messor andrei
@@ -459,6 +459,30 @@ CaS 4.1.jpg,5,95.711,0.288,Eye length,Messor andrei
 CaS 4.1.jpg,6,3.366,0.14,Eye width,Messor andrei
 CaS 4.1.jpg,7,3.966,1.541,Head width,Messor andrei
 CaS 4.1.jpg,8,162.045,2.167,Webers,Messor andrei
+CaS 4.10.jpg,1,-11.337,1.756,Femur,Myrmecocystus
+CaS 4.10.jpg,2,-76.572,1.236,Scape,Myrmecocystus
+CaS 4.10.jpg,3,81.309,0.661,Mandible length,Myrmecocystus
+CaS 4.10.jpg,4,144.414,1.151,Head length,Myrmecocystus
+CaS 4.10.jpg,5,-31.827,0.284,Eye length,Myrmecocystus
+CaS 4.10.jpg,6,58.782,0.161,Eye width,Myrmecocystus
+CaS 4.10.jpg,7,56.31,1.05,Head width,Myrmecocystus
+CaS 4.10.jpg,8,21.801,1.658,Webers,Myrmecocystus
+CaS 4.11.jpg,1,86.226,1.937,Femur,Myrmecocystus
+CaS 4.11.jpg,2,52.483,1.384,Scape,Myrmecocystus
+CaS 4.11.jpg,3,93.281,0.647,Mandible length,Myrmecocystus
+CaS 4.11.jpg,4,145.244,1.226,Head length,Myrmecocystus
+CaS 4.11.jpg,5,-30.141,0.295,Eye length,Myrmecocystus
+CaS 4.11.jpg,6,60.573,0.184,Eye width,Myrmecocystus
+CaS 4.11.jpg,7,58.392,1.067,Head width,Myrmecocystus
+CaS 4.11.jpg,8,-9.75,1.748,Webers,Myrmecocystus
+CaS 4.12.jpg,1,-74.586,1.958,Femur,Myrmecocystus
+CaS 4.12.jpg,2,-78.788,1.423,Scape,Myrmecocystus
+CaS 4.12.jpg,3,37.933,0.712,Mandible length,Myrmecocystus
+CaS 4.12.jpg,4,101.419,1.272,Head length,Myrmecocystus
+CaS 4.12.jpg,5,-73.523,0.306,Eye length,Myrmecocystus
+CaS 4.12.jpg,6,17.354,0.138,Eye width,Myrmecocystus
+CaS 4.12.jpg,7,13.345,1.163,Head width,Myrmecocystus
+CaS 4.12.jpg,8,23.977,1.677,Webers,Myrmecocystus
 CaS 4.2.jpg,1,-18.402,2.246,Femur,Messor andrei
 CaS 4.2.jpg,2,-84.183,1.537,Scape,Messor andrei
 CaS 4.2.jpg,3,53.13,0.963,Mandible length,Messor andrei
@@ -523,30 +547,6 @@ CaS 4.9.jpg,5,-81.327,0.244,Eye length,Myrmecocystus
 CaS 4.9.jpg,6,17.241,0.124,Eye width,Myrmecocystus
 CaS 4.9.jpg,7,22.448,0.944,Head width,Myrmecocystus
 CaS 4.9.jpg,8,-168.338,1.439,Webers,Myrmecocystus
-CaS 4.10.jpg,1,-11.337,1.756,Femur,Myrmecocystus
-CaS 4.10.jpg,2,-76.572,1.236,Scape,Myrmecocystus
-CaS 4.10.jpg,3,81.309,0.661,Mandible length,Myrmecocystus
-CaS 4.10.jpg,4,144.414,1.151,Head length,Myrmecocystus
-CaS 4.10.jpg,5,-31.827,0.284,Eye length,Myrmecocystus
-CaS 4.10.jpg,6,58.782,0.161,Eye width,Myrmecocystus
-CaS 4.10.jpg,7,56.31,1.05,Head width,Myrmecocystus
-CaS 4.10.jpg,8,21.801,1.658,Webers,Myrmecocystus
-CaS 4.11.jpg,1,86.226,1.937,Femur,Myrmecocystus
-CaS 4.11.jpg,2,52.483,1.384,Scape,Myrmecocystus
-CaS 4.11.jpg,3,93.281,0.647,Mandible length,Myrmecocystus
-CaS 4.11.jpg,4,145.244,1.226,Head length,Myrmecocystus
-CaS 4.11.jpg,5,-30.141,0.295,Eye length,Myrmecocystus
-CaS 4.11.jpg,6,60.573,0.184,Eye width,Myrmecocystus
-CaS 4.11.jpg,7,58.392,1.067,Head width,Myrmecocystus
-CaS 4.11.jpg,8,-9.75,1.748,Webers,Myrmecocystus
-CaS 4.12.jpg,1,-74.586,1.958,Femur,Myrmecocystus
-CaS 4.12.jpg,2,-78.788,1.423,Scape,Myrmecocystus
-CaS 4.12.jpg,3,37.933,0.712,Mandible length,Myrmecocystus
-CaS 4.12.jpg,4,101.419,1.272,Head length,Myrmecocystus
-CaS 4.12.jpg,5,-73.523,0.306,Eye length,Myrmecocystus
-CaS 4.12.jpg,6,17.354,0.138,Eye width,Myrmecocystus
-CaS 4.12.jpg,7,13.345,1.163,Head width,Myrmecocystus
-CaS 4.12.jpg,8,23.977,1.677,Webers,Myrmecocystus
 CaSl 1.1.jpg,1,41.963,0.833,Femur,Solenopsis xyloni
 CaSl 1.1.jpg,2,-26.358,0.595,Scape,Solenopsis xyloni
 CaSl 1.1.jpg,3,-41.074,0.463,Mandible length,Solenopsis xyloni
@@ -555,6 +555,30 @@ CaSl 1.1.jpg,5,18.687,0.115,Eye length,Solenopsis xyloni
 CaSl 1.1.jpg,6,-68.499,0.057,Eye width,Solenopsis xyloni
 CaSl 1.1.jpg,7,-69.928,0.709,Head width,Solenopsis xyloni
 CaSl 1.1.jpg,8,-166.593,0.901,Webers,Solenopsis xyloni
+CaSl 1.10.jpg,1,-46.544,2.202,Femur,Messor andrei
+CaSl 1.10.jpg,2,76.851,1.168,Scape,Messor andrei
+CaSl 1.10.jpg,3,43.438,0.725,Mandible length,Messor andrei
+CaSl 1.10.jpg,4,115.286,1.68,Head length,Messor andrei
+CaSl 1.10.jpg,5,115.741,0.29,Eye length,Messor andrei
+CaSl 1.10.jpg,6,32.574,0.199,Eye width,Messor andrei
+CaSl 1.10.jpg,7,-153.222,1.686,Head width,Messor andrei
+CaSl 1.10.jpg,8,19.097,2.421,Webers,Messor andrei
+CaSl 1.11.jpg,1,61.767,2.193,Femur,Messor andrei
+CaSl 1.11.jpg,2,-111.946,1.401,Scape,Messor andrei
+CaSl 1.11.jpg,3,-172.345,0.893,Mandible length,Messor andrei
+CaSl 1.11.jpg,4,-119.157,1.553,Head length,Messor andrei
+CaSl 1.11.jpg,5,57.011,0.323,Eye length,Messor andrei
+CaSl 1.11.jpg,6,145.713,0.127,Eye width,Messor andrei
+CaSl 1.11.jpg,7,147.295,1.612,Head width,Messor andrei
+CaSl 1.11.jpg,8,50.959,2.01,Webers,Messor andrei
+CaSl 1.12.jpg,1,-120.777,1.979,Femur,Messor andrei
+CaSl 1.12.jpg,2,21.55,1.397,Scape,Messor andrei
+CaSl 1.12.jpg,3,-156.218,0.911,Mandible length,Messor andrei
+CaSl 1.12.jpg,4,136.283,1.635,Head length,Messor andrei
+CaSl 1.12.jpg,5,139.6,0.291,Eye length,Messor andrei
+CaSl 1.12.jpg,6,47.726,0.14,Eye width,Messor andrei
+CaSl 1.12.jpg,7,46.975,1.643,Head width,Messor andrei
+CaSl 1.12.jpg,8,159.617,2.19,Webers,Messor andrei
 CaSl 1.2.jpg,1,21.501,0.852,Femur,Solenopsis xyloni
 CaSl 1.2.jpg,2,81.207,0.676,Scape,Solenopsis xyloni
 CaSl 1.2.jpg,3,53.001,0.427,Mandible length,Solenopsis xyloni
@@ -619,30 +643,6 @@ CaSl 1.9.jpg,5,-115.427,0.313,Eye length,Messor andrei
 CaSl 1.9.jpg,6,-32.471,0.181,Eye width,Messor andrei
 CaSl 1.9.jpg,7,-31.016,1.734,Head width,Messor andrei
 CaSl 1.9.jpg,8,149.439,2.258,Webers,Messor andrei
-CaSl 1.10.jpg,1,-46.544,2.202,Femur,Messor andrei
-CaSl 1.10.jpg,2,76.851,1.168,Scape,Messor andrei
-CaSl 1.10.jpg,3,43.438,0.725,Mandible length,Messor andrei
-CaSl 1.10.jpg,4,115.286,1.68,Head length,Messor andrei
-CaSl 1.10.jpg,5,115.741,0.29,Eye length,Messor andrei
-CaSl 1.10.jpg,6,32.574,0.199,Eye width,Messor andrei
-CaSl 1.10.jpg,7,-153.222,1.686,Head width,Messor andrei
-CaSl 1.10.jpg,8,19.097,2.421,Webers,Messor andrei
-CaSl 1.11.jpg,1,61.767,2.193,Femur,Messor andrei
-CaSl 1.11.jpg,2,-111.946,1.401,Scape,Messor andrei
-CaSl 1.11.jpg,3,-172.345,0.893,Mandible length,Messor andrei
-CaSl 1.11.jpg,4,-119.157,1.553,Head length,Messor andrei
-CaSl 1.11.jpg,5,57.011,0.323,Eye length,Messor andrei
-CaSl 1.11.jpg,6,145.713,0.127,Eye width,Messor andrei
-CaSl 1.11.jpg,7,147.295,1.612,Head width,Messor andrei
-CaSl 1.11.jpg,8,50.959,2.01,Webers,Messor andrei
-CaSl 1.12.jpg,1,-120.777,1.979,Femur,Messor andrei
-CaSl 1.12.jpg,2,21.55,1.397,Scape,Messor andrei
-CaSl 1.12.jpg,3,-156.218,0.911,Mandible length,Messor andrei
-CaSl 1.12.jpg,4,136.283,1.635,Head length,Messor andrei
-CaSl 1.12.jpg,5,139.6,0.291,Eye length,Messor andrei
-CaSl 1.12.jpg,6,47.726,0.14,Eye width,Messor andrei
-CaSl 1.12.jpg,7,46.975,1.643,Head width,Messor andrei
-CaSl 1.12.jpg,8,159.617,2.19,Webers,Messor andrei
 CaSl 2.1.jpg,1,-107.218,1.878,Femur,Pogonomyrmex californicus
 CaSl 2.1.jpg,2,-120.122,1.145,Scape,Pogonomyrmex californicus
 CaSl 2.1.jpg,3,176.065,0.885,Mandible length,Pogonomyrmex californicus
@@ -651,6 +651,30 @@ CaSl 2.1.jpg,5,111.337,0.321,Eye length,Pogonomyrmex californicus
 CaSl 2.1.jpg,6,19.983,0.164,Eye width,Pogonomyrmex californicus
 CaSl 2.1.jpg,7,19.148,1.78,Head width,Pogonomyrmex californicus
 CaSl 2.1.jpg,8,-103.648,1.841,Webers,Pogonomyrmex californicus
+CaSl 2.10.jpg,1,-0.42,1.264,Femur,Dorymyrmex bicolor
+CaSl 2.10.jpg,2,67.443,0.977,Scape,Dorymyrmex bicolor
+CaSl 2.10.jpg,3,49.289,0.525,Mandible length,Dorymyrmex bicolor
+CaSl 2.10.jpg,4,-36.983,0.939,Head length,Dorymyrmex bicolor
+CaSl 2.10.jpg,5,-37.875,0.264,Eye length,Dorymyrmex bicolor
+CaSl 2.10.jpg,6,48.652,0.154,Eye width,Dorymyrmex bicolor
+CaSl 2.10.jpg,7,53.696,0.844,Head width,Dorymyrmex bicolor
+CaSl 2.10.jpg,8,170.83,1.046,Webers,Dorymyrmex bicolor
+CaSl 2.11.jpg,1,139.063,1.222,Femur,Dorymyrmex bicolor
+CaSl 2.11.jpg,2,-27.609,0.925,Scape,Dorymyrmex bicolor
+CaSl 2.11.jpg,3,-4.376,0.463,Mandible length,Dorymyrmex bicolor
+CaSl 2.11.jpg,4,-85.011,0.894,Head length,Dorymyrmex bicolor
+CaSl 2.11.jpg,5,-87.325,0.252,Eye length,Dorymyrmex bicolor
+CaSl 2.11.jpg,6,3.945,0.137,Eye width,Dorymyrmex bicolor
+CaSl 2.11.jpg,7,5.793,0.817,Head width,Dorymyrmex bicolor
+CaSl 2.11.jpg,8,-100.665,1.108,Webers,Dorymyrmex bicolor
+CaSl 2.12.jpg,1,-9.104,1.173,Femur,Dorymyrmex bicolor
+CaSl 2.12.jpg,2,-66.879,0.91,Scape,Dorymyrmex bicolor
+CaSl 2.12.jpg,3,-121.264,0.462,Mandible length,Dorymyrmex bicolor
+CaSl 2.12.jpg,4,162.997,0.892,Head length,Dorymyrmex bicolor
+CaSl 2.12.jpg,5,153.895,0.262,Eye length,Dorymyrmex bicolor
+CaSl 2.12.jpg,6,68.199,0.165,Eye width,Dorymyrmex bicolor
+CaSl 2.12.jpg,7,69.146,0.792,Head width,Dorymyrmex bicolor
+CaSl 2.12.jpg,8,-111.892,1.109,Webers,Dorymyrmex bicolor
 CaSl 2.2.jpg,1,125.936,1.72,Femur,Pogonomyrmex californicus
 CaSl 2.2.jpg,2,-126.87,1.098,Scape,Pogonomyrmex californicus
 CaSl 2.2.jpg,3,1.79,0.897,Mandible length,Pogonomyrmex californicus
@@ -715,30 +739,6 @@ CaSl 2.9.jpg,5,54.211,0.25,Eye length,Dorymyrmex bicolor
 CaSl 2.9.jpg,6,142.696,0.125,Eye width,Dorymyrmex bicolor
 CaSl 2.9.jpg,7,143.263,0.812,Head width,Dorymyrmex bicolor
 CaSl 2.9.jpg,8,17.609,1.138,Webers,Dorymyrmex bicolor
-CaSl 2.10.jpg,1,-0.42,1.264,Femur,Dorymyrmex bicolor
-CaSl 2.10.jpg,2,67.443,0.977,Scape,Dorymyrmex bicolor
-CaSl 2.10.jpg,3,49.289,0.525,Mandible length,Dorymyrmex bicolor
-CaSl 2.10.jpg,4,-36.983,0.939,Head length,Dorymyrmex bicolor
-CaSl 2.10.jpg,5,-37.875,0.264,Eye length,Dorymyrmex bicolor
-CaSl 2.10.jpg,6,48.652,0.154,Eye width,Dorymyrmex bicolor
-CaSl 2.10.jpg,7,53.696,0.844,Head width,Dorymyrmex bicolor
-CaSl 2.10.jpg,8,170.83,1.046,Webers,Dorymyrmex bicolor
-CaSl 2.11.jpg,1,139.063,1.222,Femur,Dorymyrmex bicolor
-CaSl 2.11.jpg,2,-27.609,0.925,Scape,Dorymyrmex bicolor
-CaSl 2.11.jpg,3,-4.376,0.463,Mandible length,Dorymyrmex bicolor
-CaSl 2.11.jpg,4,-85.011,0.894,Head length,Dorymyrmex bicolor
-CaSl 2.11.jpg,5,-87.325,0.252,Eye length,Dorymyrmex bicolor
-CaSl 2.11.jpg,6,3.945,0.137,Eye width,Dorymyrmex bicolor
-CaSl 2.11.jpg,7,5.793,0.817,Head width,Dorymyrmex bicolor
-CaSl 2.11.jpg,8,-100.665,1.108,Webers,Dorymyrmex bicolor
-CaSl 2.12.jpg,1,-9.104,1.173,Femur,Dorymyrmex bicolor
-CaSl 2.12.jpg,2,-66.879,0.91,Scape,Dorymyrmex bicolor
-CaSl 2.12.jpg,3,-121.264,0.462,Mandible length,Dorymyrmex bicolor
-CaSl 2.12.jpg,4,162.997,0.892,Head length,Dorymyrmex bicolor
-CaSl 2.12.jpg,5,153.895,0.262,Eye length,Dorymyrmex bicolor
-CaSl 2.12.jpg,6,68.199,0.165,Eye width,Dorymyrmex bicolor
-CaSl 2.12.jpg,7,69.146,0.792,Head width,Dorymyrmex bicolor
-CaSl 2.12.jpg,8,-111.892,1.109,Webers,Dorymyrmex bicolor
 CaSl 3.1.jpg,1,-49.884,2.191,Femur,Messor andrei
 CaSl 3.1.jpg,2,27.235,1.416,Scape,Messor andrei
 CaSl 3.1.jpg,3,-100.421,0.819,Mandible length,Messor andrei
@@ -747,6 +747,30 @@ CaSl 3.1.jpg,5,-32.681,0.292,Eye length,Messor andrei
 CaSl 3.1.jpg,6,54.246,0.143,Eye width,Messor andrei
 CaSl 3.1.jpg,7,63.504,1.723,Head width,Messor andrei
 CaSl 3.1.jpg,8,30.341,2.264,Webers,Messor andrei
+CaSl 3.10.jpg,1,-33.222,1.601,Femur,Myrmecocystus
+CaSl 3.10.jpg,2,-78.601,1.193,Scape,Myrmecocystus
+CaSl 3.10.jpg,3,31.759,0.582,Mandible length,Myrmecocystus
+CaSl 3.10.jpg,4,-83.085,0.96,Head length,Myrmecocystus
+CaSl 3.10.jpg,5,-81.336,0.25,Eye length,Myrmecocystus
+CaSl 3.10.jpg,6,8.259,0.148,Eye width,Myrmecocystus
+CaSl 3.10.jpg,7,10.25,0.875,Head width,Myrmecocystus
+CaSl 3.10.jpg,8,178.128,1.444,Webers,Myrmecocystus
+CaSl 3.11.jpg,1,-87.006,1.55,Femur,Myrmecocystus
+CaSl 3.11.jpg,2,46.837,1.155,Scape,Myrmecocystus
+CaSl 3.11.jpg,3,22.859,0.527,Mandible length,Myrmecocystus
+CaSl 3.11.jpg,4,-40.956,1.003,Head length,Myrmecocystus
+CaSl 3.11.jpg,5,-36.656,0.255,Eye length,Myrmecocystus
+CaSl 3.11.jpg,6,43.781,0.158,Eye width,Myrmecocystus
+CaSl 3.11.jpg,7,54.345,0.809,Head width,Myrmecocystus
+CaSl 3.11.jpg,8,158.459,1.362,Webers,Myrmecocystus
+CaSl 3.12.2.jpg,1,-79.136,1.957,Femur,Myrmecocystus
+CaSl 3.12.2.jpg,2,169.924,1.414,Scape,Myrmecocystus
+CaSl 3.12.2.jpg,3,83.951,0.737,Mandible length,Myrmecocystus
+CaSl 3.12.2.jpg,4,151.16,1.257,Head length,Myrmecocystus
+CaSl 3.12.2.jpg,5,159.341,0.316,Eye length,Myrmecocystus
+CaSl 3.12.2.jpg,6,64.231,0.156,Eye width,Myrmecocystus
+CaSl 3.12.2.jpg,7,61.844,1.172,Head width,Myrmecocystus
+CaSl 3.12.2.jpg,8,-161.003,1.878,Webers,Myrmecocystus
 CaSl 3.2.jpg,1,-5.039,2.161,Femur,Messor andrei
 CaSl 3.2.jpg,2,22.053,1.368,Scape,Messor andrei
 CaSl 3.2.jpg,3,53.711,0.821,Mandible length,Messor andrei
@@ -811,22 +835,6 @@ CaSl 3.9.jpg,5,-45.659,0.301,Eye length,Myrmecocystus
 CaSl 3.9.jpg,6,45.855,0.232,Eye width,Myrmecocystus
 CaSl 3.9.jpg,7,54.435,1.205,Head width,Myrmecocystus
 CaSl 3.9.jpg,8,-129.588,1.984,Webers,Myrmecocystus
-CaSl 3.10.jpg,1,-33.222,1.601,Femur,Myrmecocystus
-CaSl 3.10.jpg,2,-78.601,1.193,Scape,Myrmecocystus
-CaSl 3.10.jpg,3,31.759,0.582,Mandible length,Myrmecocystus
-CaSl 3.10.jpg,4,-83.085,0.96,Head length,Myrmecocystus
-CaSl 3.10.jpg,5,-81.336,0.25,Eye length,Myrmecocystus
-CaSl 3.10.jpg,6,8.259,0.148,Eye width,Myrmecocystus
-CaSl 3.10.jpg,7,10.25,0.875,Head width,Myrmecocystus
-CaSl 3.10.jpg,8,178.128,1.444,Webers,Myrmecocystus
-CaSl 3.11.jpg,1,-87.006,1.55,Femur,Myrmecocystus
-CaSl 3.11.jpg,2,46.837,1.155,Scape,Myrmecocystus
-CaSl 3.11.jpg,3,22.859,0.527,Mandible length,Myrmecocystus
-CaSl 3.11.jpg,4,-40.956,1.003,Head length,Myrmecocystus
-CaSl 3.11.jpg,5,-36.656,0.255,Eye length,Myrmecocystus
-CaSl 3.11.jpg,6,43.781,0.158,Eye width,Myrmecocystus
-CaSl 3.11.jpg,7,54.345,0.809,Head width,Myrmecocystus
-CaSl 3.11.jpg,8,158.459,1.362,Webers,Myrmecocystus
 CaSl 4.1.jpg,1,-126.87,0.98,Femur,Pheidole hyatti
 CaSl 4.1.jpg,2,125.838,0.871,Scape,Pheidole hyatti
 CaSl 4.1.jpg,3,96.798,0.373,Mandible length,Pheidole hyatti
@@ -835,6 +843,30 @@ CaSl 4.1.jpg,5,-32.989,0.167,Eye length,Pheidole hyatti
 CaSl 4.1.jpg,6,56.725,0.094,Eye width,Pheidole hyatti
 CaSl 4.1.jpg,7,58.643,0.551,Head width,Pheidole hyatti
 CaSl 4.1.jpg,8,-162.364,0.833,Webers,Pheidole hyatti
+CaSl 4.10.jpg,1,37.5,1.273,Femur,Dorymyrmex insanus
+CaSl 4.10.jpg,2,3.318,1.037,Scape,Dorymyrmex insanus
+CaSl 4.10.jpg,3,30.536,0.517,Mandible length,Dorymyrmex insanus
+CaSl 4.10.jpg,4,108.583,0.918,Head length,Dorymyrmex insanus
+CaSl 4.10.jpg,5,-68.091,0.248,Eye length,Dorymyrmex insanus
+CaSl 4.10.jpg,6,24.52,0.157,Eye width,Dorymyrmex insanus
+CaSl 4.10.jpg,7,23.414,0.874,Head width,Dorymyrmex insanus
+CaSl 4.10.jpg,8,77.824,1.232,Webers,Dorymyrmex insanus
+CaSl 4.11.jpg,1,-25.959,1.219,Femur,Dorymyrmex insanus
+CaSl 4.11.jpg,2,29.228,0.925,Scape,Dorymyrmex insanus
+CaSl 4.11.jpg,3,-73.644,0.461,Mandible length,Dorymyrmex insanus
+CaSl 4.11.jpg,4,2.155,0.895,Head length,Dorymyrmex insanus
+CaSl 4.11.jpg,5,5.194,0.266,Eye length,Dorymyrmex insanus
+CaSl 4.11.jpg,6,-84.958,0.164,Eye width,Dorymyrmex insanus
+CaSl 4.11.jpg,7,-87.614,0.808,Head width,Dorymyrmex insanus
+CaSl 4.11.jpg,8,56.649,1.128,Webers,Dorymyrmex insanus
+CaSl 4.12.jpg,1,179.514,1.157,Femur,Dorymyrmex insanus
+CaSl 4.12.jpg,2,113.962,0.917,Scape,Dorymyrmex insanus
+CaSl 4.12.jpg,3,-1.259,0.446,Mandible length,Dorymyrmex insanus
+CaSl 4.12.jpg,4,79.667,0.902,Head length,Dorymyrmex insanus
+CaSl 4.12.jpg,5,75.426,0.253,Eye length,Dorymyrmex insanus
+CaSl 4.12.jpg,6,164.055,0.107,Eye width,Dorymyrmex insanus
+CaSl 4.12.jpg,7,-11.107,0.814,Head width,Dorymyrmex insanus
+CaSl 4.12.jpg,8,-102.2,1.113,Webers,Dorymyrmex insanus
 CaSl 4.2.jpg,1,-0.807,0.986,Femur,Pheidole hyatti
 CaSl 4.2.jpg,2,39.31,0.892,Scape,Pheidole hyatti
 CaSl 4.2.jpg,3,-12.49,0.375,Mandible length,Pheidole hyatti
@@ -867,38 +899,38 @@ CaSl 4.9.jpg,5,170.91,0.253,Eye length,Dorymyrmex insanus
 CaSl 4.9.jpg,6,74.291,0.166,Eye width,Dorymyrmex insanus
 CaSl 4.9.jpg,7,70.046,0.835,Head width,Dorymyrmex insanus
 CaSl 4.9.jpg,8,24.707,1.172,Webers,Dorymyrmex insanus
-CaSl 4.10.jpg,1,37.5,1.273,Femur,Dorymyrmex insanus
-CaSl 4.10.jpg,2,3.318,1.037,Scape,Dorymyrmex insanus
-CaSl 4.10.jpg,3,30.536,0.517,Mandible length,Dorymyrmex insanus
-CaSl 4.10.jpg,4,108.583,0.918,Head length,Dorymyrmex insanus
-CaSl 4.10.jpg,5,-68.091,0.248,Eye length,Dorymyrmex insanus
-CaSl 4.10.jpg,6,24.52,0.157,Eye width,Dorymyrmex insanus
-CaSl 4.10.jpg,7,23.414,0.874,Head width,Dorymyrmex insanus
-CaSl 4.10.jpg,8,77.824,1.232,Webers,Dorymyrmex insanus
-CaSl 4.11.jpg,1,-25.959,1.219,Femur,Dorymyrmex insanus
-CaSl 4.11.jpg,2,29.228,0.925,Scape,Dorymyrmex insanus
-CaSl 4.11.jpg,3,-73.644,0.461,Mandible length,Dorymyrmex insanus
-CaSl 4.11.jpg,4,2.155,0.895,Head length,Dorymyrmex insanus
-CaSl 4.11.jpg,5,5.194,0.266,Eye length,Dorymyrmex insanus
-CaSl 4.11.jpg,6,-84.958,0.164,Eye width,Dorymyrmex insanus
-CaSl 4.11.jpg,7,-87.614,0.808,Head width,Dorymyrmex insanus
-CaSl 4.11.jpg,8,56.649,1.128,Webers,Dorymyrmex insanus
-CaSl 4.12.jpg,1,179.514,1.157,Femur,Dorymyrmex insanus
-CaSl 4.12.jpg,2,113.962,0.917,Scape,Dorymyrmex insanus
-CaSl 4.12.jpg,3,-1.259,0.446,Mandible length,Dorymyrmex insanus
-CaSl 4.12.jpg,4,79.667,0.902,Head length,Dorymyrmex insanus
-CaSl 4.12.jpg,5,75.426,0.253,Eye length,Dorymyrmex insanus
-CaSl 4.12.jpg,6,164.055,0.107,Eye width,Dorymyrmex insanus
-CaSl 4.12.jpg,7,-11.107,0.814,Head width,Dorymyrmex insanus
-CaSl 4.12.jpg,8,-102.2,1.113,Webers,Dorymyrmex insanus
-Coal 1.1.jpg,1,147.995,179.246,Femur,Solenopsis xyloni
-Coal 1.1.jpg,2,49.201,125.495,Scape,Solenopsis xyloni
-Coal 1.1.jpg,3,-151.661,101.119,Mandible length,Solenopsis xyloni
-Coal 1.1.jpg,4,137.386,169.853,Head length,Solenopsis xyloni
-Coal 1.1.jpg,5,141.34,25.612,Eye length,Solenopsis xyloni
-Coal 1.1.jpg,6,47.291,17.692,Eye width,Solenopsis xyloni
-Coal 1.1.jpg,7,51.459,150.864,Head width,Solenopsis xyloni
-Coal 1.1.jpg,8,57.339,185.3,Webers,Solenopsis xyloni
+Coal 1.1.jpg,1,147.995,0.731,Femur,Solenopsis xyloni
+Coal 1.1.jpg,2,49.201,0.535,Scape,Solenopsis xyloni
+Coal 1.1.jpg,3,-151.661,0.389,Mandible length,Solenopsis xyloni
+Coal 1.1.jpg,4,137.386,0.668,Head length,Solenopsis xyloni
+Coal 1.1.jpg,5,141.34,0.109,Eye length,Solenopsis xyloni
+Coal 1.1.jpg,6,47.291,0.07,Eye width,Solenopsis xyloni
+Coal 1.1.jpg,7,51.459,0.641,Head width,Solenopsis xyloni
+Coal 1.1.jpg,8,57.339,0.789,Webers,Solenopsis xyloni
+Coal 1.10.jpg,1,-98.984,1.05,Femur,Pheidole hyatti
+Coal 1.10.jpg,2,43.404,0.936,Scape,Pheidole hyatti
+Coal 1.10.jpg,3,42.075,0.398,Mandible length,Pheidole hyatti
+Coal 1.10.jpg,4,-5.873,0.721,Head length,Pheidole hyatti
+Coal 1.10.jpg,5,-4.185,0.168,Eye length,Pheidole hyatti
+Coal 1.10.jpg,6,77.196,0.092,Eye width,Pheidole hyatti
+Coal 1.10.jpg,7,82.038,0.592,Head width,Pheidole hyatti
+Coal 1.10.jpg,8,174.289,0.947,Webers,Pheidole hyatti
+Coal 1.11.jpg,1,95.154,1.049,Femur,Pheidole hyatti
+Coal 1.11.jpg,2,25.297,0.911,Scape,Pheidole hyatti
+Coal 1.11.jpg,3,-147.529,0.427,Mandible length,Pheidole hyatti
+Coal 1.11.jpg,4,156.714,0.705,Head length,Pheidole hyatti
+Coal 1.11.jpg,5,-23.962,0.161,Eye length,Pheidole hyatti
+Coal 1.11.jpg,6,59.421,0.105,Eye width,Pheidole hyatti
+Coal 1.11.jpg,7,66.251,0.56,Head width,Pheidole hyatti
+Coal 1.11.jpg,8,-9.871,0.944,Webers,Pheidole hyatti
+Coal 1.12.jpg,1,68.962,1.036,Femur,Pheidole hyatti
+Coal 1.12.jpg,2,-44.102,0.932,Scape,Pheidole hyatti
+Coal 1.12.jpg,3,-1.478,0.32,Mandible length,Pheidole hyatti
+Coal 1.12.jpg,4,-52.441,0.722,Head length,Pheidole hyatti
+Coal 1.12.jpg,5,-58.536,0.162,Eye length,Pheidole hyatti
+Coal 1.12.jpg,6,32.735,0.103,Eye width,Pheidole hyatti
+Coal 1.12.jpg,7,38.79,0.567,Head width,Pheidole hyatti
+Coal 1.12.jpg,8,-174.623,0.882,Webers,Pheidole hyatti
 Coal 1.2.jpg,1,65.422,0.591,Femur,Solenopsis xyloni
 Coal 1.2.jpg,2,19.669,0.52,Scape,Solenopsis xyloni
 Coal 1.2.jpg,3,-164.6,0.361,Mandible length,Solenopsis xyloni
@@ -963,30 +995,6 @@ Coal 1.9.jpg,5,-71.114,0.169,Eye length,Pheidole hyatti
 Coal 1.9.jpg,6,25.463,0.098,Eye width,Pheidole hyatti
 Coal 1.9.jpg,7,22.316,0.609,Head width,Pheidole hyatti
 Coal 1.9.jpg,8,73.469,0.96,Webers,Pheidole hyatti
-Coal 1.10.jpg,1,-98.984,1.05,Femur,Pheidole hyatti
-Coal 1.10.jpg,2,43.404,0.936,Scape,Pheidole hyatti
-Coal 1.10.jpg,3,42.075,0.398,Mandible length,Pheidole hyatti
-Coal 1.10.jpg,4,-5.873,0.721,Head length,Pheidole hyatti
-Coal 1.10.jpg,5,-4.185,0.168,Eye length,Pheidole hyatti
-Coal 1.10.jpg,6,77.196,0.092,Eye width,Pheidole hyatti
-Coal 1.10.jpg,7,82.038,0.592,Head width,Pheidole hyatti
-Coal 1.10.jpg,8,174.289,0.947,Webers,Pheidole hyatti
-Coal 1.11.jpg,1,95.154,1.049,Femur,Pheidole hyatti
-Coal 1.11.jpg,2,25.297,0.911,Scape,Pheidole hyatti
-Coal 1.11.jpg,3,-147.529,0.427,Mandible length,Pheidole hyatti
-Coal 1.11.jpg,4,156.714,0.705,Head length,Pheidole hyatti
-Coal 1.11.jpg,5,-23.962,0.161,Eye length,Pheidole hyatti
-Coal 1.11.jpg,6,59.421,0.105,Eye width,Pheidole hyatti
-Coal 1.11.jpg,7,66.251,0.56,Head width,Pheidole hyatti
-Coal 1.11.jpg,8,-9.871,0.944,Webers,Pheidole hyatti
-Coal 1.12.jpg,1,68.962,1.036,Femur,Pheidole hyatti
-Coal 1.12.jpg,2,-44.102,0.932,Scape,Pheidole hyatti
-Coal 1.12.jpg,3,-1.478,0.32,Mandible length,Pheidole hyatti
-Coal 1.12.jpg,4,-52.441,0.722,Head length,Pheidole hyatti
-Coal 1.12.jpg,5,-58.536,0.162,Eye length,Pheidole hyatti
-Coal 1.12.jpg,6,32.735,0.103,Eye width,Pheidole hyatti
-Coal 1.12.jpg,7,38.79,0.567,Head width,Pheidole hyatti
-Coal 1.12.jpg,8,-174.623,0.882,Webers,Pheidole hyatti
 Coal 2.1.jpg,1,56.679,1.077,Femur,Dorymyrmex bicolor
 Coal 2.1.jpg,2,-81.128,0.864,Scape,Dorymyrmex bicolor
 Coal 2.1.jpg,3,35.407,0.424,Mandible length,Dorymyrmex bicolor
@@ -995,6 +1003,14 @@ Coal 2.1.jpg,5,-42.769,0.227,Eye length,Dorymyrmex bicolor
 Coal 2.1.jpg,6,53.13,0.146,Eye width,Dorymyrmex bicolor
 Coal 2.1.jpg,7,48.205,0.737,Head width,Dorymyrmex bicolor
 Coal 2.1.jpg,8,152.408,0.935,Webers,Dorymyrmex bicolor
+Coal 2.10.jpg,1,133.798,0.843,Femur,Dorymyrmex insanus
+Coal 2.10.jpg,2,140.957,0.681,Scape,Dorymyrmex insanus
+Coal 2.10.jpg,3,17.033,0.377,Mandible length,Dorymyrmex insanus
+Coal 2.10.jpg,4,100.564,0.659,Head length,Dorymyrmex insanus
+Coal 2.10.jpg,5,-73.496,0.176,Eye length,Dorymyrmex insanus
+Coal 2.10.jpg,6,14.797,0.114,Eye width,Dorymyrmex insanus
+Coal 2.10.jpg,7,12.506,0.568,Head width,Dorymyrmex insanus
+Coal 2.10.jpg,8,-154.948,0.812,Webers,Dorymyrmex insanus
 Coal 2.2.jpg,1,-21.907,1.251,Femur,Dorymyrmex bicolor
 Coal 2.2.jpg,2,-78.44,0.928,Scape,Dorymyrmex bicolor
 Coal 2.2.jpg,3,154.002,0.467,Mandible length,Dorymyrmex bicolor
@@ -1059,14 +1075,6 @@ Coal 2.9.jpg,5,-53.427,0.166,Eye length,Cyphomyrmex wheeleri
 Coal 2.9.jpg,6,42.709,0.076,Eye width,Cyphomyrmex wheeleri
 Coal 2.9.jpg,7,55.257,0.65,Head width,Cyphomyrmex wheeleri
 Coal 2.9.jpg,8,-165.687,1.081,Webers,Cyphomyrmex wheeleri
-Coal 2.10.jpg,1,133.798,0.843,Femur,Dorymyrmex insanus
-Coal 2.10.jpg,2,140.957,0.681,Scape,Dorymyrmex insanus
-Coal 2.10.jpg,3,17.033,0.377,Mandible length,Dorymyrmex insanus
-Coal 2.10.jpg,4,100.564,0.659,Head length,Dorymyrmex insanus
-Coal 2.10.jpg,5,-73.496,0.176,Eye length,Dorymyrmex insanus
-Coal 2.10.jpg,6,14.797,0.114,Eye width,Dorymyrmex insanus
-Coal 2.10.jpg,7,12.506,0.568,Head width,Dorymyrmex insanus
-Coal 2.10.jpg,8,-154.948,0.812,Webers,Dorymyrmex insanus
 Lok 1.1.jpg,1,30.28,0.719,Femur,Solenopsis xyloni
 Lok 1.1.jpg,2,-40.156,0.523,Scape,Solenopsis xyloni
 Lok 1.1.jpg,3,-82.79,0.349,Mandible length,Solenopsis xyloni
@@ -1074,6 +1082,30 @@ Lok 1.1.jpg,4,-124.88,0.612,Head length,Solenopsis xyloni
 Lok 1.1.jpg,5,-128.333,0.114,Eye length,Solenopsis xyloni
 Lok 1.1.jpg,6,-33.69,0.045,Eye width,Solenopsis xyloni
 Lok 1.1.jpg,7,-37.617,0.608,Head width,Solenopsis xyloni
+Lok 1.10.jpg,1,74.968,1.231,Femur,Dorymyrmex bicolor
+Lok 1.10.jpg,2,-67.203,0.943,Scape,Dorymyrmex bicolor
+Lok 1.10.jpg,3,-56.813,0.464,Mandible length,Dorymyrmex bicolor
+Lok 1.10.jpg,4,27.783,0.913,Head length,Dorymyrmex bicolor
+Lok 1.10.jpg,5,34.492,0.25,Eye length,Dorymyrmex bicolor
+Lok 1.10.jpg,6,-55.62,0.129,Eye width,Dorymyrmex bicolor
+Lok 1.10.jpg,7,-62.821,0.819,Head width,Dorymyrmex bicolor
+Lok 1.10.jpg,8,121.785,1.156,Webers,Dorymyrmex bicolor
+Lok 1.11.jpg,1,25.856,1.184,Femur,Dorymyrmex bicolor
+Lok 1.11.jpg,2,9.418,0.876,Scape,Dorymyrmex bicolor
+Lok 1.11.jpg,3,-100.685,0.442,Mandible length,Dorymyrmex bicolor
+Lok 1.11.jpg,4,-21.306,0.88,Head length,Dorymyrmex bicolor
+Lok 1.11.jpg,5,-19.29,0.26,Eye length,Dorymyrmex bicolor
+Lok 1.11.jpg,6,-111.448,0.123,Eye width,Dorymyrmex bicolor
+Lok 1.11.jpg,7,66.536,0.813,Head width,Dorymyrmex bicolor
+Lok 1.11.jpg,8,-2.716,1.124,Webers,Dorymyrmex bicolor
+Lok 1.12.jpg,1,-69.544,1.085,Femur,Dorymyrmex bicolor
+Lok 1.12.jpg,2,-21.36,0.875,Scape,Dorymyrmex bicolor
+Lok 1.12.jpg,3,-86.566,0.404,Mandible length,Dorymyrmex bicolor
+Lok 1.12.jpg,4,-2.442,0.852,Head length,Dorymyrmex bicolor
+Lok 1.12.jpg,5,2.961,0.234,Eye length,Dorymyrmex bicolor
+Lok 1.12.jpg,6,-86.634,0.137,Eye width,Dorymyrmex bicolor
+Lok 1.12.jpg,7,-88.761,0.746,Head width,Dorymyrmex bicolor
+Lok 1.12.jpg,8,8.684,1.122,Webers,Dorymyrmex bicolor
 Lok 1.2.jpg,1,-57.422,0.679,Femur,Solenopsis xyloni
 Lok 1.2.jpg,2,15.723,0.511,Scape,Solenopsis xyloni
 Lok 1.2.jpg,3,89.215,0.302,Mandible length,Solenopsis xyloni
@@ -1137,38 +1169,38 @@ Lok 1.9.jpg,5,-36.469,0.242,Eye length,Dorymyrmex bicolor
 Lok 1.9.jpg,6,52.943,0.13,Eye width,Dorymyrmex bicolor
 Lok 1.9.jpg,7,47.199,0.82,Head width,Dorymyrmex bicolor
 Lok 1.9.jpg,8,-56.489,1.128,Webers,Dorymyrmex bicolor
-Lok 1.10.jpg,1,74.968,1.231,Femur,Dorymyrmex bicolor
-Lok 1.10.jpg,2,-67.203,0.943,Scape,Dorymyrmex bicolor
-Lok 1.10.jpg,3,-56.813,0.464,Mandible length,Dorymyrmex bicolor
-Lok 1.10.jpg,4,27.783,0.913,Head length,Dorymyrmex bicolor
-Lok 1.10.jpg,5,34.492,0.25,Eye length,Dorymyrmex bicolor
-Lok 1.10.jpg,6,-55.62,0.129,Eye width,Dorymyrmex bicolor
-Lok 1.10.jpg,7,-62.821,0.819,Head width,Dorymyrmex bicolor
-Lok 1.10.jpg,8,121.785,1.156,Webers,Dorymyrmex bicolor
-Lok 1.11.jpg,1,25.856,1.184,Femur,Dorymyrmex bicolor
-Lok 1.11.jpg,2,9.418,0.876,Scape,Dorymyrmex bicolor
-Lok 1.11.jpg,3,-100.685,0.442,Mandible length,Dorymyrmex bicolor
-Lok 1.11.jpg,4,-21.306,0.88,Head length,Dorymyrmex bicolor
-Lok 1.11.jpg,5,-19.29,0.26,Eye length,Dorymyrmex bicolor
-Lok 1.11.jpg,6,-111.448,0.123,Eye width,Dorymyrmex bicolor
-Lok 1.11.jpg,7,66.536,0.813,Head width,Dorymyrmex bicolor
-Lok 1.11.jpg,8,-2.716,1.124,Webers,Dorymyrmex bicolor
-Lok 1.12.jpg,1,-69.544,1.085,Femur,Dorymyrmex bicolor
-Lok 1.12.jpg,2,-21.36,0.875,Scape,Dorymyrmex bicolor
-Lok 1.12.jpg,3,-86.566,0.404,Mandible length,Dorymyrmex bicolor
-Lok 1.12.jpg,4,-2.442,0.852,Head length,Dorymyrmex bicolor
-Lok 1.12.jpg,5,2.961,0.234,Eye length,Dorymyrmex bicolor
-Lok 1.12.jpg,6,-86.634,0.137,Eye width,Dorymyrmex bicolor
-Lok 1.12.jpg,7,-88.761,0.746,Head width,Dorymyrmex bicolor
-Lok 1.12.jpg,8,8.684,1.122,Webers,Dorymyrmex bicolor
-Lok 2.2.jpg,1,87.217,216.255,Femur,Pheidole hyatti
-Lok 2.2.jpg,2,-107.16,184.723,Scape,Pheidole hyatti
-Lok 2.2.jpg,3,-32.645,76.007,Mandible length,Pheidole hyatti
-Lok 2.2.jpg,4,-90.377,152.003,Head length,Pheidole hyatti
-Lok 2.2.jpg,5,-91.637,35.014,Eye length,Pheidole hyatti
-Lok 2.2.jpg,6,0,20,Eye width,Pheidole hyatti
-Lok 2.2.jpg,7,-1.364,126.036,Head width,Pheidole hyatti
-Lok 2.2.jpg,8,-139.274,199.251,Webers,Pheidole hyatti
+Lok 2.10.jpg,1,-13.965,1.623,Femur,Messor pergandei
+Lok 2.10.jpg,2,71.565,1.12,Scape,Messor pergandei
+Lok 2.10.jpg,3,-0.674,0.708,Mandible length,Messor pergandei
+Lok 2.10.jpg,4,74.055,1.335,Head length,Messor pergandei
+Lok 2.10.jpg,5,66.595,0.304,Eye length,Messor pergandei
+Lok 2.10.jpg,6,154.654,0.175,Eye width,Messor pergandei
+Lok 2.10.jpg,7,-18.677,1.249,Head width,Messor pergandei
+Lok 2.10.jpg,8,27.809,1.545,Webers,Messor pergandei
+Lok 2.11.jpg,1,-145.985,1.99,Femur,Messor pergandei
+Lok 2.11.jpg,2,162.951,1.275,Scape,Messor pergandei
+Lok 2.11.jpg,3,-169.586,0.764,Mandible length,Messor pergandei
+Lok 2.11.jpg,4,123.887,1.64,Head length,Messor pergandei
+Lok 2.11.jpg,5,124.032,0.377,Eye length,Messor pergandei
+Lok 2.11.jpg,6,31.264,0.133,Eye width,Messor pergandei
+Lok 2.11.jpg,7,36.454,1.566,Head width,Messor pergandei
+Lok 2.11.jpg,8,27.776,1.892,Webers,Messor pergandei
+Lok 2.12.jpg,1,105.693,1.788,Femur,Messor pergandei
+Lok 2.12.jpg,2,34.609,1.205,Scape,Messor pergandei
+Lok 2.12.jpg,3,17.316,0.73,Mandible length,Messor pergandei
+Lok 2.12.jpg,4,-41.743,1.428,Head length,Messor pergandei
+Lok 2.12.jpg,5,-40.764,0.314,Eye length,Messor pergandei
+Lok 2.12.jpg,6,-126.027,0.111,Eye width,Messor pergandei
+Lok 2.12.jpg,7,47.704,1.413,Head width,Messor pergandei
+Lok 2.12.jpg,8,-149.586,1.611,Webers,Messor pergandei
+Lok 2.2.jpg,1,87.217,0.9,Femur,Pheidole hyatti
+Lok 2.2.jpg,2,-107.16,0.806,Scape,Pheidole hyatti
+Lok 2.2.jpg,3,-32.645,0.33,Mandible length,Pheidole hyatti
+Lok 2.2.jpg,4,-90.377,0.641,Head length,Pheidole hyatti
+Lok 2.2.jpg,5,-91.637,0.15,Eye length,Pheidole hyatti
+Lok 2.2.jpg,6,0,0.083,Eye width,Pheidole hyatti
+Lok 2.2.jpg,7,-1.364,0.521,Head width,Pheidole hyatti
+Lok 2.2.jpg,8,-139.274,0.81,Webers,Pheidole hyatti
 Lok 2.3.jpg,1,-42.51,0.934,Femur,Pheidole hyatti
 Lok 2.3.jpg,2,3.417,0.825,Scape,Pheidole hyatti
 Lok 2.3.jpg,3,-54.62,0.347,Mandible length,Pheidole hyatti
@@ -1225,30 +1257,22 @@ Lok 2.9.jpg,5,-156.801,0.325,Eye length,Messor pergandei
 Lok 2.9.jpg,6,-73.072,0.103,Eye width,Messor pergandei
 Lok 2.9.jpg,7,-65.49,1.226,Head width,Messor pergandei
 Lok 2.9.jpg,8,149.854,1.438,Webers,Messor pergandei
-Lok 2.10.jpg,1,-13.965,1.623,Femur,Messor pergandei
-Lok 2.10.jpg,2,71.565,1.12,Scape,Messor pergandei
-Lok 2.10.jpg,3,-0.674,0.708,Mandible length,Messor pergandei
-Lok 2.10.jpg,4,74.055,1.335,Head length,Messor pergandei
-Lok 2.10.jpg,5,66.595,0.304,Eye length,Messor pergandei
-Lok 2.10.jpg,6,154.654,0.175,Eye width,Messor pergandei
-Lok 2.10.jpg,7,-18.677,1.249,Head width,Messor pergandei
-Lok 2.10.jpg,8,27.809,1.545,Webers,Messor pergandei
-Lok 2.11.jpg,1,-145.985,1.99,Femur,Messor pergandei
-Lok 2.11.jpg,2,162.951,1.275,Scape,Messor pergandei
-Lok 2.11.jpg,3,-169.586,0.764,Mandible length,Messor pergandei
-Lok 2.11.jpg,4,123.887,1.64,Head length,Messor pergandei
-Lok 2.11.jpg,5,124.032,0.377,Eye length,Messor pergandei
-Lok 2.11.jpg,6,31.264,0.133,Eye width,Messor pergandei
-Lok 2.11.jpg,7,36.454,1.566,Head width,Messor pergandei
-Lok 2.11.jpg,8,27.776,1.892,Webers,Messor pergandei
-Lok 2.12.jpg,1,105.693,1.788,Femur,Messor pergandei
-Lok 2.12.jpg,2,34.609,1.205,Scape,Messor pergandei
-Lok 2.12.jpg,3,17.316,0.73,Mandible length,Messor pergandei
-Lok 2.12.jpg,4,-41.743,1.428,Head length,Messor pergandei
-Lok 2.12.jpg,5,-40.764,0.314,Eye length,Messor pergandei
-Lok 2.12.jpg,6,-126.027,0.111,Eye width,Messor pergandei
-Lok 2.12.jpg,7,47.704,1.413,Head width,Messor pergandei
-Lok 2.12.jpg,8,-149.586,1.611,Webers,Messor pergandei
+Lok 3.1.jpg,1,-1.488,0.747,Femur,Solenopsis xyloni
+Lok 3.1.jpg,2,49.616,0.554,Scape,Solenopsis xyloni
+Lok 3.1.jpg,3,138.424,0.402,Mandible length,Solenopsis xyloni
+Lok 3.1.jpg,4,80.538,0.737,Head length,Solenopsis xyloni
+Lok 3.1.jpg,5,-102.131,0.133,Eye length,Solenopsis xyloni
+Lok 3.1.jpg,6,163.179,0.054,Eye width,Solenopsis xyloni
+Lok 3.1.jpg,7,170.781,0.625,Head width,Solenopsis xyloni
+Lok 3.1.jpg,8,-151.123,0.833,Webers,Solenopsis xyloni
+Lok 3.2.jpg,1,118.232,0.813,Femur,Solenopsis xyloni
+Lok 3.2.jpg,2,119.982,0.577,Scape,Solenopsis xyloni
+Lok 3.2.jpg,3,142.893,0.388,Mandible length,Solenopsis xyloni
+Lok 3.2.jpg,4,78.736,0.787,Head length,Solenopsis xyloni
+Lok 3.2.jpg,5,77.638,0.12,Eye length,Solenopsis xyloni
+Lok 3.2.jpg,6,164.055,0.058,Eye width,Solenopsis xyloni
+Lok 3.2.jpg,7,-11.569,0.695,Head width,Solenopsis xyloni
+Lok 3.2.jpg,8,56.31,0.866,Webers,Solenopsis xyloni
 Mov 1.1.jpg,1,-47.317,0.738,Femur,Solenopsis xyloni
 Mov 1.1.jpg,2,-163.831,0.53,Scape,Solenopsis xyloni
 Mov 1.1.jpg,3,72.255,0.395,Mandible length,Solenopsis xyloni
@@ -1257,6 +1281,30 @@ Mov 1.1.jpg,5,136.848,0.132,Eye length,Solenopsis xyloni
 Mov 1.1.jpg,6,-130.365,0.04,Eye width,Solenopsis xyloni
 Mov 1.1.jpg,7,-130.197,0.649,Head width,Solenopsis xyloni
 Mov 1.1.jpg,8,20.678,0.827,Webers,Solenopsis xyloni
+Mov 1.10.jpg,1,-25.705,1.089,Femur,Pheidole hyatti
+Mov 1.10.jpg,2,-123.032,0.956,Scape,Pheidole hyatti
+Mov 1.10.jpg,3,-109.708,0.434,Mandible length,Pheidole hyatti
+Mov 1.10.jpg,4,-56.023,0.676,Head length,Pheidole hyatti
+Mov 1.10.jpg,5,-52.927,0.172,Eye length,Pheidole hyatti
+Mov 1.10.jpg,6,-139.086,0.121,Eye width,Pheidole hyatti
+Mov 1.10.jpg,7,33.453,0.614,Head width,Pheidole hyatti
+Mov 1.10.jpg,8,-90.371,0.942,Webers,Pheidole hyatti
+Mov 1.11.jpg,1,-73.059,1.096,Femur,Pheidole hyatti
+Mov 1.11.jpg,2,61.015,0.957,Scape,Pheidole hyatti
+Mov 1.11.jpg,3,-157.981,0.442,Mandible length,Pheidole hyatti
+Mov 1.11.jpg,4,-109.861,0.727,Head length,Pheidole hyatti
+Mov 1.11.jpg,5,-112.203,0.159,Eye length,Pheidole hyatti
+Mov 1.11.jpg,6,155.376,0.08,Eye width,Pheidole hyatti
+Mov 1.11.jpg,7,157.098,0.611,Head width,Pheidole hyatti
+Mov 1.11.jpg,8,-107.56,0.998,Webers,Pheidole hyatti
+Mov 1.12.jpg,1,26.352,1.079,Femur,Pheidole hyatti
+Mov 1.12.jpg,2,5.563,0.926,Scape,Pheidole hyatti
+Mov 1.12.jpg,3,53.791,0.416,Mandible length,Pheidole hyatti
+Mov 1.12.jpg,4,6.082,0.735,Head length,Pheidole hyatti
+Mov 1.12.jpg,5,4.014,0.171,Eye length,Pheidole hyatti
+Mov 1.12.jpg,6,-85.601,0.117,Eye width,Pheidole hyatti
+Mov 1.12.jpg,7,-82.581,0.58,Head width,Pheidole hyatti
+Mov 1.12.jpg,8,-4.611,0.931,Webers,Pheidole hyatti
 Mov 1.2.jpg,1,156.695,0.853,Femur,Solenopsis xyloni
 Mov 1.2.jpg,2,-17.354,0.606,Scape,Solenopsis xyloni
 Mov 1.2.jpg,3,44.738,0.466,Mandible length,Solenopsis xyloni
@@ -1321,30 +1369,6 @@ Mov 1.9.jpg,5,-38.83,0.163,Eye length,Pheidole hyatti
 Mov 1.9.jpg,6,-129.806,0.097,Eye width,Pheidole hyatti
 Mov 1.9.jpg,7,49.01,0.596,Head width,Pheidole hyatti
 Mov 1.9.jpg,8,81.843,0.941,Webers,Pheidole hyatti
-Mov 1.10.jpg,1,-25.705,1.089,Femur,Pheidole hyatti
-Mov 1.10.jpg,2,-123.032,0.956,Scape,Pheidole hyatti
-Mov 1.10.jpg,3,-109.708,0.434,Mandible length,Pheidole hyatti
-Mov 1.10.jpg,4,-56.023,0.676,Head length,Pheidole hyatti
-Mov 1.10.jpg,5,-52.927,0.172,Eye length,Pheidole hyatti
-Mov 1.10.jpg,6,-139.086,0.121,Eye width,Pheidole hyatti
-Mov 1.10.jpg,7,33.453,0.614,Head width,Pheidole hyatti
-Mov 1.10.jpg,8,-90.371,0.942,Webers,Pheidole hyatti
-Mov 1.11.jpg,1,-73.059,1.096,Femur,Pheidole hyatti
-Mov 1.11.jpg,2,61.015,0.957,Scape,Pheidole hyatti
-Mov 1.11.jpg,3,-157.981,0.442,Mandible length,Pheidole hyatti
-Mov 1.11.jpg,4,-109.861,0.727,Head length,Pheidole hyatti
-Mov 1.11.jpg,5,-112.203,0.159,Eye length,Pheidole hyatti
-Mov 1.11.jpg,6,155.376,0.08,Eye width,Pheidole hyatti
-Mov 1.11.jpg,7,157.098,0.611,Head width,Pheidole hyatti
-Mov 1.11.jpg,8,-107.56,0.998,Webers,Pheidole hyatti
-Mov 1.12.jpg,1,26.352,1.079,Femur,Pheidole hyatti
-Mov 1.12.jpg,2,5.563,0.926,Scape,Pheidole hyatti
-Mov 1.12.jpg,3,53.791,0.416,Mandible length,Pheidole hyatti
-Mov 1.12.jpg,4,6.082,0.735,Head length,Pheidole hyatti
-Mov 1.12.jpg,5,4.014,0.171,Eye length,Pheidole hyatti
-Mov 1.12.jpg,6,-85.601,0.117,Eye width,Pheidole hyatti
-Mov 1.12.jpg,7,-82.581,0.58,Head width,Pheidole hyatti
-Mov 1.12.jpg,8,-4.611,0.931,Webers,Pheidole hyatti
 Mov 2.1.jpg,1,156.184,0.938,Femur,Dorymyrmex bicolor
 Mov 2.1.jpg,2,58.496,0.753,Scape,Dorymyrmex bicolor
 Mov 2.1.jpg,3,107.745,0.388,Mandible length,Dorymyrmex bicolor
@@ -1353,6 +1377,30 @@ Mov 2.1.jpg,5,177.546,0.207,Eye length,Dorymyrmex bicolor
 Mov 2.1.jpg,6,-90,0.112,Eye width,Dorymyrmex bicolor
 Mov 2.1.jpg,7,-91.685,0.604,Head width,Dorymyrmex bicolor
 Mov 2.1.jpg,8,175.301,0.867,Webers,Dorymyrmex bicolor
+Mov 2.10.jpg,1,-38.797,1.924,Femur,Myrmecocystus
+Mov 2.10.jpg,2,-165.964,1.424,Scape,Myrmecocystus
+Mov 2.10.jpg,3,53.13,0.661,Mandible length,Myrmecocystus
+Mov 2.10.jpg,4,123.422,1.308,Head length,Myrmecocystus
+Mov 2.10.jpg,5,-49.014,0.297,Eye length,Myrmecocystus
+Mov 2.10.jpg,6,-147.339,0.17,Eye width,Myrmecocystus
+Mov 2.10.jpg,7,-142.703,1.183,Head width,Myrmecocystus
+Mov 2.10.jpg,8,-164.102,1.838,Webers,Myrmecocystus
+Mov 2.11.jpg,1,146.982,1.511,Femur,Myrmecocystus
+Mov 2.11.jpg,2,-112.055,1.191,Scape,Myrmecocystus
+Mov 2.11.jpg,3,68.412,0.53,Mandible length,Myrmecocystus
+Mov 2.11.jpg,4,134.869,1.096,Head length,Myrmecocystus
+Mov 2.11.jpg,5,-48.013,0.239,Eye length,Myrmecocystus
+Mov 2.11.jpg,6,43.781,0.118,Eye width,Myrmecocystus
+Mov 2.11.jpg,7,45.303,0.948,Head width,Myrmecocystus
+Mov 2.11.jpg,8,-173.558,1.55,Webers,Myrmecocystus
+Mov 2.12.jpg,1,-41.379,1.599,Femur,Myrmecocystus
+Mov 2.12.jpg,2,126.769,1.217,Scape,Myrmecocystus
+Mov 2.12.jpg,3,-14.4,0.546,Mandible length,Myrmecocystus
+Mov 2.12.jpg,4,-132.379,1.049,Head length,Myrmecocystus
+Mov 2.12.jpg,5,-132.166,0.255,Eye length,Myrmecocystus
+Mov 2.12.jpg,6,140.906,0.147,Eye width,Myrmecocystus
+Mov 2.12.jpg,7,-48.171,0.958,Head width,Myrmecocystus
+Mov 2.12.jpg,8,-63.028,1.575,Webers,Myrmecocystus
 Mov 2.2.jpg,1,167.12,1.013,Femur,Dorymyrmex bicolor
 Mov 2.2.jpg,2,162.196,0.778,Scape,Dorymyrmex bicolor
 Mov 2.2.jpg,3,-74.291,0.401,Mandible length,Dorymyrmex bicolor
@@ -1417,30 +1465,6 @@ Mov 2.9.jpg,5,-79.287,0.304,Eye length,Myrmecocystus
 Mov 2.9.jpg,6,-166.675,0.158,Eye width,Myrmecocystus
 Mov 2.9.jpg,7,12.419,1.147,Head width,Myrmecocystus
 Mov 2.9.jpg,8,176.641,1.725,Webers,Myrmecocystus
-Mov 2.10.jpg,1,-38.797,1.924,Femur,Myrmecocystus
-Mov 2.10.jpg,2,-165.964,1.424,Scape,Myrmecocystus
-Mov 2.10.jpg,3,53.13,0.661,Mandible length,Myrmecocystus
-Mov 2.10.jpg,4,123.422,1.308,Head length,Myrmecocystus
-Mov 2.10.jpg,5,-49.014,0.297,Eye length,Myrmecocystus
-Mov 2.10.jpg,6,-147.339,0.17,Eye width,Myrmecocystus
-Mov 2.10.jpg,7,-142.703,1.183,Head width,Myrmecocystus
-Mov 2.10.jpg,8,-164.102,1.838,Webers,Myrmecocystus
-Mov 2.11.jpg,1,146.982,1.511,Femur,Myrmecocystus
-Mov 2.11.jpg,2,-112.055,1.191,Scape,Myrmecocystus
-Mov 2.11.jpg,3,68.412,0.53,Mandible length,Myrmecocystus
-Mov 2.11.jpg,4,134.869,1.096,Head length,Myrmecocystus
-Mov 2.11.jpg,5,-48.013,0.239,Eye length,Myrmecocystus
-Mov 2.11.jpg,6,43.781,0.118,Eye width,Myrmecocystus
-Mov 2.11.jpg,7,45.303,0.948,Head width,Myrmecocystus
-Mov 2.11.jpg,8,-173.558,1.55,Webers,Myrmecocystus
-Mov 2.12.jpg,1,-41.379,1.599,Femur,Myrmecocystus
-Mov 2.12.jpg,2,126.769,1.217,Scape,Myrmecocystus
-Mov 2.12.jpg,3,-14.4,0.546,Mandible length,Myrmecocystus
-Mov 2.12.jpg,4,-132.379,1.049,Head length,Myrmecocystus
-Mov 2.12.jpg,5,-132.166,0.255,Eye length,Myrmecocystus
-Mov 2.12.jpg,6,140.906,0.147,Eye width,Myrmecocystus
-Mov 2.12.jpg,7,-48.171,0.958,Head width,Myrmecocystus
-Mov 2.12.jpg,8,-63.028,1.575,Webers,Myrmecocystus
 Mov 3.1.jpg,1,-37.578,1.413,Femur,Messor pergandei
 Mov 3.1.jpg,2,-37.454,0.998,Scape,Messor pergandei
 Mov 3.1.jpg,3,-70.807,0.608,Mandible length,Messor pergandei
@@ -1497,6 +1521,30 @@ Papl 1.1.jpg,5,61.294,0.097,Eye length,Solenopsis xyloni
 Papl 1.1.jpg,6,148.241,0.05,Eye width,Solenopsis xyloni
 Papl 1.1.jpg,7,150.888,0.593,Head width,Solenopsis xyloni
 Papl 1.1.jpg,8,168.28,0.78,Webers,Solenopsis xyloni
+Papl 1.10.jpg,1,80.831,1.045,Femur,Pheidole hyatti
+Papl 1.10.jpg,2,102.162,0.964,Scape,Pheidole hyatti
+Papl 1.10.jpg,3,96.155,0.417,Mandible length,Pheidole hyatti
+Papl 1.10.jpg,4,37.493,0.748,Head length,Pheidole hyatti
+Papl 1.10.jpg,5,-142.883,0.189,Eye length,Pheidole hyatti
+Papl 1.10.jpg,6,124.992,0.099,Eye width,Pheidole hyatti
+Papl 1.10.jpg,7,-53.915,0.593,Head width,Pheidole hyatti
+Papl 1.10.jpg,8,73.957,0.985,Webers,Pheidole hyatti
+Papl 1.11.jpg,1,-16.46,1.157,Femur,Pheidole hyatti
+Papl 1.11.jpg,2,-160.157,1.027,Scape,Pheidole hyatti
+Papl 1.11.jpg,3,-161.274,0.436,Mandible length,Pheidole hyatti
+Papl 1.11.jpg,4,146.592,0.789,Head length,Pheidole hyatti
+Papl 1.11.jpg,5,-33.573,0.19,Eye length,Pheidole hyatti
+Papl 1.11.jpg,6,55.886,0.105,Eye width,Pheidole hyatti
+Papl 1.11.jpg,7,55.25,0.651,Head width,Pheidole hyatti
+Papl 1.11.jpg,8,117.851,1.088,Webers,Pheidole hyatti
+Papl 1.12.jpg,1,-54.513,1.086,Femur,Pheidole hyatti
+Papl 1.12.jpg,2,-75.851,1.005,Scape,Pheidole hyatti
+Papl 1.12.jpg,3,-109.502,0.417,Mandible length,Pheidole hyatti
+Papl 1.12.jpg,4,-157.917,0.773,Head length,Pheidole hyatti
+Papl 1.12.jpg,5,-157.834,0.179,Eye length,Pheidole hyatti
+Papl 1.12.jpg,6,118.926,0.089,Eye width,Pheidole hyatti
+Papl 1.12.jpg,7,113.906,0.632,Head width,Pheidole hyatti
+Papl 1.12.jpg,8,22.674,0.999,Webers,Pheidole hyatti
 Papl 1.2.jpg,1,-127.02,0.477,Femur,Solenopsis xyloni
 Papl 1.2.jpg,2,-108.658,0.508,Scape,Solenopsis xyloni
 Papl 1.2.jpg,3,-35.38,0.353,Mandible length,Solenopsis xyloni
@@ -1561,38 +1609,22 @@ Papl 1.9.jpg,5,-10.784,0.177,Eye length,Pheidole hyatti
 Papl 1.9.jpg,6,77.196,0.093,Eye width,Pheidole hyatti
 Papl 1.9.jpg,7,77.033,0.645,Head width,Pheidole hyatti
 Papl 1.9.jpg,8,120.222,0.985,Webers,Pheidole hyatti
-Papl 1.10.jpg,1,80.831,1.045,Femur,Pheidole hyatti
-Papl 1.10.jpg,2,102.162,0.964,Scape,Pheidole hyatti
-Papl 1.10.jpg,3,96.155,0.417,Mandible length,Pheidole hyatti
-Papl 1.10.jpg,4,37.493,0.748,Head length,Pheidole hyatti
-Papl 1.10.jpg,5,-142.883,0.189,Eye length,Pheidole hyatti
-Papl 1.10.jpg,6,124.992,0.099,Eye width,Pheidole hyatti
-Papl 1.10.jpg,7,-53.915,0.593,Head width,Pheidole hyatti
-Papl 1.10.jpg,8,73.957,0.985,Webers,Pheidole hyatti
-Papl 1.11.jpg,1,-16.46,1.157,Femur,Pheidole hyatti
-Papl 1.11.jpg,2,-160.157,1.027,Scape,Pheidole hyatti
-Papl 1.11.jpg,3,-161.274,0.436,Mandible length,Pheidole hyatti
-Papl 1.11.jpg,4,146.592,0.789,Head length,Pheidole hyatti
-Papl 1.11.jpg,5,-33.573,0.19,Eye length,Pheidole hyatti
-Papl 1.11.jpg,6,55.886,0.105,Eye width,Pheidole hyatti
-Papl 1.11.jpg,7,55.25,0.651,Head width,Pheidole hyatti
-Papl 1.11.jpg,8,117.851,1.088,Webers,Pheidole hyatti
-Papl 1.12.jpg,1,-54.513,1.086,Femur,Pheidole hyatti
-Papl 1.12.jpg,2,-75.851,1.005,Scape,Pheidole hyatti
-Papl 1.12.jpg,3,-109.502,0.417,Mandible length,Pheidole hyatti
-Papl 1.12.jpg,4,-157.917,0.773,Head length,Pheidole hyatti
-Papl 1.12.jpg,5,-157.834,0.179,Eye length,Pheidole hyatti
-Papl 1.12.jpg,6,118.926,0.089,Eye width,Pheidole hyatti
-Papl 1.12.jpg,7,113.906,0.632,Head width,Pheidole hyatti
-Papl 1.12.jpg,8,22.674,0.999,Webers,Pheidole hyatti
-Papl 2.1.jpg,1,82.057,7.23,Femur,Cyphomyrmex wheeleri
-Papl 2.1.jpg,2,-42.138,5.895,Scape,Cyphomyrmex wheeleri
-Papl 2.1.jpg,3,160.396,3.226,Mandible length,Cyphomyrmex wheeleri
-Papl 2.1.jpg,4,-167.229,6.403,Head length,Cyphomyrmex wheeleri
-Papl 2.1.jpg,5,-175.101,1.462,Eye length,Cyphomyrmex wheeleri
-Papl 2.1.jpg,6,90,0.999,Eye width,Cyphomyrmex wheeleri
-Papl 2.1.jpg,7,99.43,6.098,Head width,Cyphomyrmex wheeleri
-Papl 2.1.jpg,8,-14.175,8.33,Webers,Cyphomyrmex wheeleri
+Papl 2.1.jpg,1,82.057,0.74,Femur,Cyphomyrmex wheeleri
+Papl 2.1.jpg,2,-42.138,0.59,Scape,Cyphomyrmex wheeleri
+Papl 2.1.jpg,3,160.396,0.338,Mandible length,Cyphomyrmex wheeleri
+Papl 2.1.jpg,4,-167.229,0.642,Head length,Cyphomyrmex wheeleri
+Papl 2.1.jpg,5,-175.101,0.167,Eye length,Cyphomyrmex wheeleri
+Papl 2.1.jpg,6,90,0.102,Eye width,Cyphomyrmex wheeleri
+Papl 2.1.jpg,7,99.43,0.608,Head width,Cyphomyrmex wheeleri
+Papl 2.1.jpg,8,-14.175,0.857,Webers,Cyphomyrmex wheeleri
+Papl 2.10.jpg,1,-0.262,0.46,Femur,Temnothorax andrei
+Papl 2.10.jpg,2,-103.116,0.444,Scape,Temnothorax andrei
+Papl 2.10.jpg,3,-115.84,0.247,Mandible length,Temnothorax andrei
+Papl 2.10.jpg,4,-172.829,0.651,Head length,Temnothorax andrei
+Papl 2.10.jpg,5,-171.714,0.146,Eye length,Temnothorax andrei
+Papl 2.10.jpg,6,100.305,0.047,Eye width,Temnothorax andrei
+Papl 2.10.jpg,7,96.868,0.504,Head width,Temnothorax andrei
+Papl 2.10.jpg,8,62.042,0.618,Webers,Temnothorax andrei
 Papl 2.2.jpg,1,150.917,0.812,Femur,Cyphomyrmex wheeleri
 Papl 2.2.jpg,2,-101.191,0.595,Scape,Cyphomyrmex wheeleri
 Papl 2.2.jpg,3,163.652,0.328,Mandible length,Cyphomyrmex wheeleri
@@ -1632,14 +1664,6 @@ Papl 2.9.jpg,5,-36.87,0.149,Eye length,Temnothorax andrei
 Papl 2.9.jpg,6,48.18,0.054,Eye width,Temnothorax andrei
 Papl 2.9.jpg,7,56.374,0.528,Head width,Temnothorax andrei
 Papl 2.9.jpg,8,168.579,0.647,Webers,Temnothorax andrei
-Papl 2.10.jpg,1,-0.262,0.46,Femur,Temnothorax andrei
-Papl 2.10.jpg,2,-103.116,0.444,Scape,Temnothorax andrei
-Papl 2.10.jpg,3,-115.84,0.247,Mandible length,Temnothorax andrei
-Papl 2.10.jpg,4,-172.829,0.651,Head length,Temnothorax andrei
-Papl 2.10.jpg,5,-171.714,0.146,Eye length,Temnothorax andrei
-Papl 2.10.jpg,6,100.305,0.047,Eye width,Temnothorax andrei
-Papl 2.10.jpg,7,96.868,0.504,Head width,Temnothorax andrei
-Papl 2.10.jpg,8,62.042,0.618,Webers,Temnothorax andrei
 PaPl 3.1.jpg,1,127.308,2.229,Femur,Messor andrei
 PaPl 3.1.jpg,2,134.885,1.426,Scape,Messor andrei
 PaPl 3.1.jpg,3,-97.088,0.789,Mandible length,Messor andrei
@@ -1648,6 +1672,30 @@ PaPl 3.1.jpg,5,-166.842,0.321,Eye length,Messor andrei
 PaPl 3.1.jpg,6,112.109,0.14,Eye width,Messor andrei
 PaPl 3.1.jpg,7,106.928,1.755,Head width,Messor andrei
 PaPl 3.1.jpg,8,-33.387,2.337,Webers,Messor andrei
+PaPl 3.10.jpg,1,95.593,1.411,Femur,Myrmecocystus
+PaPl 3.10.jpg,2,98.949,1.071,Scape,Myrmecocystus
+PaPl 3.10.jpg,3,173.48,0.514,Mandible length,Myrmecocystus
+PaPl 3.10.jpg,4,-128.106,0.908,Head length,Myrmecocystus
+PaPl 3.10.jpg,5,-125.754,0.257,Eye length,Myrmecocystus
+PaPl 3.10.jpg,6,140.774,0.132,Eye width,Myrmecocystus
+PaPl 3.10.jpg,7,142.125,0.808,Head width,Myrmecocystus
+PaPl 3.10.jpg,8,44.935,1.304,Webers,Myrmecocystus
+PaPl 3.11.jpg,1,129.237,1.549,Femur,Myrmecocystus
+PaPl 3.11.jpg,2,-75.056,1.163,Scape,Myrmecocystus
+PaPl 3.11.jpg,3,-179.61,0.588,Mandible length,Myrmecocystus
+PaPl 3.11.jpg,4,-115.102,0.98,Head length,Myrmecocystus
+PaPl 3.11.jpg,5,-118.61,0.25,Eye length,Myrmecocystus
+PaPl 3.11.jpg,6,155.095,0.123,Eye width,Myrmecocystus
+PaPl 3.11.jpg,7,155.153,0.894,Head width,Myrmecocystus
+PaPl 3.11.jpg,8,64.677,1.402,Webers,Myrmecocystus
+PaPl 3.12.jpg,1,-45.888,1.425,Femur,Myrmecocystus
+PaPl 3.12.jpg,2,92.09,1.071,Scape,Myrmecocystus
+PaPl 3.12.jpg,3,-179.132,0.516,Mandible length,Myrmecocystus
+PaPl 3.12.jpg,4,113.261,0.94,Head length,Myrmecocystus
+PaPl 3.12.jpg,5,117.408,0.238,Eye length,Myrmecocystus
+PaPl 3.12.jpg,6,-147.265,0.13,Eye width,Myrmecocystus
+PaPl 3.12.jpg,7,-153.192,0.823,Head width,Myrmecocystus
+PaPl 3.12.jpg,8,-9.926,1.269,Webers,Myrmecocystus
 PaPl 3.2.jpg,1,-55.834,2.226,Femur,Messor andrei
 PaPl 3.2.jpg,2,172.363,1.505,Scape,Messor andrei
 PaPl 3.2.jpg,3,-169.472,0.958,Mandible length,Messor andrei
@@ -1712,30 +1760,6 @@ PaPl 3.9.jpg,5,124.695,0.264,Eye length,Myrmecocystus
 PaPl 3.9.jpg,6,-133.727,0.133,Eye width,Myrmecocystus
 PaPl 3.9.jpg,7,-147.787,0.852,Head width,Myrmecocystus
 PaPl 3.9.jpg,8,55.413,1.402,Webers,Myrmecocystus
-PaPl 3.10.jpg,1,95.593,1.411,Femur,Myrmecocystus
-PaPl 3.10.jpg,2,98.949,1.071,Scape,Myrmecocystus
-PaPl 3.10.jpg,3,173.48,0.514,Mandible length,Myrmecocystus
-PaPl 3.10.jpg,4,-128.106,0.908,Head length,Myrmecocystus
-PaPl 3.10.jpg,5,-125.754,0.257,Eye length,Myrmecocystus
-PaPl 3.10.jpg,6,140.774,0.132,Eye width,Myrmecocystus
-PaPl 3.10.jpg,7,142.125,0.808,Head width,Myrmecocystus
-PaPl 3.10.jpg,8,44.935,1.304,Webers,Myrmecocystus
-PaPl 3.11.jpg,1,129.237,1.549,Femur,Myrmecocystus
-PaPl 3.11.jpg,2,-75.056,1.163,Scape,Myrmecocystus
-PaPl 3.11.jpg,3,-179.61,0.588,Mandible length,Myrmecocystus
-PaPl 3.11.jpg,4,-115.102,0.98,Head length,Myrmecocystus
-PaPl 3.11.jpg,5,-118.61,0.25,Eye length,Myrmecocystus
-PaPl 3.11.jpg,6,155.095,0.123,Eye width,Myrmecocystus
-PaPl 3.11.jpg,7,155.153,0.894,Head width,Myrmecocystus
-PaPl 3.11.jpg,8,64.677,1.402,Webers,Myrmecocystus
-PaPl 3.12.jpg,1,-45.888,1.425,Femur,Myrmecocystus
-PaPl 3.12.jpg,2,92.09,1.071,Scape,Myrmecocystus
-PaPl 3.12.jpg,3,-179.132,0.516,Mandible length,Myrmecocystus
-PaPl 3.12.jpg,4,113.261,0.94,Head length,Myrmecocystus
-PaPl 3.12.jpg,5,117.408,0.238,Eye length,Myrmecocystus
-PaPl 3.12.jpg,6,-147.265,0.13,Eye width,Myrmecocystus
-PaPl 3.12.jpg,7,-153.192,0.823,Head width,Myrmecocystus
-PaPl 3.12.jpg,8,-9.926,1.269,Webers,Myrmecocystus
 SemiT 1.1.jpg,1,2.588,0.744,Femur,Solenopsis xyloni
 SemiT 1.1.jpg,2,-45.971,0.526,Scape,Solenopsis xyloni
 SemiT 1.1.jpg,3,101.689,0.373,Mandible length,Solenopsis xyloni
@@ -1744,6 +1768,30 @@ SemiT 1.1.jpg,5,-150.255,0.102,Eye length,Solenopsis xyloni
 SemiT 1.1.jpg,6,135,0.048,Eye width,Solenopsis xyloni
 SemiT 1.1.jpg,7,-57.131,0.65,Head width,Solenopsis xyloni
 SemiT 1.1.jpg,8,145.554,0.795,Webers,Solenopsis xyloni
+SemiT 1.10.jpg,1,-58.997,1.053,Femur,Pheidole hyatti
+SemiT 1.10.jpg,2,-51.065,0.964,Scape,Pheidole hyatti
+SemiT 1.10.jpg,3,48.059,0.393,Mandible length,Pheidole hyatti
+SemiT 1.10.jpg,4,-3.162,0.768,Head length,Pheidole hyatti
+SemiT 1.10.jpg,5,-7.125,0.171,Eye length,Pheidole hyatti
+SemiT 1.10.jpg,6,81.469,0.086,Eye width,Pheidole hyatti
+SemiT 1.10.jpg,7,84.806,0.608,Head width,Pheidole hyatti
+SemiT 1.10.jpg,8,30.337,0.864,Webers,Pheidole hyatti
+SemiT 1.11.jpg,1,142.445,1.02,Femur,Pheidole hyatti
+SemiT 1.11.jpg,2,3.33,0.945,Scape,Pheidole hyatti
+SemiT 1.11.jpg,3,133.431,0.42,Mandible length,Pheidole hyatti
+SemiT 1.11.jpg,4,73.664,0.737,Head length,Pheidole hyatti
+SemiT 1.11.jpg,5,-104.744,0.16,Eye length,Pheidole hyatti
+SemiT 1.11.jpg,6,160.71,0.086,Eye width,Pheidole hyatti
+SemiT 1.11.jpg,7,165.493,0.6,Head width,Pheidole hyatti
+SemiT 1.11.jpg,8,-79.931,0.884,Webers,Pheidole hyatti
+SemiT 1.12.jpg,1,-108.072,0.845,Femur,Pheidole hyatti
+SemiT 1.12.jpg,2,26.729,0.992,Scape,Pheidole hyatti
+SemiT 1.12.jpg,3,177.534,0.442,Mandible length,Pheidole hyatti
+SemiT 1.12.jpg,4,-124.305,0.765,Head length,Pheidole hyatti
+SemiT 1.12.jpg,5,-128.234,0.178,Eye length,Pheidole hyatti
+SemiT 1.12.jpg,6,146.611,0.111,Eye width,Pheidole hyatti
+SemiT 1.12.jpg,7,144.372,0.624,Head width,Pheidole hyatti
+SemiT 1.12.jpg,8,123.762,0.936,Webers,Pheidole hyatti
 SemiT 1.2.jpg,1,-145.931,0.699,Femur,Solenopsis xyloni
 SemiT 1.2.jpg,2,142.779,0.544,Scape,Solenopsis xyloni
 SemiT 1.2.jpg,3,122.605,0.366,Mandible length,Solenopsis xyloni
@@ -1808,30 +1856,6 @@ SemiT 1.9.jpg,5,-31.079,0.178,Eye length,Pheidole hyatti
 SemiT 1.9.jpg,6,53.366,0.101,Eye width,Pheidole hyatti
 SemiT 1.9.jpg,7,56.104,0.642,Head width,Pheidole hyatti
 SemiT 1.9.jpg,8,10.101,1.045,Webers,Pheidole hyatti
-SemiT 1.10.jpg,1,-58.997,1.053,Femur,Pheidole hyatti
-SemiT 1.10.jpg,2,-51.065,0.964,Scape,Pheidole hyatti
-SemiT 1.10.jpg,3,48.059,0.393,Mandible length,Pheidole hyatti
-SemiT 1.10.jpg,4,-3.162,0.768,Head length,Pheidole hyatti
-SemiT 1.10.jpg,5,-7.125,0.171,Eye length,Pheidole hyatti
-SemiT 1.10.jpg,6,81.469,0.086,Eye width,Pheidole hyatti
-SemiT 1.10.jpg,7,84.806,0.608,Head width,Pheidole hyatti
-SemiT 1.10.jpg,8,30.337,0.864,Webers,Pheidole hyatti
-SemiT 1.11.jpg,1,142.445,1.02,Femur,Pheidole hyatti
-SemiT 1.11.jpg,2,3.33,0.945,Scape,Pheidole hyatti
-SemiT 1.11.jpg,3,133.431,0.42,Mandible length,Pheidole hyatti
-SemiT 1.11.jpg,4,73.664,0.737,Head length,Pheidole hyatti
-SemiT 1.11.jpg,5,-104.744,0.16,Eye length,Pheidole hyatti
-SemiT 1.11.jpg,6,160.71,0.086,Eye width,Pheidole hyatti
-SemiT 1.11.jpg,7,165.493,0.6,Head width,Pheidole hyatti
-SemiT 1.11.jpg,8,-79.931,0.884,Webers,Pheidole hyatti
-SemiT 1.12.jpg,1,-108.072,0.845,Femur,Pheidole hyatti
-SemiT 1.12.jpg,2,26.729,0.992,Scape,Pheidole hyatti
-SemiT 1.12.jpg,3,177.534,0.442,Mandible length,Pheidole hyatti
-SemiT 1.12.jpg,4,-124.305,0.765,Head length,Pheidole hyatti
-SemiT 1.12.jpg,5,-128.234,0.178,Eye length,Pheidole hyatti
-SemiT 1.12.jpg,6,146.611,0.111,Eye width,Pheidole hyatti
-SemiT 1.12.jpg,7,144.372,0.624,Head width,Pheidole hyatti
-SemiT 1.12.jpg,8,123.762,0.936,Webers,Pheidole hyatti
 SemiT 2.1.jpg,1,161.957,1.157,Femur,Dorymyrmex bicolor
 SemiT 2.1.jpg,2,-62.447,0.864,Scape,Dorymyrmex bicolor
 SemiT 2.1.jpg,3,-73.686,0.445,Mandible length,Dorymyrmex bicolor
@@ -1896,6 +1920,30 @@ SiCr 1.1.jpg,5,137.862,0.133,Eye length,Solenopsis xyloni
 SiCr 1.1.jpg,6,-128.66,0.06,Eye width,Solenopsis xyloni
 SiCr 1.1.jpg,7,52.411,0.827,Head width,Solenopsis xyloni
 SiCr 1.1.jpg,8,-144.689,0.97,Webers,Solenopsis xyloni
+SiCr 1.10.jpg,1,151.105,1.005,Femur,Pheidole hyatti
+SiCr 1.10.jpg,2,179.697,0.908,Scape,Pheidole hyatti
+SiCr 1.10.jpg,3,24.829,0.355,Mandible length,Pheidole hyatti
+SiCr 1.10.jpg,4,-28.421,0.697,Head length,Pheidole hyatti
+SiCr 1.10.jpg,5,-25.017,0.159,Eye length,Pheidole hyatti
+SiCr 1.10.jpg,6,65.898,0.1,Eye width,Pheidole hyatti
+SiCr 1.10.jpg,7,62.027,0.569,Head width,Pheidole hyatti
+SiCr 1.10.jpg,8,164.46,0.933,Webers,Pheidole hyatti
+SiCr 1.11.jpg,1,29.239,1.013,Femur,Pheidole hyatti
+SiCr 1.11.jpg,2,-1.309,0.841,Scape,Pheidole hyatti
+SiCr 1.11.jpg,3,88.562,0.383,Mandible length,Pheidole hyatti
+SiCr 1.11.jpg,4,34.796,0.691,Head length,Pheidole hyatti
+SiCr 1.11.jpg,5,-142.815,0.175,Eye length,Pheidole hyatti
+SiCr 1.11.jpg,6,130.914,0.095,Eye width,Pheidole hyatti
+SiCr 1.11.jpg,7,-53.514,0.574,Head width,Pheidole hyatti
+SiCr 1.11.jpg,8,141.911,0.904,Webers,Pheidole hyatti
+SiCr 1.12.jpg,1,47.895,1.024,Femur,Pheidole hyatti
+SiCr 1.12.jpg,2,4.126,0.951,Scape,Pheidole hyatti
+SiCr 1.12.jpg,3,41.671,0.402,Mandible length,Pheidole hyatti
+SiCr 1.12.jpg,4,-16.819,0.723,Head length,Pheidole hyatti
+SiCr 1.12.jpg,5,-20.031,0.161,Eye length,Pheidole hyatti
+SiCr 1.12.jpg,6,66.371,0.082,Eye width,Pheidole hyatti
+SiCr 1.12.jpg,7,72.015,0.57,Head width,Pheidole hyatti
+SiCr 1.12.jpg,8,91.723,0.889,Webers,Pheidole hyatti
 SiCr 1.2.jpg,1,-148.536,0.748,Femur,Solenopsis xyloni
 SiCr 1.2.jpg,2,-115.694,0.56,Scape,Solenopsis xyloni
 SiCr 1.2.jpg,3,-33.99,0.379,Mandible length,Solenopsis xyloni
@@ -1960,30 +2008,6 @@ SiCr 1.9.jpg,5,-129.806,0.16,Eye length,Pheidole hyatti
 SiCr 1.9.jpg,6,138.145,0.101,Eye width,Pheidole hyatti
 SiCr 1.9.jpg,7,138.113,0.532,Head width,Pheidole hyatti
 SiCr 1.9.jpg,8,-66.967,0.856,Webers,Pheidole hyatti
-SiCr 1.10.jpg,1,151.105,1.005,Femur,Pheidole hyatti
-SiCr 1.10.jpg,2,179.697,0.908,Scape,Pheidole hyatti
-SiCr 1.10.jpg,3,24.829,0.355,Mandible length,Pheidole hyatti
-SiCr 1.10.jpg,4,-28.421,0.697,Head length,Pheidole hyatti
-SiCr 1.10.jpg,5,-25.017,0.159,Eye length,Pheidole hyatti
-SiCr 1.10.jpg,6,65.898,0.1,Eye width,Pheidole hyatti
-SiCr 1.10.jpg,7,62.027,0.569,Head width,Pheidole hyatti
-SiCr 1.10.jpg,8,164.46,0.933,Webers,Pheidole hyatti
-SiCr 1.11.jpg,1,29.239,1.013,Femur,Pheidole hyatti
-SiCr 1.11.jpg,2,-1.309,0.841,Scape,Pheidole hyatti
-SiCr 1.11.jpg,3,88.562,0.383,Mandible length,Pheidole hyatti
-SiCr 1.11.jpg,4,34.796,0.691,Head length,Pheidole hyatti
-SiCr 1.11.jpg,5,-142.815,0.175,Eye length,Pheidole hyatti
-SiCr 1.11.jpg,6,130.914,0.095,Eye width,Pheidole hyatti
-SiCr 1.11.jpg,7,-53.514,0.574,Head width,Pheidole hyatti
-SiCr 1.11.jpg,8,141.911,0.904,Webers,Pheidole hyatti
-SiCr 1.12.jpg,1,47.895,1.024,Femur,Pheidole hyatti
-SiCr 1.12.jpg,2,4.126,0.951,Scape,Pheidole hyatti
-SiCr 1.12.jpg,3,41.671,0.402,Mandible length,Pheidole hyatti
-SiCr 1.12.jpg,4,-16.819,0.723,Head length,Pheidole hyatti
-SiCr 1.12.jpg,5,-20.031,0.161,Eye length,Pheidole hyatti
-SiCr 1.12.jpg,6,66.371,0.082,Eye width,Pheidole hyatti
-SiCr 1.12.jpg,7,72.015,0.57,Head width,Pheidole hyatti
-SiCr 1.12.jpg,8,91.723,0.889,Webers,Pheidole hyatti
 SiCr 2.1.jpg,1,129.094,0.784,Femur,Cyphomyrmex wheeleri
 SiCr 2.1.jpg,2,-118.726,0.563,Scape,Cyphomyrmex wheeleri
 SiCr 2.1.jpg,3,73.106,0.335,Mandible length,Cyphomyrmex wheeleri
@@ -1992,30 +2016,6 @@ SiCr 2.1.jpg,5,114.974,0.191,Eye length,Cyphomyrmex wheeleri
 SiCr 2.1.jpg,6,-147.265,0.079,Eye width,Cyphomyrmex wheeleri
 SiCr 2.1.jpg,7,22.032,0.659,Head width,Cyphomyrmex wheeleri
 SiCr 2.1.jpg,8,82.169,1.029,Webers,Cyphomyrmex wheeleri
-SiCr 2.7.jpg,1,147.529,1.086,Femur,Dorymyrmex bicolor
-SiCr 2.7.jpg,2,45,0.837,Scape,Dorymyrmex bicolor
-SiCr 2.7.jpg,3,11.689,0.411,Mandible length,Dorymyrmex bicolor
-SiCr 2.7.jpg,4,94.259,0.872,Head length,Dorymyrmex bicolor
-SiCr 2.7.jpg,5,-90,0.236,Eye length,Dorymyrmex bicolor
-SiCr 2.7.jpg,6,-178.264,0.153,Eye width,Dorymyrmex bicolor
-SiCr 2.7.jpg,7,-174.774,0.762,Head width,Dorymyrmex bicolor
-SiCr 2.7.jpg,8,-118.334,1.072,Webers,Dorymyrmex bicolor
-SiCr 2.8.jpg,1,-42.879,1.183,Femur,Dorymyrmex bicolor
-SiCr 2.8.jpg,2,124.636,0.88,Scape,Dorymyrmex bicolor
-SiCr 2.8.jpg,3,-158.199,0.436,Mandible length,Dorymyrmex bicolor
-SiCr 2.8.jpg,4,119.312,0.859,Head length,Dorymyrmex bicolor
-SiCr 2.8.jpg,5,113.102,0.247,Eye length,Dorymyrmex bicolor
-SiCr 2.8.jpg,6,25.313,0.13,Eye width,Dorymyrmex bicolor
-SiCr 2.8.jpg,7,26.977,0.791,Head width,Dorymyrmex bicolor
-SiCr 2.8.jpg,8,32.603,1.114,Webers,Dorymyrmex bicolor
-SiCr 2.9.jpg,1,-114.671,1.116,Femur,Dorymyrmex bicolor
-SiCr 2.9.jpg,2,-105.033,0.879,Scape,Dorymyrmex bicolor
-SiCr 2.9.jpg,3,-31.938,0.44,Mandible length,Dorymyrmex bicolor
-SiCr 2.9.jpg,4,-113.629,0.847,Head length,Dorymyrmex bicolor
-SiCr 2.9.jpg,5,62.425,0.246,Eye length,Dorymyrmex bicolor
-SiCr 2.9.jpg,6,151.631,0.138,Eye width,Dorymyrmex bicolor
-SiCr 2.9.jpg,7,156.544,0.78,Head width,Dorymyrmex bicolor
-SiCr 2.9.jpg,8,87.178,1.034,Webers,Dorymyrmex bicolor
 SiCr 2.10.jpg,1,109.552,1.09,Femur,Dorymyrmex bicolor
 SiCr 2.10.jpg,2,140.799,0.873,Scape,Dorymyrmex bicolor
 SiCr 2.10.jpg,3,-48.984,0.407,Mandible length,Dorymyrmex bicolor
@@ -2040,6 +2040,30 @@ SiCr 2.12.jpg,5,10.251,0.225,Eye length,Dorymyrmex bicolor
 SiCr 2.12.jpg,6,99.09,0.119,Eye width,Dorymyrmex bicolor
 SiCr 2.12.jpg,7,102.809,0.681,Head width,Dorymyrmex bicolor
 SiCr 2.12.jpg,8,20.746,0.999,Webers,Dorymyrmex bicolor
+SiCr 2.7.jpg,1,147.529,1.086,Femur,Dorymyrmex bicolor
+SiCr 2.7.jpg,2,45,0.837,Scape,Dorymyrmex bicolor
+SiCr 2.7.jpg,3,11.689,0.411,Mandible length,Dorymyrmex bicolor
+SiCr 2.7.jpg,4,94.259,0.872,Head length,Dorymyrmex bicolor
+SiCr 2.7.jpg,5,-90,0.236,Eye length,Dorymyrmex bicolor
+SiCr 2.7.jpg,6,-178.264,0.153,Eye width,Dorymyrmex bicolor
+SiCr 2.7.jpg,7,-174.774,0.762,Head width,Dorymyrmex bicolor
+SiCr 2.7.jpg,8,-118.334,1.072,Webers,Dorymyrmex bicolor
+SiCr 2.8.jpg,1,-42.879,1.183,Femur,Dorymyrmex bicolor
+SiCr 2.8.jpg,2,124.636,0.88,Scape,Dorymyrmex bicolor
+SiCr 2.8.jpg,3,-158.199,0.436,Mandible length,Dorymyrmex bicolor
+SiCr 2.8.jpg,4,119.312,0.859,Head length,Dorymyrmex bicolor
+SiCr 2.8.jpg,5,113.102,0.247,Eye length,Dorymyrmex bicolor
+SiCr 2.8.jpg,6,25.313,0.13,Eye width,Dorymyrmex bicolor
+SiCr 2.8.jpg,7,26.977,0.791,Head width,Dorymyrmex bicolor
+SiCr 2.8.jpg,8,32.603,1.114,Webers,Dorymyrmex bicolor
+SiCr 2.9.jpg,1,-114.671,1.116,Femur,Dorymyrmex bicolor
+SiCr 2.9.jpg,2,-105.033,0.879,Scape,Dorymyrmex bicolor
+SiCr 2.9.jpg,3,-31.938,0.44,Mandible length,Dorymyrmex bicolor
+SiCr 2.9.jpg,4,-113.629,0.847,Head length,Dorymyrmex bicolor
+SiCr 2.9.jpg,5,62.425,0.246,Eye length,Dorymyrmex bicolor
+SiCr 2.9.jpg,6,151.631,0.138,Eye width,Dorymyrmex bicolor
+SiCr 2.9.jpg,7,156.544,0.78,Head width,Dorymyrmex bicolor
+SiCr 2.9.jpg,8,87.178,1.034,Webers,Dorymyrmex bicolor
 SiCr 3.1.jpg,1,155.886,0.543,Femur,Forelius pruinosis
 SiCr 3.1.jpg,2,161.565,0.542,Scape,Forelius pruinosis
 SiCr 3.1.jpg,3,37.427,0.291,Mandible length,Forelius pruinosis
@@ -2088,27 +2112,3 @@ SiCr 3.7.jpg,5,-169.216,0.148,Eye length,Forelius pruinosis
 SiCr 3.7.jpg,6,102.724,0.074,Eye width,Forelius pruinosis
 SiCr 3.7.jpg,7,-77.42,0.563,Head width,Forelius pruinosis
 SiCr 3.7.jpg,8,-178.869,0.704,Webers,Forelius pruinosis
-CaSl 3.12.2.jpg,1,-79.136,1.957,Femur,Myrmecocystus
-CaSl 3.12.2.jpg,2,169.924,1.414,Scape,Myrmecocystus
-CaSl 3.12.2.jpg,3,83.951,0.737,Mandible length,Myrmecocystus
-CaSl 3.12.2.jpg,4,151.16,1.257,Head length,Myrmecocystus
-CaSl 3.12.2.jpg,5,159.341,0.316,Eye length,Myrmecocystus
-CaSl 3.12.2.jpg,6,64.231,0.156,Eye width,Myrmecocystus
-CaSl 3.12.2.jpg,7,61.844,1.172,Head width,Myrmecocystus
-CaSl 3.12.2.jpg,8,-161.003,1.878,Webers,Myrmecocystus
-Lok 3.1.jpg,1,-1.488,0.747,Femur,Solenopsis xyloni
-Lok 3.1.jpg,2,49.616,0.554,Scape,Solenopsis xyloni
-Lok 3.1.jpg,3,138.424,0.402,Mandible length,Solenopsis xyloni
-Lok 3.1.jpg,4,80.538,0.737,Head length,Solenopsis xyloni
-Lok 3.1.jpg,5,-102.131,0.133,Eye length,Solenopsis xyloni
-Lok 3.1.jpg,6,163.179,0.054,Eye width,Solenopsis xyloni
-Lok 3.1.jpg,7,170.781,0.625,Head width,Solenopsis xyloni
-Lok 3.1.jpg,8,-151.123,0.833,Webers,Solenopsis xyloni
-Lok 3.2.jpg,1,118.232,0.813,Femur,Solenopsis xyloni
-Lok 3.2.jpg,2,119.982,0.577,Scape,Solenopsis xyloni
-Lok 3.2.jpg,3,142.893,0.388,Mandible length,Solenopsis xyloni
-Lok 3.2.jpg,4,78.736,0.787,Head length,Solenopsis xyloni
-Lok 3.2.jpg,5,77.638,0.12,Eye length,Solenopsis xyloni
-Lok 3.2.jpg,6,164.055,0.058,Eye width,Solenopsis xyloni
-Lok 3.2.jpg,7,-11.569,0.695,Head width,Solenopsis xyloni
-Lok 3.2.jpg,8,56.31,0.866,Webers,Solenopsis xyloni

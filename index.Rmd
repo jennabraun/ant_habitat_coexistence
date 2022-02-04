@@ -1,10 +1,14 @@
 ---
-title: "Ant species coexistence"
-output: html_document
+title: Ants species coexistence
+output:
+    rmdformats::readthedown:
+      collapsed: false
+      highlight: kate
 ---
 
 ```{r setup}
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(performance)
 library(glmmTMB)
@@ -17,6 +21,78 @@ cov <- right_join(sites, cov, by = c("Site", "month"))
 
 cov <- dplyr::select(cov, 3:10, 14:19, 22:36, 39:41)
 
+```
+
+
+
+
+```{r}
+traits <- read.csv("raw data/Traits.csv")
+
+unique(traits$Trait)
+
+traits <- separate(traits, Photo, c("Site", "Slide", "Specimen"))
+traits$Site <- gsub("Papl", "PaPl", traits$Site)
+unique(traits$Site)
+traits <- traits[-1,]
+traits.ag <- group_by(traits, Site, X.1, Trait) %>% summarise(mean = mean(Measure), sd = sd(Measure))
+traits.sp <- group_by(traits, X.1, Trait) %>% summarise(mean = mean(Measure), sd = sd(Measure))
+
+
+#calculate CWM trait values
+
+#I want to do abundance
+#it's proportional abundances 
+
+
+site.j <- select(cov, uniID, Site)
+wide <- right_join(site.j, wide, by = "uniID")
+
+wide <- select(wide, -X)
+wide <- select(wide, -12, -13)
+
+long <- pivot_longer(wide, 3:13, names_to = "species", values_to = "count")
+long <- group_by(long, uniID) %>% mutate(total = sum(count)) 
+long <- long %>% mutate(rel.abun = count/total)
+traits.ag <- rename(traits.ag, species = X.1)
+traits.ag$species <- gsub(" ", "", traits.ag$species)
+#this adds NA traits to 0 abundances - species isn't found at pitfall or site
+join.right <- right_join(traits.ag, long, by = c("Site", "species"))
+
+#join.left <- left_join(traits.ag, long, by = c("Site", "species"))
+
+CWM <- mutate(join.right, cwm.prod = mean*rel.abun)
+
+CWM <- group_by(CWM, Site, uniID, Trait) %>% summarise(cwm = sum(cwm.prod))
+
+#can log transform the abundances to look at dominants vs subordinates
+
+```
+
+# CWM Figures
+
+```{r}
+ggplot(filter(CWM, Trait == "Mandible length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Mandible length")
+
+ggplot(filter(CWM, Trait == "Head length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Head length")
+
+ggplot(filter(CWM, Trait == "Eye length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Eye length")
+
+ggplot(filter(CWM, Trait == "Femur"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Femur")
+
+ggplot(filter(CWM, Trait == "Scape"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Scape")
+
+ggplot(filter(CWM, Trait == "Head width"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Head width")
+
+ggplot(filter(CWM, Trait == "Webers body length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Webers body length")
+
+
+
+```
+
+## Models
+
+```{r}
 m1.m11 <- glmmTMB(abun ~ dry.veg.percent + Microsite + month + mean.cover + Prec + (1|Site), family = "poisson", data = cov)
 summary(m1.m11)
 check_overdispersion(m1.m11)
@@ -31,8 +107,6 @@ summary(m2)
 ```
 
 
-
-```{r}
 ggplot(veg, aes(Microsite, dry.veg.percent)) + geom_violin() + geom_boxplot(width = 0.05) + theme(axis.text.x=element_text(angle=90, vjust=.5)) + ylab("Percent Cover Vegetation") + xlab("")  + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))
   
@@ -55,7 +129,9 @@ autoplot(pca1, data = cov, colour = "Microsite", loadings = TRUE, loadings.label
 
 
 
-```
+
+
+
 
 ## Including Plots
 
