@@ -12,7 +12,7 @@ library(tidyr)
 library(ggplot2)
 library(performance)
 library(glmmTMB)
-
+library(ade4)
 
 wide <- read.csv("Clean Data/ants_wide.csv")
 cov <- read.csv("Clean Data/ants.csv")
@@ -20,6 +20,13 @@ sites <- read.csv("Clean Data/sites_joined.csv")
 cov <- right_join(sites, cov, by = c("Site", "month"))
 
 cov <- dplyr::select(cov, 3:10, 14:19, 22:36, 39:41)
+
+
+#add ecostress sensor data
+eco <- read.csv("Clean Data/ecostress.csv")
+eco <- select(eco, 1, 2, 11)
+eco <- rename(eco, month = Category, Site = ID, esi = ECO4ESIPTJPL_001_Evaporative_Stress_Index_PT_JPL_ESIavg)
+cov <- right_join(eco, cov, by = c("Site", "month"))
 
 ```
 
@@ -56,6 +63,7 @@ long <- group_by(long, uniID) %>% mutate(total = sum(count))
 long <- long %>% mutate(rel.abun = count/total)
 traits.ag <- rename(traits.ag, species = X.1)
 traits.ag$species <- gsub(" ", "", traits.ag$species)
+
 #this adds NA traits to 0 abundances - species isn't found at pitfall or site
 join.right <- right_join(traits.ag, long, by = c("Site", "species"))
 
@@ -67,11 +75,22 @@ CWM <- group_by(CWM, Site, uniID, Trait) %>% summarise(cwm = sum(cwm.prod))
 
 #can log transform the abundances to look at dominants vs subordinates
 
+
+
+#join environmental data to CWM trait dataframe
+
+CWM <- left_join(CWM, cov, by = "uniID")
+
+
 ```
 
-# CWM Figures
+# EDA
+
+## Community Weighted Mean Trait * Sites
 
 ```{r}
+CWM <- rename(CWM, Site = Site.x)
+
 ggplot(filter(CWM, Trait == "Mandible length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Mandible length")
 
 ggplot(filter(CWM, Trait == "Head length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Head length")
@@ -86,11 +105,161 @@ ggplot(filter(CWM, Trait == "Head width"), aes(Site, cwm)) + geom_boxplot() + yl
 
 ggplot(filter(CWM, Trait == "Webers body length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Webers body length")
 
+```
+
+## Community weighted mean trait * environment
+
+### Mandible Length
+```{r}
+
+mand <- filter(CWM, Trait == "Mandible length")
+
+ggplot(filter(CWM, Trait == "Mandible length"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Mandible length")
+
+ggplot(filter(CWM, Trait == "Mandible length"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Mandible length")
+
+cor.test(mand$cwm, mand$dry.veg.percent, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Mandible length"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Mandible length")
+
+cor.test(mand$cwm, mand$veg..height, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Mandible length"), aes(Prec, cwm)) + geom_point() + ylab("CWM Mandible length")
+
+ggplot(filter(CWM, Trait == "Mandible length"), aes(esi, cwm)) + geom_point() + ylab("CWM Mandible length")
+
+```
+
+### Femur length
+
+```{r}
+
+femur <- filter(CWM, Trait == "Femur")
+
+ggplot(filter(CWM, Trait == "Femur"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Femur length")
+
+ggplot(filter(CWM, Trait == "Femur"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Femur length")
+
+cor.test(femur$cwm, femur$dry.veg.percent, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Femur"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Femur length")
+
+cor.test(femur$cwm, femur$veg..height, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Femur"), aes(bare.ground.percent, cwm)) + geom_point() + ylab("CWM Femur length")
+cor.test(femur$cwm, femur$bare.ground.percent, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Femur"), aes(Prec, cwm)) + geom_point() + ylab("CWM Femur length")
+
+ggplot(filter(CWM, Trait == "Femur"), aes(esi, cwm)) + geom_point() + ylab("CWM Femur length")
+
+```
+
+### Head length
+```{r}
+
+hl <- filter(CWM, Trait == "Head length")
+
+ggplot(filter(CWM, Trait == "Head length"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Head length")
+
+ggplot(filter(CWM, Trait == "Head length"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Head length")
+
+cor.test(hl$cwm, hl$dry.veg.percent, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Head length"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Head length")
+
+cor.test(hl$cwm, hl$veg..height, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Head length"), aes(Prec, cwm)) + geom_point() + ylab("CWM Head length")
+
+ggplot(filter(CWM, Trait == "Head length"), aes(esi, cwm)) + geom_point() + ylab("CWM Head length")
+
+```
+
+### Eye length
+
+```{r}
+el <- filter(CWM, Trait == "Eye length")
+
+ggplot(filter(CWM, Trait == "Eye length"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Eye length")
+
+ggplot(filter(CWM, Trait == "Eye length"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Eye length")
+
+cor.test(el$cwm, el$dry.veg.percent, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Eye length"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Eye length")
+
+cor.test(el$cwm, el$veg..height, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Eye length"), aes(Prec, cwm)) + geom_point() + ylab("CWM Eye length")
+
+ggplot(filter(CWM, Trait == "Eye length"), aes(esi, cwm)) + geom_point() + ylab("CWM Eye length")
+```
+
+
+### Weber's body length
+
+```{r}
+wl <- filter(CWM, Trait == "Webers")
+
+ggplot(filter(CWM, Trait == "Webers"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Webers length")
+
+ggplot(filter(CWM, Trait == "Webers"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Webers length")
+
+cor.test(wl$cwm, wl$dry.veg.percent, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Webers"), aes(bare.ground.percent, cwm)) + geom_point() + ylab("CWM Webers length")
+
+ggplot(filter(CWM, Trait == "Webers"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Webers length")
+
+cor.test(wl$cwm, wl$veg..height, use = "complete.obs")
+
+ggplot(filter(CWM, Trait == "Webers"), aes(Prec, cwm)) + geom_point() + ylab("CWM Webers length")
+
+ggplot(filter(CWM, Trait == "Webers"), aes(esi, cwm)) + geom_point() + ylab("CWM Webers length")
+
 
 
 ```
 
-## Models
+# Fourth Corner
+## 4th Corner bivariate correlations
+```{r}
+
+#We need to set up our data
+data(aravo)
+
+spe <- wide
+
+#for traits species should be rows, traits cols
+traits.spe <- select(traits.sp, -sd)
+traits.spe <- pivot_wider(traits.spe, names_from = Trait, values_from = mean)
+traits.spe <- rename(traits.spe, species = X.1)
+env <- select(cov, uniID, 3, 12,15, 17, 23)
+env$Microsite <- as.factor(env$Microsite)
+row.names(env) <- env$uniID
+env <- env[,-1]
+row.names(spe) <- spe$uniID
+spe <- select(spe, -1, -2)
+
+
+row.names(traits.spe) <- traits.spe$species
+traits.spe <- select(traits.spe, -3)
+
+traits.spe <- as.data.frame(traits.spe)
+traits.spe <- traits.spe[,-1]
+
+four.comb.ants.adj <- fourthcorner(env, spe,
+traits.spe, modeltype = 6, p.adjust.method.G = "none",
+p.adjust.method.D = "fdr", nrepet = 999)
+
+four.comb.ants.adj 
+plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
+```
+
+
+# Models
+## Ant abundance
 
 ```{r}
 m1.m11 <- glmmTMB(abun ~ dry.veg.percent + Microsite + month + mean.cover + Prec + (1|Site), family = "poisson", data = cov)
@@ -99,8 +268,11 @@ check_overdispersion(m1.m11)
 
 m1.mnb <- glmmTMB(abun ~ dry.veg.percent + Microsite + month + mean.cover + Prec + (1|Site), family = "nbinom2", data = cov)
 summary(m1.mnb)
+```
 
+## Ant richness
 
+```{r}
 m2 <- glmmTMB(Species ~ dry.veg.percent + Microsite + month + mean.cover + Prec + (1|Site), family = "nbinom2", data = cov)
 summary(m2)
 
