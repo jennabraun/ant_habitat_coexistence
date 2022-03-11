@@ -222,6 +222,24 @@ ggplot(filter(CWM, Trait == "Webers"), aes(esi, cwm)) + geom_point() + ylab("CWM
 
 ```
 
+## Heat Map
+
+```{r}
+
+mat <- pivot_wider(CWM, names_from = Trait, values_from = cwm)
+mat <- select(mat, 5:11, 14:17, 25:31, 35:42) %>% ungroup()
+mat <- ungroup(mat) %>% select(-uniID)
+mat <- drop_na(mat)
+M <- cor(mat)
+corrplot::corrplot(M, method = "number")
+```
+
+
+
+
+
+
+
 # Fourth Corner
 ## 4th Corner bivariate correlations
 ```{r}
