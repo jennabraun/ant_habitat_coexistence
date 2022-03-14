@@ -13,6 +13,8 @@ library(ggplot2)
 library(performance)
 library(glmmTMB)
 library(ade4)
+library(nlme)
+library(ape)
 
 wide <- read.csv("Clean Data/ants_wide.csv")
 cov <- read.csv("Clean Data/ants.csv")
@@ -28,6 +30,10 @@ eco <- select(eco, 1, 2, 11)
 eco <- rename(eco, month = Category, Site = ID, esi = ECO4ESIPTJPL_001_Evaporative_Stress_Index_PT_JPL_ESIavg)
 cov <- right_join(eco, cov, by = c("Site", "month"))
 
+shrubs <- read.csv("Clean Data/shrubs.csv")
+cov <- right_join(cov, shrubs, by = "Site")
+cov$shrub.site <- as.factor(cov$shrub.site)
+
 ```
 
 
@@ -37,13 +43,35 @@ cov <- right_join(eco, cov, by = c("Site", "month"))
 traits <- read.csv("raw data/Traits.csv")
 
 unique(traits$Trait)
+#I don't trust the eye width measurements because they were from the front
+traits <- filter(traits, Trait != "Eye width")
 
 traits <- separate(traits, Photo, c("Site", "Slide", "Specimen"))
 traits$Site <- gsub("Papl", "PaPl", traits$Site)
 unique(traits$Site)
 traits <- traits[-1,]
-traits.ag <- group_by(traits, Site, X.1, Trait) %>% summarise(mean = mean(Measure), sd = sd(Measure))
-traits.sp <- group_by(traits, X.1, Trait) %>% summarise(mean = mean(Measure), sd = sd(Measure))
+
+#remove the double pheidole entry
+traits <- traits[-2,]
+
+#need to divide the trait values by weber's body length. I want to do this at the individual level
+traits <- select(traits, -X, -Label)
+traits <- pivot_wider(traits, names_from = Trait, values_from = Measure)
+traits <- mutate(traits, Femur.w = Femur/Webers, Scape.w = Scape/Webers, Mandible.w = `Mandible length`/Webers, Headl.w = `Head width`/Webers, Eyel.w = `Eye length`/Webers, Headw.w = `Head width`/Webers)
+traits <- pivot_longer(traits, 5:17, names_to = "Trait", values_to = "Measure")
+
+unique(traits$X.1)
+
+#some traits are NA because of damage to the specimen
+traits <- drop_na(traits)
+
+#calculate the mean value of the trait for each species at each site
+traits.ag <- group_by(traits, Site, X.1, Trait) %>%
+  summarise(mean = mean(Measure), sd = sd(Measure))
+
+#create a data frame of the mean values for each species across all sites
+traits.sp <- group_by(traits, X.1, Trait) %>% 
+  summarise(mean = mean(Measure), sd = sd(Measure))
 
 
 #calculate CWM trait values
@@ -51,16 +79,24 @@ traits.sp <- group_by(traits, X.1, Trait) %>% summarise(mean = mean(Measure), sd
 #I want to do abundance
 #it's proportional abundances 
 
-
 site.j <- select(cov, uniID, Site)
 wide <- right_join(site.j, wide, by = "uniID")
 
 wide <- select(wide, -X)
+#remove the two other solenopsis species with 1 individual
 wide <- select(wide, -12, -13)
+#wide <- rename(wide, Site = Site.x) %>%
+  #select(-Site.y)
 
 long <- pivot_longer(wide, 3:13, names_to = "species", values_to = "count")
-long <- group_by(long, uniID) %>% mutate(total = sum(count)) 
+#get total abundance per trap
+long <- group_by(long, uniID) %>% 
+  mutate(total = sum(count)) 
+
 long <- long %>% mutate(rel.abun = count/total)
+
+
+
 traits.ag <- rename(traits.ag, species = X.1)
 traits.ag$species <- gsub(" ", "", traits.ag$species)
 
@@ -91,19 +127,21 @@ CWM <- left_join(CWM, cov, by = "uniID")
 ```{r}
 CWM <- rename(CWM, Site = Site.x)
 
-ggplot(filter(CWM, Trait == "Mandible length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Mandible length")
+ggplot(filter(CWM, Trait == "Mandible.w"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Mandible length")
 
-ggplot(filter(CWM, Trait == "Head length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Head length")
+ggplot(filter(CWM, Trait == "Headl.w"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Head length")
 
-ggplot(filter(CWM, Trait == "Eye length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Eye length")
+ggplot(filter(CWM, Trait == "Eyel.w"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Eye length")
 
-ggplot(filter(CWM, Trait == "Femur"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Femur")
+ggplot(filter(CWM, Trait == "Femur.w"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Femur")
 
-ggplot(filter(CWM, Trait == "Scape"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Scape")
+ggplot(filter(CWM, Trait == "Scape.w"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Scape")
 
-ggplot(filter(CWM, Trait == "Head width"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Head width")
+ggplot(filter(CWM, Trait == "Headw.w"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Head width")
 
-ggplot(filter(CWM, Trait == "Webers body length"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Webers body length")
+ggplot(filter(CWM, Trait == "Webers"), aes(Site, cwm)) + geom_boxplot() + ylab("CWM Webers body length")
+
+#dividing by body length increased the variability in traits between sites, before just looks like body length
 
 ```
 
@@ -112,21 +150,21 @@ ggplot(filter(CWM, Trait == "Webers body length"), aes(Site, cwm)) + geom_boxplo
 ### Mandible Length
 ```{r}
 
-mand <- filter(CWM, Trait == "Mandible length")
+mand <- filter(CWM, Trait == "Mandible.w")
 
-ggplot(filter(CWM, Trait == "Mandible length"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Mandible length")
+ggplot(filter(CWM, Trait == "Mandible.w"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Mandible length")
 
-ggplot(filter(CWM, Trait == "Mandible length"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Mandible length")
+ggplot(filter(CWM, Trait == "Mandible.w"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Mandible length")
 
 cor.test(mand$cwm, mand$dry.veg.percent, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Mandible length"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Mandible length")
+ggplot(filter(CWM, Trait == "Mandible.w"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Mandible length")
 
 cor.test(mand$cwm, mand$veg..height, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Mandible length"), aes(Prec, cwm)) + geom_point() + ylab("CWM Mandible length")
+ggplot(filter(CWM, Trait == "Mandible.w"), aes(Prec, cwm)) + geom_point() + ylab("CWM Mandible length")
 
-ggplot(filter(CWM, Trait == "Mandible length"), aes(esi, cwm)) + geom_point() + ylab("CWM Mandible length")
+ggplot(filter(CWM, Trait == "Mandible.w"), aes(esi, cwm)) + geom_point() + ylab("CWM Mandible length")
 
 ```
 
@@ -134,66 +172,66 @@ ggplot(filter(CWM, Trait == "Mandible length"), aes(esi, cwm)) + geom_point() + 
 
 ```{r}
 
-femur <- filter(CWM, Trait == "Femur")
+femur <- filter(CWM, Trait == "Femur.w")
 
-ggplot(filter(CWM, Trait == "Femur"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Femur length")
+ggplot(filter(CWM, Trait == "Femur.w"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Femur length")
 
-ggplot(filter(CWM, Trait == "Femur"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Femur length")
+ggplot(filter(CWM, Trait == "Femur.w"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Femur length")
 
 cor.test(femur$cwm, femur$dry.veg.percent, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Femur"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Femur length")
+ggplot(filter(CWM, Trait == "Femur.w"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Femur length")
 
 cor.test(femur$cwm, femur$veg..height, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Femur"), aes(bare.ground.percent, cwm)) + geom_point() + ylab("CWM Femur length")
+ggplot(filter(CWM, Trait == "Femur.w"), aes(bare.ground.percent, cwm)) + geom_point() + ylab("CWM Femur length")
 cor.test(femur$cwm, femur$bare.ground.percent, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Femur"), aes(Prec, cwm)) + geom_point() + ylab("CWM Femur length")
+ggplot(filter(CWM, Trait == "Femur.w"), aes(Prec, cwm)) + geom_point() + ylab("CWM Femur length")
 
-ggplot(filter(CWM, Trait == "Femur"), aes(esi, cwm)) + geom_point() + ylab("CWM Femur length")
+ggplot(filter(CWM, Trait == "Femur.w"), aes(esi, cwm)) + geom_point() + ylab("CWM Femur length")
 
 ```
 
 ### Head length
 ```{r}
 
-hl <- filter(CWM, Trait == "Head length")
+hl <- filter(CWM, Trait == "Headl.w")
 
-ggplot(filter(CWM, Trait == "Head length"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Head length")
+ggplot(filter(CWM, Trait == "Headl.w"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Head length")
 
-ggplot(filter(CWM, Trait == "Head length"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Head length")
+ggplot(filter(CWM, Trait == "Headl.w"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Head length")
 
 cor.test(hl$cwm, hl$dry.veg.percent, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Head length"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Head length")
+ggplot(filter(CWM, Trait == "Headl.w"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Head length")
 
 cor.test(hl$cwm, hl$veg..height, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Head length"), aes(Prec, cwm)) + geom_point() + ylab("CWM Head length")
+ggplot(filter(CWM, Trait == "Headl.w"), aes(Prec, cwm)) + geom_point() + ylab("CWM Head length")
 
-ggplot(filter(CWM, Trait == "Head length"), aes(esi, cwm)) + geom_point() + ylab("CWM Head length")
+ggplot(filter(CWM, Trait == "Headl.w"), aes(esi, cwm)) + geom_point() + ylab("CWM Head length")
 
 ```
 
 ### Eye length
 
 ```{r}
-el <- filter(CWM, Trait == "Eye length")
+el <- filter(CWM, Trait == "Eyel.w")
 
-ggplot(filter(CWM, Trait == "Eye length"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Eye length")
+ggplot(filter(CWM, Trait == "Eyel.w"), aes(Site, cwm, fill = Microsite)) + geom_boxplot() + ylab("CWM Eye length")
 
-ggplot(filter(CWM, Trait == "Eye length"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Eye length")
+ggplot(filter(CWM, Trait == "Eyel.w"), aes(dry.veg.percent, cwm)) + geom_point() + ylab("CWM Eye.w")
 
 cor.test(el$cwm, el$dry.veg.percent, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Eye length"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Eye length")
+ggplot(filter(CWM, Trait == "Eyel.w"), aes(veg..height, cwm)) + geom_point() + ylab("CWM Eye length")
 
 cor.test(el$cwm, el$veg..height, use = "complete.obs")
 
-ggplot(filter(CWM, Trait == "Eye length"), aes(Prec, cwm)) + geom_point() + ylab("CWM Eye length")
+ggplot(filter(CWM, Trait == "Eyel.w"), aes(Prec, cwm)) + geom_point() + ylab("CWM Eye length")
 
-ggplot(filter(CWM, Trait == "Eye length"), aes(esi, cwm)) + geom_point() + ylab("CWM Eye length")
+ggplot(filter(CWM, Trait == "Eyel.w"), aes(esi, cwm)) + geom_point() + ylab("CWM Eye length")
 ```
 
 
@@ -218,8 +256,6 @@ ggplot(filter(CWM, Trait == "Webers"), aes(Prec, cwm)) + geom_point() + ylab("CW
 
 ggplot(filter(CWM, Trait == "Webers"), aes(esi, cwm)) + geom_point() + ylab("CWM Webers length")
 
-
-
 ```
 
 ## Heat Map
@@ -227,14 +263,194 @@ ggplot(filter(CWM, Trait == "Webers"), aes(esi, cwm)) + geom_point() + ylab("CWM
 ```{r}
 
 mat <- pivot_wider(CWM, names_from = Trait, values_from = cwm)
-mat <- select(mat, 5:11, 14:17, 25:31, 35:42) %>% ungroup()
+mat <- select(mat, 5:11, 14:17, 25:31, 36:48) %>% ungroup()
 mat <- ungroup(mat) %>% select(-uniID)
 mat <- drop_na(mat)
+#str(mat)
 M <- cor(mat)
 corrplot::corrplot(M, method = "number")
 ```
 
+# PCA 
 
+## Traits
+
+```{r}
+# I want the PCA on traits
+# make it wide again
+
+traits.wide <- pivot_wider(traits, names_from = Trait, values_from = Measure)
+traits.wide <- select(traits.wide, 11:17)
+traits.wide <- drop_na(traits.wide)
+
+library(vegan)
+library(ggvegan)
+traits.pca <- rda(traits.wide)
+#summary(traits.pca)
+#no scaling because the traits all have the same units
+autoplot(traits.pca, xlab = "PCA 82.8%", ylab = "PCA 10.5%")
+
+
+```
+
+## Sites
+
+```{r}
+env <- select(cov, 3:9, 12:15, 23:27, 29) %>% drop_na()
+env.labels <- select(cov, 1:2)
+options(scipen = 999)
+env.pca <- rda(env, scaling = TRUE)
+#summary(env.pca)
+autoplot(env.pca)
+#doesn't look good
+
+#standardize to mean of zero etc
+#not sure if correct
+env.d <- decostand(env, method = "standardize")
+env.pca <- rda(env.d)
+    
+#summary(env.pca)
+autoplot(env.pca, xlab = "PCA 31.4%", ylab = "PCA 20.3%")
+
+```
+Cool that water stress is correlated with variability in vegetation
+
+
+# ITV
+
+Intraspecific trait variation
+
+## Body size
+```{r}
+
+#body size
+webers <- traits %>% filter(Trait == "Webers")
+partition <- aov(Measure~X.1, data = webers)
+summary(partition)
+
+#ITV is a low component of overall variability
+
+logWebers <- log(webers$Measure)
+modPart <- lme(logWebers ~ 1, random = ~ 1 | Site / X.1, data = webers, na.action = na.omit)
+varcompWeber <- ape::varcomp(modPart, scale = 1)
+varcompWeber
+
+#body size differences between individuals of the same species within a site account for 9.2% variation
+#differences among species within a site account for 90.7%
+#differences among species between sites accounts for 0 %
+```
+
+## Femur length
+
+```{r}
+# relative leg length
+femur <- traits %>% filter(Trait == "Femur.w")
+partition <- aov(Measure~X.1, data = femur)
+summary(partition)
+
+#ITV is 1.208/3.298 = 36.6% of variation
+
+logFemur <- log(femur$Measure)
+modPart <- lme(logFemur ~ 1, random = ~ 1 | Site / X.1, data = femur, na.action = na.omit)
+varcompFemur <- ape::varcomp(modPart, scale = 1)
+varcompFemur
+
+#relative femur length differences between individuals of the same species within a site account for 31% variation
+#differences among species within a site account for 66.7%
+#differences among species between sites accounts for 2.4 %
+```
+
+## Scape length
+
+```{r}
+#scape length
+
+scape <- traits %>% filter(Trait == "Scape.w")
+partition <- aov(Measure~X.1, data = scape)
+summary(partition)
+
+#ITV is 0.706/4.632 = 15.2 % of variation
+
+logScape <- log(scape$Measure)
+modPart <- lme(logScape ~ 1, random = ~ 1 | Site / X.1, data = scape, na.action = na.omit)
+varcompScape <- ape::varcomp(modPart, scale = 1)
+varcompScape
+
+#relative scape length differences between individuals of the same species within a site account for 15% variation
+#differences among species within a site account for 84.5%
+#differences among species between sites accounts for 0%
+```
+
+## Mandible length
+
+```{r}
+#mandible length
+
+mandible <- traits %>% filter(Trait == "Mandible.w")
+partition <- aov(Measure~X.1, data = mandible)
+summary(partition)
+
+#ITV is 0.3478/0.76 = 45.7 % of variation
+
+logMandible <- log(mandible$Measure)
+modPart <- lme(logMandible ~ 1, random = ~ 1 | Site / X.1, data = mandible, na.action = na.omit)
+varcompMandible <- ape::varcomp(modPart, scale = 1)
+varcompMandible
+
+#relative mandible length differences between individuals of the same species within a site account for 36.6% variation
+#differences among species within a site account for 63%
+#differences among species between sites accounts for 0%
+```
+
+## Eye length
+
+```{r}
+
+#eye length
+
+el <- traits %>% filter(Trait == "Eyel.w")
+partition <- aov(Measure~X.1, data = el)
+summary(partition)
+
+#ITV is 0.06/0.31 = 21 % of variation
+
+logEL <- log(el$Measure)
+modPart <- lme(logEL ~ 1, random = ~ 1 | Site / X.1, data = el, na.action = na.omit)
+varcompEL <- ape::varcomp(modPart, scale = 1)
+varcompEL
+
+#relative eye length differences between individuals of the same species within a site account for 24% variation
+#differences among species within a site account for 75.9%
+#differences among species between sites accounts for 0%
+```
+
+## Head width
+
+
+```{r}
+#head width
+
+hw <- traits %>% filter(Trait == "Headw.w")
+partition <- aov(Measure~X.1, data = hw)
+summary(partition)
+
+#ITV is 26%
+0.49/(0.49+1.39)
+
+logHW <- log(hw$Measure)
+modPart <- lme(logHW ~ 1, random = ~ 1 | Site / X.1, data = hw, na.action = na.omit)
+varcompHW <- ape::varcomp(modPart, scale = 1)
+varcompHW
+
+#relative head width differences between individuals of the same species within a site account for 21.8% variation
+#differences among species within a site account for 78.1%
+#differences among species between sites accounts for 0%
+```
+# Turnover vs ITV
+
+Community mean trait values can shift along gradients due to differences in the species composition at the sites, and also due to intraspecific variation
+
+Compare shifts in CWM measured along a gradient using site-specific trait values to global trait values
 
 
 
@@ -245,35 +461,130 @@ corrplot::corrplot(M, method = "number")
 ```{r}
 
 #We need to set up our data
-data(aravo)
+
 
 spe <- wide
 
 #for traits species should be rows, traits cols
 traits.spe <- select(traits.sp, -sd)
 traits.spe <- pivot_wider(traits.spe, names_from = Trait, values_from = mean)
+
+#only keep corrected traits (divided by body length)
+#only keep one head trait (keeping width)
+
+traits.spe <- select(traits.spe, 1, 3,5, 9, 11, 13, 14)
 traits.spe <- rename(traits.spe, species = X.1)
-env <- select(cov, uniID, 3, 12,15, 17, 23)
-env$Microsite <- as.factor(env$Microsite)
-row.names(env) <- env$uniID
-env <- env[,-1]
+row.names(traits.spe) <- traits.spe$species
+traits.spe <- as.data.frame(traits.spe) %>% ungroup()
+traits.spe <- select(traits.spe, -species)
+#I want veg height but there are NAs ugh
+
+env4 <- select(cov, uniID, 3, 4, 5,12, 13, 17, 23, 29, 34)
+env4$Microsite <- as.factor(env4$Microsite)
+
+naveg <- env4[is.na(env4$veg..height),]
+
+#make a vector of NA values
+naveg <- naveg$uniID
+`%!in%` <- Negate(`%in%`)
+
+#remove those NA rows from the species table
+spe <- spe[spe$uniID %!in% naveg, ]
+env4 <- env4[env4$uniID %!in% naveg, ]
+
+row.names(env4) <- env4$uniID
+env4 <- env4[,-1]
+
 row.names(spe) <- spe$uniID
 spe <- select(spe, -1, -2)
 
 
-row.names(traits.spe) <- traits.spe$species
-traits.spe <- select(traits.spe, -3)
-
-traits.spe <- as.data.frame(traits.spe)
-traits.spe <- traits.spe[,-1]
-
-four.comb.ants.adj <- fourthcorner(env, spe,
+four.comb.ants.adj <- fourthcorner(env4, spe,
 traits.spe, modeltype = 6, p.adjust.method.G = "none",
 p.adjust.method.D = "fdr", nrepet = 999)
 
 four.comb.ants.adj 
 plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
+
+#shrub and open are really close
+#gotta add shrub type
+
+library(mvabund)
+fit <- traitglm(spe, env4, traits.spe)
+fit$fourth #notice LASSO penalty has shrunk many interactions to zero
+summary(fit)
+#anova(fit, nBoot = 99)
+#signficant trait*env but takes 36 minutes to run
+
+library(lattice)
+a        = max( abs(fit$fourth.corner) )
+colort   = colorRampPalette(c("blue","white","red")) 
+plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variables",
+ ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
+ scales = list( x= list(rot = 45)))
+print(plot.4th)
+
+#test again for presence/absence
+#ant abundance may be more related to colony size which is a trait
+
+spe.bin <- spe
+spe.bin[spe.bin > 1] <- 1
+
+
+four.comb.ants.adj <- fourthcorner(env4, spe.bin,
+traits.spe, modeltype = 6, p.adjust.method.G = "none",
+p.adjust.method.D = "fdr", nrepet = 999)
+
+four.comb.ants.adj 
+plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
+#why are the p adj so different for a bivariate correlation? 
+#not sure
+
+
+fit <- traitglm(spe.bin, env4, traits.spe,family = "binomial")
+summary(fit)
+fit$fourth #notice LASSO penalty has shrunk many interactions to zero
+
+a        = max( abs(fit$fourth.corner) )
+colort   = colorRampPalette(c("blue","white","red")) 
+plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variables",
+ ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
+ scales = list( x= list(rot = 45)))
+print(plot.4th)
+
+
+
 ```
+
+# Sorenson
+
+However, in this study we used
+the C-score to evaluate co-occurrence between each pair
+of species as C-score = (a − c) (b − c), where a is the total
+number of occurrences of one species, b is the total number
+of occurrences of a second species, and c is the number of
+sites that contain both species
+
+
+
+
+Contrarily, the Sørensen index
+(Dice 1945) measures the mean number of shared sites (i.e.,
+grid cells in our study) between a species pair, calculated
+as S𝜙r = 2c∕(2c + a + b), where a, b and c are defined as
+above. 
+
+
+
+
+# Ant-habitat associations
+## Indicator species analysis
+
+- microsite
+- shrub type at site
+- study site
+
+
 
 
 # Models
