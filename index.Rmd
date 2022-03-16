@@ -296,6 +296,7 @@ autoplot(traits.pca, xlab = "PCA 82.8%", ylab = "PCA 10.5%")
 ## Sites
 
 ```{r}
+library(vegan)
 env <- select(cov, 3:9, 12:15, 23:27, 29) %>% drop_na()
 env.labels <- select(cov, 1:2)
 options(scipen = 999)
@@ -499,6 +500,11 @@ row.names(spe) <- spe$uniID
 spe <- select(spe, -1, -2)
 
 
+spe.bin <- spe
+spe.bin[spe.bin > 1] <- 1
+```
+
+```{r}
 four.comb.ants.adj <- fourthcorner(env4, spe,
 traits.spe, modeltype = 6, p.adjust.method.G = "none",
 p.adjust.method.D = "fdr", nrepet = 999)
@@ -512,7 +518,7 @@ plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
 library(mvabund)
 fit <- traitglm(spe, env4, traits.spe)
 fit$fourth #notice LASSO penalty has shrunk many interactions to zero
-summary(fit)
+#summary(fit)
 #anova(fit, nBoot = 99)
 #signficant trait*env but takes 36 minutes to run
 
@@ -527,8 +533,7 @@ print(plot.4th)
 #test again for presence/absence
 #ant abundance may be more related to colony size which is a trait
 
-spe.bin <- spe
-spe.bin[spe.bin > 1] <- 1
+
 
 
 four.comb.ants.adj <- fourthcorner(env4, spe.bin,
@@ -542,7 +547,7 @@ plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
 
 
 fit <- traitglm(spe.bin, env4, traits.spe,family = "binomial")
-summary(fit)
+#summary(fit)
 fit$fourth #notice LASSO penalty has shrunk many interactions to zero
 
 a        = max( abs(fit$fourth.corner) )
@@ -584,6 +589,51 @@ above.
 - shrub type at site
 - study site
 
+# Beta-diversity
+
+```{r}
+library(betapart)
+
+spe.bin.core <- betapart.core(spe.bin)
+spe.bin.multi <- beta.multi(spe.bin)
+spe.bin.samp <- beta.sample(spe.bin.core, sites = 9, samples = 100)
+
+dist.s <- spe.bin.samp$sampled.values
+
+plot(density(dist.s$beta.SOR), xlim=c(0,0.8), ylim=c(0, 19), xlab="Beta diversity", main="", lwd=3)
+lines(density(dist.s$beta.SNE), lty=1, lwd=2)
+lines(density(dist.s$beta.SIM), lty=2, lwd=2)
+
+
+dist <- beta.pair(spe.bin, index.family = "sorensen")
+
+
+sor <- dist[[3]]
+sor <- as.matrix(sor)
+sor.mean <- rowMeans(sor, na.rm = TRUE)
+sim <- as.matrix(dist[[1]])
+sim.mean <- rowMeans(sim, na.rm = TRUE)
+sne <- as.matrix(dist[[2]])
+sne.mean <- rowMeans(sne, na.rm = TRUE)
+
+envbeta <- cbind(env4, sor.mean, sim.mean, sne.mean)
+
+envlong <- pivot_longer(envbeta, 10:12, names_to = "beta", values_to = "mean")
+
+envlong <- pivot_longer(envlong, c(1:5, 7, 8), names_to = "env", values_to = "value")
+
+ggplot(envlong, aes(value,mean , color = beta)) +
+  stat_smooth(method = "lm") + facet_wrap(~env, scales = "free")
+
+bd <- vegan::betadisper(dist[[3]], env4$shrub.site)
+plot(bd)
+boxplot(bd)
+anova(bd)
+
+
+
+
+```
 
 
 
