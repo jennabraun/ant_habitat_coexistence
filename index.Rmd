@@ -95,8 +95,6 @@ long <- group_by(long, uniID) %>%
 
 long <- long %>% mutate(rel.abun = count/total)
 
-
-
 traits.ag <- rename(traits.ag, species = X.1)
 traits.ag$species <- gsub(" ", "", traits.ag$species)
 
@@ -598,18 +596,25 @@ spe.bin.core <- betapart.core(spe.bin)
 spe.bin.multi <- beta.multi(spe.bin)
 spe.bin.samp <- beta.sample(spe.bin.core, sites = 9, samples = 100)
 
-dist.s <- spe.bin.samp$sampled.values
-
-plot(density(dist.s$beta.SOR), xlim=c(0,0.8), ylim=c(0, 19), xlab="Beta diversity", main="", lwd=3)
-lines(density(dist.s$beta.SNE), lty=1, lwd=2)
-lines(density(dist.s$beta.SIM), lty=2, lwd=2)
-
 
 dist <- beta.pair(spe.bin, index.family = "sorensen")
 
+bd <- vegan::betadisper(dist[[3]], env4$shrub.site)
 
+boxplot(bd)
+anova(bd)
+# difference in dispersion between the three
+TukeyHSD(bd)
+# contrasts not significant. ok.
+
+library(FD)
+library(vegan)
+gow <- gowdis(env4)
+euc <- dist(env4, "euclidean")
+gow <- as.matrix(gow)
 sor <- dist[[3]]
 sor <- as.matrix(sor)
+
 sor.mean <- rowMeans(sor, na.rm = TRUE)
 sim <- as.matrix(dist[[1]])
 sim.mean <- rowMeans(sim, na.rm = TRUE)
@@ -625,14 +630,33 @@ envlong <- pivot_longer(envlong, c(1:5, 7, 8), names_to = "env", values_to = "va
 ggplot(envlong, aes(value,mean , color = beta)) +
   stat_smooth(method = "lm") + facet_wrap(~env, scales = "free")
 
-bd <- vegan::betadisper(dist[[3]], env4$shrub.site)
-plot(bd)
-boxplot(bd)
-anova(bd)
 
 
+euc.dry <-dist(env4$dry.veg.percent, "euclidean")
+euc.Prec <- dist(env$Prec, "euclidean")
+euc.esi <- dist(env$esi, "euclidean")
+euc.vegheight <- dist(env$veg..height, "euclidean")
+euc.temp <- dist(env$Temp, "euclidean")
+euc.siteveg <- dist(env$mean.bare, "euclidean")
 
 
+mantel(euc.dry, sor, method = "spearman", permutations = 999, na.rm = TRUE)
+
+
+mantel(euc.Prec, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.esi, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.vegheight, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.temp, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.siteveg, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+# dry.veg. percent matters
+# site level differences do
+
+#yes, beta diversity (species composition) is correlated with the environment
 ```
 
 
