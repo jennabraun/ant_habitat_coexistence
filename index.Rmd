@@ -15,6 +15,7 @@ library(glmmTMB)
 library(ade4)
 library(nlme)
 library(ape)
+library(vegan)
 
 wide <- read.csv("Clean Data/ants_wide.csv")
 cov <- read.csv("Clean Data/ants.csv")
@@ -658,7 +659,31 @@ mantel(euc.siteveg, sor, method = "spearman", permutations = 99, na.rm = TRUE)
 
 #yes, beta diversity (species composition) is correlated with the environment
 ```
+# Co-occurence
 
+Make dist dataframes for pairwise C-scores at site and pitfall trap level
+```{r}
+
+pitlabels <- select(wide, 1 ,2)
+pitwide <- wide
+pitwide <- select(pitwide, -1, -2)
+#make dataframe presence/absence
+pitwide[pitwide > 1] <- 1
+#calculate pairwise C-Scores
+pitc <- designdist(t(pitwide), "(A-J)*(B-J)", "binary")
+pitc <- as.matrix(pitc)
+
+#let's try with a package
+library(ecospat)
+library(bipartite)
+
+c <- C.score(pitwide, normalise = TRUE, FUN = hist)
+C.score(pitwide, normalise = TRUE, FUN = print)
+?C.score
+
+library(eco)
+
+```
 
 
 # Models
