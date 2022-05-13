@@ -119,6 +119,41 @@ CWM <- left_join(CWM, cov, by = "uniID")
 
 ```
 
+## CWM - Presence/absence
+
+```{r}
+long.pres <- pivot_longer(wide, 3:13, names_to = "species", values_to = "count")
+
+long.pres <- mutate(long.pres, count.bin = ifelse(count >= 1, 1, 0))
+
+#get total abundance per trap
+long.pres <- group_by(long.pres, uniID) %>% 
+  mutate(total = sum(count.bin)) 
+
+long.pres <- long.pres %>% mutate(rel.abun = count.bin/total)
+
+#traits.ag <- rename(traits.ag, species = X.1)
+#traits.ag$species <- gsub(" ", "", traits.ag$species)
+
+#this adds NA traits to 0 abundances - species isn't found at pitfall or site
+join.right <- right_join(traits.ag, long.pres, by = c("Site", "species"))
+
+#join.left <- left_join(traits.ag, long, by = c("Site", "species"))
+
+CWM.pres <- mutate(join.right, cwm.prod = mean*rel.abun)
+
+CWM.pres <- group_by(CWM.pres, Site, uniID, Trait) %>% summarise(cwm = sum(cwm.prod))
+
+#can log transform the abundances to look at dominants vs subordinates
+
+#join environmental data to CWM trait dataframe
+
+CWM.pres <- left_join(CWM.pres, cov, by = "uniID")
+
+```
+
+
+
 # EDA
 
 ## Community Weighted Mean Trait * Sites
@@ -315,7 +350,12 @@ autoplot(env.pca, xlab = "PCA 31.4%", ylab = "PCA 20.3%")
 ```
 Cool that water stress is correlated with variability in vegetation
 
+## NMDS
+```{r}
+#let's do a NMDS on presence/absence and then use envit
 
+
+```
 # ITV
 
 Intraspecific trait variation
@@ -479,7 +519,7 @@ traits.spe <- as.data.frame(traits.spe) %>% ungroup()
 traits.spe <- select(traits.spe, -species)
 #I want veg height but there are NAs ugh
 
-env4 <- select(cov, uniID, 3, 4, 5,12, 13, 17, 23, 29, 34)
+env4 <- select(cov, uniID, 2, 3, 4, 5,12, 13,15,  17, 23, 29, 34)
 env4$Microsite <- as.factor(env4$Microsite)
 
 naveg <- env4[is.na(env4$veg..height),]
@@ -501,6 +541,90 @@ spe <- select(spe, -1, -2)
 
 spe.bin <- spe
 spe.bin[spe.bin > 1] <- 1
+```
+
+## NMDS
+
+```{r}
+
+#get rid of zero rows in species data and also in environmental data
+zero <- filter(spe.bin,rowSums(spe.bin)!=0)
+zeroID <- row.names(zero)
+zeroenv <- cov[cov$uniID %in% zeroID, ]
+envz <- select(zeroenv,2,  3:9, 12, 17, 23, 29, 34)
+#wow so many zeros?
+
+nm <- metaMDS(zero)
+
+envfit(nm ~ esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + veg..height + mean.height + Temp,envz, strata = envz$Site, perm = 999)
+
+
+# m1 <- cca(zero ~ esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + veg..height + mean.height + Temp + Site,envz, perm = 999)
+# summary(m1)
+# anova.cca(m1, by = "margin")
+```
+
+## CWM-NMDS
+```{r}
+
+cwm.comm <- select(CWM.pres, 2:4)
+cwm.comm <- pivot_wider(cwm.comm, names_from = Trait, values_from = cwm)
+cwm.comm <- select(cwm.comm, 3,5, 8,9,11, 13, 14)
+row.names(cwm.comm) <- cwm.comm$uniID
+
+cwm.comm <- drop_na(cwm.comm)
+#hmm why is it 525 though?
+#525 because of the missing data in veg height 
+
+cwm.zero <- cwm.comm$uniID
+
+#the NAs must be the zero rows
+
+
+cwm.comm <- ungroup(cwm.comm) %>% select(-uniID)
+
+cwm.env <- select(cov, 1, 2:9, 12, 17, 23, 13, 31, 34)
+cwm.env <- cwm.env[cwm.env$uniID %in% cwm.zero, ]
+cwm.env <- select(cwm.env, -uniID)
+nm.cwm <- metaMDS(cwm.comm)
+m1 <- envfit(nm.cwm ~  esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp, cwm.env, permutations = 9999, strata = cwm.env$Site, na.rm = TRUE)
+m1
+
+plot(nm)
+ordiplot(m1)
+
+
+rdaNEspain.all <- rda(cwm.comm ~ esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp, data = cwm.env, permutations = 9999, strata = cwm.env$Site)
+plot(rdaNEspain.all, type = "n", scaling = "sites")
+text(rdaNEspain.all, dis = "cn", scaling = "sites")
+text(rdaNEspain.all, dis = "sp", scaling = "sites", col = "red")
+anova.cca(rdaNEspain.all)
+anova.cca(rdaNEspain.all, by = "terms")
+anova.cca(rdaNEspain.all, by = "margin")
+anova.cca(rdaNEspain.all, by = "axis")
+rdaNEspain.all
+#RDA does not explain much variation at all
+#maybe stick with the nmds then?
+```
+db-RDA
+
+
+```{r}
+
+m2 <- capscale(zero~ Prec + esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp + Condition(Site), data = envz, dist = "bray")
+
+m2
+summary(m2)
+anova.cca(m2, by = "terms", model = "reduced", strata = envz$Site)
+
+m0 <- m1 <- capscale(cwm.comm ~ 1+ Condition(Site), data = cwm.env, dist = "bray")
+
+m1 <- capscale(cwm.comm ~ Prec + esi +mean.cover +dry.veg.percent+  mean.height  + month+ Condition(Site), data = cwm.env, dist = "bray")
+
+m1
+plot(m1)
+
+anova.cca(m1, by = "margin", strata = cwm.env$Site)
 ```
 
 ```{r}
@@ -624,9 +748,17 @@ sne.mean <- rowMeans(sne, na.rm = TRUE)
 
 envbeta <- cbind(env4, sor.mean, sim.mean, sne.mean)
 
-envlong <- pivot_longer(envbeta, 10:12, names_to = "beta", values_to = "mean")
 
-envlong <- pivot_longer(envlong, c(1:5, 7, 8), names_to = "env", values_to = "value")
+mb <- glmmTMB(sim.mean ~  dry.veg.percent + Microsite  + mean.cover +  esi  + arid  + veg..height + (1|Site), data = envbeta)
+
+decay.model()
+
+summary(mb)
+
+
+envlong <- pivot_longer(envbeta, 11:13, names_to = "beta", values_to = "mean")
+
+envlong <- pivot_longer(envlong, c(1:6, 8, 9), names_to = "env", values_to = "value")
 
 ggplot(envlong, aes(value,mean , color = beta)) +
   stat_smooth(method = "lm") + facet_wrap(~env, scales = "free")
@@ -634,12 +766,12 @@ ggplot(envlong, aes(value,mean , color = beta)) +
 
 
 euc.dry <-dist(env4$dry.veg.percent, "euclidean")
-euc.Prec <- dist(env$Prec, "euclidean")
-euc.esi <- dist(env$esi, "euclidean")
-euc.vegheight <- dist(env$veg..height, "euclidean")
-euc.temp <- dist(env$Temp, "euclidean")
-euc.siteveg <- dist(env$mean.bare, "euclidean")
-
+euc.Prec <- dist(env4$Prec, "euclidean")
+euc.esi <- dist(env4$esi, "euclidean")
+euc.vegheight <- dist(env4$veg..height, "euclidean")
+euc.temp <- dist(env4$Temp, "euclidean")
+euc.siteveg <- dist(env4$mean.bare, "euclidean")
+euc.arid <- dist(env4$arid, "euclidean")
 
 mantel(euc.dry, sor, method = "spearman", permutations = 999, na.rm = TRUE)
 
@@ -653,6 +785,9 @@ mantel(euc.vegheight, sor, method = "spearman", permutations = 99, na.rm = TRUE)
 mantel(euc.temp, sor, method = "spearman", permutations = 99, na.rm = TRUE)
 
 mantel(euc.siteveg, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.arid, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
 
 # dry.veg. percent matters
 # site level differences do
@@ -690,20 +825,28 @@ library(eco)
 ## Ant abundance
 
 ```{r}
+cov %>% group_by(month) %>% summarise(sum = sum(abun))
+
+
 m1.m11 <- glmmTMB(abun ~ dry.veg.percent + Microsite + month + mean.cover + Prec + (1|Site), family = "poisson", data = cov)
 summary(m1.m11)
 check_overdispersion(m1.m11)
 
-m1.mnb <- glmmTMB(abun ~ dry.veg.percent + Microsite + month + mean.cover + Prec + (1|Site), family = "nbinom2", data = cov)
+m1.mnb <- glmmTMB(abun ~ dry.veg.percent + Microsite + month + mean.cover + Prec + esi + (1|Site), family = "nbinom2", data = cov)
 summary(m1.mnb)
 ```
 
 ## Ant richness
 
 ```{r}
-m2 <- glmmTMB(Species ~ dry.veg.percent + Microsite + month + mean.cover + Prec + (1|Site), family = "nbinom2", data = cov)
+m1 <- glmmTMB(Species ~ dry.veg.percent + Microsite  + mean.cover +  esi + mean.height +  shrub.site + arid + month + veg..height + (1|Site) , family = "poisson", data = cov)
+
+summary(m1)
+
+m2 <- glmmTMB(Species ~ dry.veg.percent + Microsite  + mean.cover +  esi + mean.height +  shrub.site + arid + month + (1|Site) , family = "nbinom2", data = cov)
 summary(m2)
 
+AIC(m1, m2)
 ```
 
 
