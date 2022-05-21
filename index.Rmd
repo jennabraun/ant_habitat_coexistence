@@ -24,7 +24,7 @@ cov <- right_join(sites, cov, by = c("Site", "month"))
 
 cov <- dplyr::select(cov, 3:10, 14:19, 22:36, 39:41)
 
-
+sum(cov$abun)
 #add ecostress sensor data
 eco <- read.csv("Clean Data/ecostress.csv")
 eco <- select(eco, 1, 2, 11)
@@ -46,7 +46,7 @@ traits <- read.csv("raw data/Traits.csv")
 unique(traits$Trait)
 #I don't trust the eye width measurements because they were from the front
 traits <- filter(traits, Trait != "Eye width")
-
+unique(traits$Photo)
 traits <- separate(traits, Photo, c("Site", "Slide", "Specimen"))
 traits$Site <- gsub("Papl", "PaPl", traits$Site)
 unique(traits$Site)
@@ -62,6 +62,7 @@ traits <- mutate(traits, Femur.w = Femur/Webers, Scape.w = Scape/Webers, Mandibl
 traits <- pivot_longer(traits, 5:17, names_to = "Trait", values_to = "Measure")
 
 unique(traits$X.1)
+
 
 #some traits are NA because of damage to the specimen
 traits <- drop_na(traits)
@@ -350,12 +351,6 @@ autoplot(env.pca, xlab = "PCA 31.4%", ylab = "PCA 20.3%")
 ```
 Cool that water stress is correlated with variability in vegetation
 
-## NMDS
-```{r}
-#let's do a NMDS on presence/absence and then use envit
-
-
-```
 # ITV
 
 Intraspecific trait variation
@@ -551,7 +546,7 @@ spe.bin[spe.bin > 1] <- 1
 zero <- filter(spe.bin,rowSums(spe.bin)!=0)
 zeroID <- row.names(zero)
 zeroenv <- cov[cov$uniID %in% zeroID, ]
-envz <- select(zeroenv,2,  3:9, 12, 17, 23, 29, 34)
+envz <- select(zeroenv,2,  3:9, 12, 15, 17, 23, 29, 34)
 #wow so many zeros?
 
 nm <- metaMDS(zero)
@@ -583,7 +578,7 @@ cwm.zero <- cwm.comm$uniID
 
 cwm.comm <- ungroup(cwm.comm) %>% select(-uniID)
 
-cwm.env <- select(cov, 1, 2:9, 12, 17, 23, 13, 31, 34)
+cwm.env <- select(cov, 1, 2:9, 12, 15, 17, 23, 13, 31, 34)
 cwm.env <- cwm.env[cwm.env$uniID %in% cwm.zero, ]
 cwm.env <- select(cwm.env, -uniID)
 nm.cwm <- metaMDS(cwm.comm)
@@ -611,27 +606,48 @@ db-RDA
 
 ```{r}
 
-m2 <- capscale(zero~ Prec + esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp + Condition(Site), data = envz, dist = "bray")
+m2 <- capscale(zero~ arid + esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp + Condition(Site), data = envz, dist = "bray")
 
 m2
 summary(m2)
 anova.cca(m2, by = "terms", model = "reduced", strata = envz$Site)
 
-m0 <- m1 <- capscale(cwm.comm ~ 1+ Condition(Site), data = cwm.env, dist = "bray")
+m0  <- capscale(cwm.comm ~ 1+ Condition(Site), data = cwm.env, dist = "bray")
 
-m1 <- capscale(cwm.comm ~ Prec + esi +mean.cover +dry.veg.percent+  mean.height  + month+ Condition(Site), data = cwm.env, dist = "bray")
+
+
+m1 <- capscale(cwm.comm ~ Prec + esi +mean.cover +dry.veg.percent+  + month+ Condition(Site), data = cwm.env, dist = "bray")
+
+
+m1 <- capscale(cwm.comm ~ arid + esi + Temp +mean.cover +dry.veg.percent+ var.cover+ Microsite  + shrub.site + month + Condition(Site), data = cwm.env, dist = "bray")
+
 
 m1
-plot(m1)
+plot.cca(m1)
+summary(m1)
+anova(m1)
+anova.cca(m1, by = "terms", strata = cwm.env$Site)
+anova.cca(m1, by = "axis", strata = cwm.env$Site)
+ordiplot(m1)
+arrows(m1, "species")
+pl <- ordiplot(m1, type = "none")
+points(pl, "sites", pch=21, col="red", bg="yellow")
+text(pl, "species", col="blue", cex=0.9, arrows = TRUE)
+arrows(p1, "sites")
 
-anova.cca(m1, by = "margin", strata = cwm.env$Site)
 ```
 
 ```{r}
-four.comb.ants.adj <- fourthcorner(env4, spe,
+
+env4$Site <- as.factor(env4$Site)
+#evn4C <- select(env4, 2, 3, 7, 8, 9, 11)
+evn4C <- select(env4, 2:11)
+#evn4C <- select(evn4C, 1, 3)
+four.comb.ants.adj <- fourthcorner(evn4C, spe.bin,
 traits.spe, modeltype = 6, p.adjust.method.G = "none",
 p.adjust.method.D = "fdr", nrepet = 999)
 
+## Hmm look into different models more
 four.comb.ants.adj 
 plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
 
@@ -639,10 +655,12 @@ plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
 #gotta add shrub type
 
 library(mvabund)
-fit <- traitglm(spe, env4, traits.spe)
+fit <- traitglm(spe.bin, evn4C, traits.spe, family = "binomial", method = "glm1path")
 fit$fourth #notice LASSO penalty has shrunk many interactions to zero
-#summary(fit)
-#anova(fit, nBoot = 99)
+
+#summary(fit, blcok = env4)
+
+anova(fit, block = env4$Site, resamp = "case", nBoot = 99)
 #signficant trait*env but takes 36 minutes to run
 
 library(lattice)
@@ -653,6 +671,8 @@ plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variab
  scales = list( x= list(rot = 45)))
 print(plot.4th)
 
+library(jtools)
+summ(fit)
 #test again for presence/absence
 #ant abundance may be more related to colony size which is a trait
 
@@ -841,8 +861,13 @@ summary(m1.mnb)
 ```{r}
 m1 <- glmmTMB(Species ~ dry.veg.percent + Microsite  + mean.cover +  esi + mean.height +  shrub.site + arid + month + veg..height + (1|Site) , family = "poisson", data = cov)
 
-summary(m1)
 
+cor.test(cov$mean.cover, cov$esi)
+
+summary(m1)
+library(performance)
+
+check_collinearity(m1)
 m2 <- glmmTMB(Species ~ dry.veg.percent + Microsite  + mean.cover +  esi + mean.height +  shrub.site + arid + month + (1|Site) , family = "nbinom2", data = cov)
 summary(m2)
 
