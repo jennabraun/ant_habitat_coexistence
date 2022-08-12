@@ -17,11 +17,15 @@ fire <- filter(fire, dubious != "Dubious")
 fire <- filter(fire, country != "Bahamas")
 unique(fire$country)
 
+
+write.csv(fire, "fireants.csv")
+
+
 fire <- filter(fire, dec_lat != "")
 crs <- st_crs(envs)
 fire_sf <- st_as_sf(fire, coords = c("dec_long", "dec_lat"), crs= st_crs(sh))
 
-
+st_write(fire_sf, "fire.shp")
 occs.cells <- raster::extract(envs[[1]], fire_sf, cellnumbers = TRUE)
 occs.cellDups <- duplicated(occs.cells[,1])
 occs <- fire_sf
