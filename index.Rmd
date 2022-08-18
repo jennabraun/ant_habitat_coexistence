@@ -16,8 +16,14 @@ library(ade4)
 library(nlme)
 library(ape)
 library(vegan)
-library(TPD)
+library(ggvegan)
+#library(TPD)
+```
 
+
+```{r}
+
+#see Cleaning.R in scripts folder for data cleaning
 wide <- read.csv("Clean Data/ants_wide.csv")
 cov <- read.csv("Clean Data/ants.csv")
 sites <- read.csv("Clean Data/sites_joined.csv")
@@ -25,29 +31,36 @@ cov <- right_join(sites, cov, by = c("Site", "month"))
 
 cov <- dplyr::select(cov, 3:10, 14:19, 22:36, 39:41)
 
+#total count of ants
 sum(cov$abun)
+
 #add ecostress sensor data
 eco <- read.csv("Clean Data/ecostress.csv")
 eco <- select(eco, 1, 2, 11)
 eco <- rename(eco, month = Category, Site = ID, esi = ECO4ESIPTJPL_001_Evaporative_Stress_Index_PT_JPL_ESIavg)
 cov <- right_join(eco, cov, by = c("Site", "month"))
 
+#read in foundation plant identity for the sites
 shrubs <- read.csv("Clean Data/shrubs.csv")
 cov <- right_join(cov, shrubs, by = "Site")
 cov$shrub.site <- as.factor(cov$shrub.site)
-
 ```
 
 
 
 
 ```{r}
+
+#cleaning the raw trait data
 traits <- read.csv("raw data/Traits.csv")
 
+#check for spelling mistakes in trait labels
 unique(traits$Trait)
-#I don't trust the eye width measurements because they were from the front
+#I don't trust the eye width measurements because they were measured from the front
 traits <- filter(traits, Trait != "Eye width")
 unique(traits$Photo)
+
+#extract site IDs from photo names
 traits <- separate(traits, Photo, c("Site", "Slide", "Specimen"))
 traits$Site <- gsub("Papl", "PaPl", traits$Site)
 unique(traits$Site)
@@ -56,88 +69,54 @@ traits <- traits[-1,]
 #remove the double pheidole entry
 traits <- traits[-2,]
 
-#need to divide the trait values by weber's body length. I want to do this at the individual level
+#need to divide the trait values by weber's body length. I want to do this at the individual level, not dividing means by mean webers
 traits <- select(traits, -X, -Label)
 traits <- pivot_wider(traits, names_from = Trait, values_from = Measure)
 traits <- mutate(traits, Femur.w = Femur/Webers, Scape.w = Scape/Webers, Mandible.w = `Mandible length`/Webers, Headl.w = `Head length`/Webers, Eyel.w = `Eye length`/Webers, Headw.w = `Head width`/Webers)
 traits <- pivot_longer(traits, 5:17, names_to = "Trait", values_to = "Measure")
 
+#check for ant species name typoes
 unique(traits$X.1)
-
 
 #some traits are NA because of damage to the specimen
 traits <- drop_na(traits)
 
-#calculate the mean value of the trait for each species at each site
+#calculate the mean value of the trait for each species at each site (population level trait values)
 traits.ag <- group_by(traits, Site, X.1, Trait) %>%
   summarise(mean = mean(Measure), sd = sd(Measure))
 
-#create a data frame of the mean values for each species across all sites
+#create a data frame of the mean values for each species across all sites (species level trait values)
 traits.sp <- group_by(traits, X.1, Trait) %>% 
   summarise(mean = mean(Measure), sd = sd(Measure))
-
-
-#calculate CWM trait values
-
-#I want to do abundance
-#it's proportional abundances 
-
-site.j <- select(cov, uniID, Site)
-wide <- right_join(site.j, wide, by = "uniID")
-
-wide <- select(wide, -X)
-#remove the two other solenopsis species with 1 individual
-wide <- select(wide, -12, -13)
-#wide <- rename(wide, Site = Site.x) %>%
-  #select(-Site.y)
-
-long <- pivot_longer(wide, 3:13, names_to = "species", values_to = "count")
-#get total abundance per trap
-long <- group_by(long, uniID) %>% 
-  mutate(total = sum(count)) 
-
-long <- long %>% mutate(rel.abun = count/total)
-
-traits.ag <- rename(traits.ag, species = X.1)
-traits.ag$species <- gsub(" ", "", traits.ag$species)
-
-#this adds NA traits to 0 abundances - species isn't found at pitfall or site
-join.right <- right_join(traits.ag, long, by = c("Site", "species"))
-
-#join.left <- left_join(traits.ag, long, by = c("Site", "species"))
-
-CWM <- mutate(join.right, cwm.prod = mean*rel.abun)
-
-CWM <- group_by(CWM, Site, uniID, Trait) %>% summarise(cwm = sum(cwm.prod))
-
-#can log transform the abundances to look at dominants vs subordinates
-
-
-
-#join environmental data to CWM trait dataframe
-
-CWM <- left_join(CWM, cov, by = "uniID")
-
 
 ```
 
 ## CWM - Presence/absence
 
 ```{r}
-long.pres <- pivot_longer(wide, 3:13, names_to = "species", values_to = "count")
+#we could also try to log transform the abundances to reduce the impact of colony size 
+#this is presence absence
+
+long.pres <- pivot_longer(wide, 2:14, names_to = "species", values_to = "count")
 
 long.pres <- mutate(long.pres, count.bin = ifelse(count >= 1, 1, 0))
 
+spe.bin <- long.pres
 #get total abundance per trap
 long.pres <- group_by(long.pres, uniID) %>% 
   mutate(total = sum(count.bin)) 
 
+#calculate relative abundances
 long.pres <- long.pres %>% mutate(rel.abun = count.bin/total)
 
-#traits.ag <- rename(traits.ag, species = X.1)
-#traits.ag$species <- gsub(" ", "", traits.ag$species)
+traits.ag <- rename(traits.ag, species = X.1)
+traits.ag$species <- gsub(" ", "", traits.ag$species)
 
+#add sites to long
+long.pres <- cov %>% select(Site, uniID) %>% right_join(long.pres, . , by = 'uniID')
 #this adds NA traits to 0 abundances - species isn't found at pitfall or site
+
+  
 join.right <- right_join(traits.ag, long.pres, by = c("Site", "species"))
 
 #join.left <- left_join(traits.ag, long, by = c("Site", "species"))
@@ -146,7 +125,7 @@ CWM.pres <- mutate(join.right, cwm.prod = mean*rel.abun)
 
 CWM.pres <- group_by(CWM.pres, Site, uniID, Trait) %>% summarise(cwm = sum(cwm.prod))
 
-#can log transform the abundances to look at dominants vs subordinates
+
 
 #join environmental data to CWM trait dataframe
 
@@ -154,23 +133,22 @@ CWM.pres <- left_join(CWM.pres, cov, by = "uniID")
 
 ```
 
+```{r}
+#make a presence/absence pitfall trap data frame
 
+spe.bin <- select(spe.bin, 2, 3, 5)
+spe.bin <- pivot_wider(spe.bin, names_from = species, values_from = count.bin)
+spe.bin <- select(spe.bin, -11, -12)
+```
 
 # EDA
-
-## Community Weighted Mean Trait * Sites
-
-```{r}
-CWM <- rename(CWM, Site = Site.x)
-
-```
 
 ## Heat Map
 
 ```{r}
 
-mat <- pivot_wider(CWM, names_from = Trait, values_from = cwm)
-mat <- select(mat, 5:11, 14:17, 25:31, 36:48) %>% ungroup()
+mat <- pivot_wider(CWM.pres, names_from = Trait, values_from = cwm)
+mat <- select(mat, 6:11, 14:17, 25:29, 31, 33, 34, 36, 38, 41, 42, 44, 46, 47) %>% ungroup()
 mat <- ungroup(mat) %>% select(-uniID)
 mat <- drop_na(mat)
 #str(mat)
@@ -178,38 +156,60 @@ M <- cor(mat)
 corrplot::corrplot(M, method = "number")
 ```
 
-# PCA 
 
-## Traits
+
+## PCA for traits
+
+### Invidividuals
 
 ```{r}
 # I want the PCA on traits
 # make it wide again
 
 traits.wide <- pivot_wider(traits, names_from = Trait, values_from = Measure)
+#keep only weber lengthh standardized traits
 traits.wide <- select(traits.wide, 11:17)
 traits.wide <- drop_na(traits.wide)
 
-library(vegan)
-library(ggvegan)
-traits.pca <- rda(traits.wide)
-#summary(traits.pca)
-#no scaling because the traits all have the same units
-autoplot(traits.pca, xlab = "PCA 82.8%", ylab = "PCA 10.5%")
+traits.st <- decostand(traits.wide, method = "standardize")
+traits.pca <- rda(traits.st)
 
+#summary(traits.pca)
+autoplot(traits.pca, xlab = "PCA 33.9%", ylab = "PCA 32.9%")
+#PC3 is ~15%
 
 ```
+
+
+### Populations
+
+```{r}
+
+trait.pop <- traits.ag
+trait.pop$spepop <- paste(trait.pop$species, trait.pop$Site)
+trait.pop <- ungroup(trait.pop) %>% select(spepop, Trait, mean)
+trait.pop <- pivot_wider(trait.pop, names_from = Trait, values_from = mean)
+trait.pop <- select(trait.pop, 1, 3, 5, 8, 9, 11, 13, 14)
+
+trait.pop.st <- select(trait.pop, -1) %>% decostand(method = "standardize")
+trait.pop.pca <- rda(trait.pop.st)
+#summary(trait.pop.pca)
+autoplot(trait.pop.pca, xlab = "PCA 35.8%", ylab = "PCA 32.2 %")
+#PCA3 ~ 16%
+```
+
+
 
 ## Sites
 
 ```{r}
-library(vegan)
+
 env <- select(cov, 3:9, 12:15, 23:27, 29) %>% drop_na()
-env.labels <- select(cov, 1:2)
-options(scipen = 999)
-env.pca <- rda(env, scaling = TRUE)
+#env.labels <- select(cov, 1:2)
+#options(scipen = 999)
+#env.pca <- rda(env, scaling = TRUE)
 #summary(env.pca)
-autoplot(env.pca)
+#autoplot(env.pca)
 #doesn't look good
 
 #standardize to mean of zero etc
@@ -217,11 +217,11 @@ autoplot(env.pca)
 env.d <- decostand(env, method = "standardize")
 env.pca <- rda(env.d)
     
-#summary(env.pca)
+summary(env.pca)
 autoplot(env.pca, xlab = "PCA 31.4%", ylab = "PCA 20.3%")
 
 ```
-Cool that water stress is correlated with variability in vegetation
+
 
 # ITV
 
@@ -370,81 +370,9 @@ Compare shifts in CWM measured along a gradient using site-specific trait values
 
 
 
-# Fourth Corner
-## 4th Corner bivariate correlations
-```{r}
+# Alpha diversity
 
-#We need to set up our data
-
-
-spe <- wide
-
-#for traits species should be rows, traits cols
-traits.spe <- select(traits.sp, -sd)
-traits.spe <- pivot_wider(traits.spe, names_from = Trait, values_from = mean)
-
-#only keep corrected traits (divided by body length)
-#only keep one head trait (keeping width)
-
-traits.spe <- select(traits.spe, 1, 3,5, 9, 11, 13, 14)
-traits.spe <- rename(traits.spe, species = X.1)
-row.names(traits.spe) <- traits.spe$species
-traits.spe <- as.data.frame(traits.spe) %>% ungroup()
-traits.spe <- select(traits.spe, -species)
-#I want veg height but there are NAs ugh
-
-env4 <- select(cov, uniID, 2, 3, 4, 5,12, 13,15,  17, 23, 29, 34)
-env4$Microsite <- as.factor(env4$Microsite)
-
-naveg <- env4[is.na(env4$veg..height),]
-
-#make a vector of NA values
-naveg <- naveg$uniID
-`%!in%` <- Negate(`%in%`)
-
-#remove those NA rows from the species table
-spe <- spe[spe$uniID %!in% naveg, ]
-env4 <- env4[env4$uniID %!in% naveg, ]
-
-row.names(env4) <- env4$uniID
-env4 <- env4[,-1]
-
-row.names(spe) <- spe$uniID
-spe <- select(spe, -1, -2)
-
-
-spe.bin <- spe
-spe.bin[spe.bin > 1] <- 1
-```
-
-## NMDS
-
-```{r}
-
-#get rid of zero rows in species data and also in environmental data
-zero <- filter(spe.bin,rowSums(spe.bin)!=0)
-zeroID <- row.names(zero)
-zeroenv <- cov[cov$uniID %in% zeroID, ]
-envz <- select(zeroenv,2,  3:9, 12, 15, 17, 23, 29, 34)
-#wow so many zeros?
-
-#nm <- metaMDS(zero)
-
-#envfit(nm ~ esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + veg..height + mean.height + Temp,envz, strata = envz$Site, perm = 999)
-
-
-# m1 <- cca(zero ~ esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + veg..height + mean.height + Temp + Site,envz, perm = 999)
-# summary(m1)
-# anova.cca(m1, by = "margin")
-```
-
-
-
-
-## Functional diversity
-
-
-
+### more data wrangling
 ```{r}
 
 
@@ -453,11 +381,6 @@ library(FD)
 #need a species by trait matrix, but I want to use the population means
 #make species name the name + site
 
-trait.pop <- traits.ag
-trait.pop$spepop <- paste(trait.pop$species, trait.pop$Site)
-trait.pop <- ungroup(trait.pop) %>% select(spepop, Trait, mean)
-trait.pop <- pivot_wider(trait.pop, names_from = Trait, values_from = mean)
-trait.pop <- select(trait.pop, 1, 3, 5, 8, 9, 11, 13, 14)
 
 # need a species by site matrix with the species pop names
 
@@ -493,15 +416,27 @@ wide.pop <- select(wide.pop, -sites)
 #can I have zero rows?
 #wide.pop <- wide.pop[which(rowSums(wide.pop) !=0),]
 
+#remove the two solenopsis singletons - no trait measuremnts
+
+wide.pop <- select(wide.pop, -36, -42)
+
+
 #check to ensure names are matched correctly between dataframes
 spec <- colnames(wide.pop)
-all.equal(spec, trait.pop$spepop)
+
+#trait.pop$spepop <- gsub(" ", "", trait.pop$spepop)
+
 trait.pop <- as.data.frame(trait.pop)
 row.names(trait.pop) <- trait.pop$spepop
 trait.pop <- select(trait.pop, -spepop)
 
+all.equal(spec, row.names(trait.pop))
 
+```
+### Null model/SES calculation
 
+### Functional dispersion
+```{r}
 library(picante)
 rep.is <- replicate(5, randomizeMatrix(wide.pop, null.model = "independentswap"))
 
@@ -525,12 +460,14 @@ SES_dis <- data.frame(ES3)
 SES_dis$sites <- row.names(SES_dis)
 #join site-level environmental measurements to data
 
+cov$sites <- paste(cov$Site, cov$month)
 SES <- select(cov, 1:15, shrub.site, sites) %>% distinct() %>% left_join(SES_dis, by = "sites")
-fdis$disp <- as.numeric(fdis$fdis)
 
-SES <- mutate(SES, esi_rev = esi * -1)
+```
 
-ggplot(SES, aes(esi_rev, ES3)) + geom_smooth(method = 'lm')
+## Functional dispersion
+```{r}
+
 ggplot(SES, aes(esi, ES3, color = month)) + geom_smooth(method = 'lm')
 
 
@@ -539,14 +476,10 @@ ggplot(SES, aes(arid, esi)) + geom_smooth(method = 'lm')
 
 ggplot(SES, aes(arid, ES3)) + geom_smooth(method = 'lm')
 ggplot(SES, aes(mean.cover, ES3)) + geom_smooth(method = 'lm')
-ggplot(fdis, aes(Prec, disp)) + geom_smooth()
-ggplot(fdis, aes(esi, disp)) + geom_smooth()
-ggplot(fdis, aes(Temp, disp)) + geom_smooth()
 ggplot(SES, aes(Max, ES3)) + geom_smooth()
 ggplot(SES, aes(var.cover, ES3)) + geom_smooth()
 
-ggplot(fdis, aes(shrub.site, disp)) + geom_boxplot()
-ggplot(fdis, aes(arid, esi, color = Site)) + geom_point()
+
 
 t.test(SES$ES3)
 
@@ -573,16 +506,9 @@ summary(m1)
 shapiro.test(resid(m1))
 
 
-m1 <- dis %>% filter(shrub.site != 'open') %>% glm(dis2 ~ Microsite + month + ESI, family = 'gaussian', .)
-m1 <- glm(dis2 ~ Microsite+arid  + month , family = 'gaussian',  data = dis)
-summary(m1)
-
-
-ggplot(dis, aes(shrub.site, dis, fill = Microsite)) + geom_boxplot()
-
 ```
 
-
+#this actually takes the species-level traits instead of population level
 
 ```{r}
 #let's do a null model for pitfall trap level, can randomize between sites?
@@ -599,9 +525,11 @@ traits.spe <- rename(traits.spe, species = X.1)
 traits.spe <- as.data.frame(traits.spe) %>% ungroup()
 traits.spe$species <- gsub(" ", "", traits.spe$species)
 row.names(traits.spe) <- traits.spe$species
-
 traits.spe <- select(traits.spe, -species)
 
+spe.bin <- as.data.frame(spe.bin)
+row.names(spe.bin) <- spe.bin$uniID
+spe.bin <- select(spe.bin, -uniID)
 
 #remove zero rows
 spe.bin <- spe.bin[rowSums(spe.bin) > 0,]
@@ -646,9 +574,7 @@ shapiro.test(resid(m1))
 plot(resid(m1))
 
 
-t.test(SES_pit$ES3~ SES_pit$Microsite)
 
-fdis$disp <- as.numeric(fdis$fdis)
 
 m2 <- glmmTMB(Species ~ esi + Microsite+ arid + dry.veg.percent  +  shrub.site+ mean.cover + (1|Site) + (1|month), family = "poisson", data = SES_pit)
 
@@ -657,111 +583,44 @@ summary(m2)
 ```
 
 
-```{r}
-
-m2 <- capscale(zero~ arid + esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp + Condition(Site), data = envz, dist = "bray")
-
-m2
-summary(m2)
-anova.cca(m2, by = "margin", model = "reduced", strata = envz$Site)
-
-
-
-m0  <- capscale(cwm.comm ~ 1+ Condition(Site), data = cwm.env, dist = "bray")
-
-
-
-m1 <- capscale(cwm.comm ~ Prec + esi +mean.cover +dry.veg.percent+  + month+ Condition(Site), data = cwm.env, dist = "bray")
-
-
-m1 <- capscale(cwm.comm ~ arid + esi  +mean.cover +dry.veg.percent+  Microsite  + Condition(Site), data = cwm.env, dist = "bray")
-
-RsquareAdj(m1)$r.squared
-m1
-plot.cca(m1)
-
-
-cor.test(cwm.env$esi, cwm.env$arid)
-plot(cwm.env$esi, cwm.env$arid)
-
-ggplot(cwm.env, aes(esi, arid)) + geom_smooth()
-
-plot(m1, type = "n", scaling = "sites")
-text(m1, dis = "cn", scaling = "sites")
-text(m1, dis = "sp", scaling = "sites", col = "red")
-
-autoplot(m1, scaling = 1)
-
-summary(m1)
-anova(m1)
-anova.cca(m1, by = "terms", strata = cwm.env$Site)
-anova.cca(m1, by = "margin", strata = cwm.env$Site)
-anova.cca(m1, by = "axis", strata = cwm.env$Site)
-ordiplot(m1)
-arrows(m1, "species")
-pl <- ordiplot(m1, type = "none")
-points(pl, "sites", pch=21, col="red", bg="yellow")
-text(pl, "species", col="blue", cex=0.9, arrows = TRUE)
-arrows(p1, "sites")
-
-```
+## Alpha diversity - species richness
 
 ```{r}
 
-env4$Site <- as.factor(env4$Site)
-evn4C <- select(env4, 2, 3, 7, 8, 9, 11)
-#evn4C <- select(env4, 2:11)
-#evn4C <- select(evn4C, 1, 3)
-
-
-#shrub and open are really close
-#gotta add shrub type
-
-library(mvabund)
-fit <- traitglm(spe.bin, evn4C, traits.spe, family = "binomial", method = "manyglm")
-fit$fourth #notice LASSO penalty has shrunk many interactions to zero
-
-#summary(fit, blcok = env4)
-
-anova(fit, block = env4$Site, resamp = "case", nBoot = 99)
-#signficant trait*env but takes 36 minutes to run
-
-library(lattice)
-a        = max( abs(fit$fourth.corner) )
-colort   = colorRampPalette(c("blue","white","red")) 
-plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variables",
- ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
- scales = list( x= list(rot = 45)))
-print(plot.4th)
-
-library(jtools)
-summ(fit)
-#test again for presence/absence
-#ant abundance may be more related to colony size which is a trait
+#We need to set up our data
 
 
 
 
-four.comb.ants.adj <- fourthcorner(env4, spe.bin,
-traits.spe, modeltype = 6, p.adjust.method.G = "none",
-p.adjust.method.D = "fdr", nrepet = 999)
+#for traits species should be rows, traits cols
+traits.spe <- select(traits.sp, -sd)
+traits.spe <- pivot_wider(traits.spe, names_from = Trait, values_from = mean)
 
-four.comb.ants.adj 
-plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
-#why are the p adj so different for a bivariate correlation? 
-#not sure
+#only keep corrected traits (divided by body length)
+#only keep one head trait (keeping width)
 
+traits.spe <- select(traits.spe, 1, 3,5, 9, 11, 13, 14)
+traits.spe <- rename(traits.spe, species = X.1)
+row.names(traits.spe) <- traits.spe$species
+traits.spe <- as.data.frame(traits.spe) %>% ungroup()
+traits.spe <- select(traits.spe, -species)
+#I want veg height but there are NAs ugh
 
-fit <- traitglm(spe.bin, env4, traits.spe,family = "binomial")
-#summary(fit)
-fit$fourth #notice LASSO penalty has shrunk many interactions to zero
+env4 <- select(cov, uniID, 2, 3, 4, 5,12, 13,15,  17, 23, 29, 34)
+env4$Microsite <- as.factor(env4$Microsite)
 
-a        = max( abs(fit$fourth.corner) )
-colort   = colorRampPalette(c("blue","white","red")) 
-plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variables",
- ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
- scales = list( x= list(rot = 45)))
-print(plot.4th)
+naveg <- env4[is.na(env4$veg..height),]
+
+#make a vector of NA values
+naveg <- naveg$uniID
+`%!in%` <- Negate(`%in%`)
+
+#remove those NA rows from the species table
+spe <- spe[spe$uniID %!in% naveg, ]
+env4 <- env4[env4$uniID %!in% naveg, ]
+
+row.names(env4) <- env4$uniID
+env4 <- env4[,-1]
 
 
 
@@ -769,36 +628,9 @@ print(plot.4th)
 
 
 
-
-# Sorenson
-
-However, in this study we used
-the C-score to evaluate co-occurrence between each pair
-of species as C-score = (a − c) (b − c), where a is the total
-number of occurrences of one species, b is the total number
-of occurrences of a second species, and c is the number of
-sites that contain both species
+## Beta-diversity taxonomic
 
 
-
-
-Contrarily, the Sørensen index
-(Dice 1945) measures the mean number of shared sites (i.e.,
-grid cells in our study) between a species pair, calculated
-as S𝜙r = 2c∕(2c + a + b), where a, b and c are defined as
-above. 
-
-
-
-
-# Ant-habitat associations
-## Indicator species analysis
-
-- microsite
-- shrub type at site
-- study site
-
-# Beta-diversity
 
 ```{r}
 library(betapart)
@@ -911,11 +743,158 @@ plot(n)
 # site level differences do
 
 #yes, beta diversity (species composition) is correlated with the environment
+
+## Beta-diversity functional
+
+## db-RDA
+
+
+m2 <- capscale(zero~ arid + esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp + Condition(Site), data = envz, dist = "bray")
+
+m2
+summary(m2)
+anova.cca(m2, by = "margin", model = "reduced", strata = envz$Site)
+
+
+
+m0  <- capscale(cwm.comm ~ 1+ Condition(Site), data = cwm.env, dist = "bray")
+
+
+
+m1 <- capscale(cwm.comm ~ Prec + esi +mean.cover +dry.veg.percent+  + month+ Condition(Site), data = cwm.env, dist = "bray")
+
+
+m1 <- capscale(cwm.comm ~ arid + esi  +mean.cover +dry.veg.percent+  Microsite  + Condition(Site), data = cwm.env, dist = "bray")
+
+RsquareAdj(m1)$r.squared
+m1
+plot.cca(m1)
+
+
+cor.test(cwm.env$esi, cwm.env$arid)
+plot(cwm.env$esi, cwm.env$arid)
+
+ggplot(cwm.env, aes(esi, arid)) + geom_smooth()
+
+plot(m1, type = "n", scaling = "sites")
+text(m1, dis = "cn", scaling = "sites")
+text(m1, dis = "sp", scaling = "sites", col = "red")
+
+autoplot(m1, scaling = 1)
+
+summary(m1)
+anova(m1)
+anova.cca(m1, by = "terms", strata = cwm.env$Site)
+anova.cca(m1, by = "margin", strata = cwm.env$Site)
+anova.cca(m1, by = "axis", strata = cwm.env$Site)
+ordiplot(m1)
+arrows(m1, "species")
+pl <- ordiplot(m1, type = "none")
+points(pl, "sites", pch=21, col="red", bg="yellow")
+text(pl, "species", col="blue", cex=0.9, arrows = TRUE)
+arrows(p1, "sites")
+
+```
+
+
+
+env4$Site <- as.factor(env4$Site)
+evn4C <- select(env4, 2, 3, 7, 8, 9, 11)
+#evn4C <- select(env4, 2:11)
+#evn4C <- select(evn4C, 1, 3)
+
+
+#shrub and open are really close
+#gotta add shrub type
+
+library(mvabund)
+fit <- traitglm(spe.bin, evn4C, traits.spe, family = "binomial", method = "manyglm")
+fit$fourth #notice LASSO penalty has shrunk many interactions to zero
+
+#summary(fit, blcok = env4)
+
+anova(fit, block = env4$Site, resamp = "case", nBoot = 99)
+#signficant trait*env but takes 36 minutes to run
+
+library(lattice)
+a        = max( abs(fit$fourth.corner) )
+colort   = colorRampPalette(c("blue","white","red")) 
+plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variables",
+ ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
+ scales = list( x= list(rot = 45)))
+print(plot.4th)
+
+library(jtools)
+summ(fit)
+#test again for presence/absence
+#ant abundance may be more related to colony size which is a trait
+
+
+
+
+four.comb.ants.adj <- fourthcorner(env4, spe.bin,
+traits.spe, modeltype = 6, p.adjust.method.G = "none",
+p.adjust.method.D = "fdr", nrepet = 999)
+
+four.comb.ants.adj 
+plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
+#why are the p adj so different for a bivariate correlation? 
+#not sure
+
+
+fit <- traitglm(spe.bin, env4, traits.spe,family = "binomial")
+#summary(fit)
+fit$fourth #notice LASSO penalty has shrunk many interactions to zero
+
+a        = max( abs(fit$fourth.corner) )
+colort   = colorRampPalette(c("blue","white","red")) 
+plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variables",
+ ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
+ scales = list( x= list(rot = 45)))
+print(plot.4th)
+
+
+
+```
+
+
+
+
+# Sorenson
+
+However, in this study we used
+the C-score to evaluate co-occurrence between each pair
+of species as C-score = (a − c) (b − c), where a is the total
+number of occurrences of one species, b is the total number
+of occurrences of a second species, and c is the number of
+sites that contain both species
+
+
+
+
+Contrarily, the Sørensen index
+(Dice 1945) measures the mean number of shared sites (i.e.,
+grid cells in our study) between a species pair, calculated
+as S𝜙r = 2c∕(2c + a + b), where a, b and c are defined as
+above. 
+
+
+
+
+# Ant-habitat associations
+## Indicator species analysis
+
+- microsite
+- shrub type at site
+- study site
+
+# Beta-diversity
+
 ```
 # Co-occurence
 
 Make dist dataframes for pairwise C-scores at site and pitfall trap level
-```{r}
+
 
 pitlabels <- select(wide, 1 ,2)
 pitwide <- wide
