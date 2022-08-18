@@ -16,6 +16,7 @@ library(ade4)
 library(nlme)
 library(ape)
 library(vegan)
+library(TPD)
 
 wide <- read.csv("Clean Data/ants_wide.csv")
 cov <- read.csv("Clean Data/ants.csv")
@@ -360,17 +361,12 @@ varcompHW
 hl <- traits %>% filter(Trait == "Headl.w")
 partition <- aov(Measure~X.1, data = hl)
 summary(partition)
-
-
-
 ```
 # Turnover vs ITV
 
 Community mean trait values can shift along gradients due to differences in the species composition at the sites, and also due to intraspecific variation
 
 Compare shifts in CWM measured along a gradient using site-specific trait values to global trait values
-
-
 
 
 
@@ -442,50 +438,223 @@ envz <- select(zeroenv,2,  3:9, 12, 15, 17, 23, 29, 34)
 # anova.cca(m1, by = "margin")
 ```
 
-## CWM-NMDS
+
+
+
+## Functional diversity
+
+
+
 ```{r}
 
-cwm.comm <- select(CWM.pres, 2:4)
-cwm.comm <- pivot_wider(cwm.comm, names_from = Trait, values_from = cwm)
-cwm.comm <- select(cwm.comm, 3,5, 8,9,11, 13, 14)
-row.names(cwm.comm) <- cwm.comm$uniID
 
-cwm.comm <- drop_na(cwm.comm)
-#hmm why is it 525 though?
-#525 because of the missing data in veg height 
+library(FD)
 
-cwm.zero <- cwm.comm$uniID
+#need a species by trait matrix, but I want to use the population means
+#make species name the name + site
 
-#the NAs must be the zero rows
+trait.pop <- traits.ag
+trait.pop$spepop <- paste(trait.pop$species, trait.pop$Site)
+trait.pop <- ungroup(trait.pop) %>% select(spepop, Trait, mean)
+trait.pop <- pivot_wider(trait.pop, names_from = Trait, values_from = mean)
+trait.pop <- select(trait.pop, 1, 3, 5, 8, 9, 11, 13, 14)
 
+# need a species by site matrix with the species pop names
 
-cwm.comm <- ungroup(cwm.comm) %>% select(-uniID)
+site.pop <- select(cov, 1, 2, 31) %>% left_join(long.pres, ., by = 'uniID')
 
-cwm.env <- select(cov, 1, 2:9, 12, 15, 17, 23, 13, 31, 34)
-cwm.env <- cwm.env[cwm.env$uniID %in% cwm.zero, ]
-cwm.env <- select(cwm.env, -uniID)
-nm.cwm <- metaMDS(cwm.comm)
+#count uniID per site and month
+counts <- site.pop %>% group_by(Site.x, month, uniID) %>% count()
+counts <- counts %>% group_by(Site.x, month) %>% count()
 
-#m1 <- envfit(nm.cwm ~  esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp, cwm.env, permutations = 9999, strata = cwm.env$Site, na.rm = TRUE)
-m1
+site.pop <- site.pop %>% group_by(Site.x, month, species) %>% summarize(total = sum(count.bin)) 
 
-plot(nm)
-ordiplot(m1)
+site.pop <- left_join(site.pop, counts, by = c("Site.x", "month"))
 
 
-rdaNEspain.all <- rda(cwm.comm ~ esi +mean.cover + dry.veg.percent + shrub.site + Microsite + var.cover + mean.height + Temp, data = cwm.env, permutations = 9999, strata = cwm.env$Site)
-plot(rdaNEspain.all, type = "n", scaling = "sites")
-text(rdaNEspain.all, dis = "cn", scaling = "sites")
-text(rdaNEspain.all, dis = "sp", scaling = "sites", col = "red")
-anova.cca(rdaNEspain.all)
-anova.cca(rdaNEspain.all, by = "terms")
-anova.cca(rdaNEspain.all, by = "margin")
-anova.cca(rdaNEspain.all, by = "axis")
-rdaNEspain.all
-#RDA does not explain much variation at all
-#maybe stick with the nmds then?
+site.pop <- mutate(site.pop, pit.abun = total/n)
+site.pop <- select(site.pop, 1:3, 6)
+site.pop$site.name <- paste(site.pop$Site.x, site.pop$month)
+site.pop$spepop <- paste(site.pop$species, site.pop$Site.x)
+site.pop <- site.pop %>% ungroup() %>% select(4:6)
+
+
+wide.pop <- pivot_wider(site.pop, names_from = spepop, values_from = pit.abun)
+wide.pop[is.na(wide.pop)] <- 0
+sites <- wide.pop$site.name
+
+#there are no trait measurements for species that are absent from a site
+wide.pop <- ungroup(wide.pop) %>% select(-site.name)
+wide.pop <- wide.pop[which(colSums(wide.pop) !=0)]
+wide.pop <- cbind(sites, wide.pop)
+row.names(wide.pop) <- wide.pop$sites
+wide.pop <- select(wide.pop, -sites)
+
+#can I have zero rows?
+#wide.pop <- wide.pop[which(rowSums(wide.pop) !=0),]
+
+#check to ensure names are matched correctly between dataframes
+spec <- colnames(wide.pop)
+all.equal(spec, trait.pop$spepop)
+trait.pop <- as.data.frame(trait.pop)
+row.names(trait.pop) <- trait.pop$spepop
+trait.pop <- select(trait.pop, -spepop)
+
+
+
+library(picante)
+rep.is <- replicate(5, randomizeMatrix(wide.pop, null.model = "independentswap"))
+
+numberReps <- 100
+#Lets create a matrix to store results from each iteration (one column per iteration)
+resultsRandom <- matrix(NA, nrow = nrow(wide.pop), ncol = numberReps,
+                        dimnames = list(rownames(wide.pop),
+                                        paste0("Sim.", 1:numberReps)))
+for(rep in 1:numberReps){
+  randomizedFDis <- randomizeMatrix(samp = wide.pop, null.model = "independentswap")
+  simFDis <- dbFD(trait.pop, randomizedFDis, w.abun = TRUE)$FDis
+  resultsRandom[, rep] <- simFDis
+}
+
+obsFDis <- dbFD(trait.pop, wide.pop, w.abun = TRUE)$FDis
+meanNull3 <- rowMeans(resultsRandom)
+ES3 <- obsFDis - meanNull3
+sdNull3 <- apply(resultsRandom, 1, sd)
+SES3 <- ES3 / sdNull3
+SES_dis <- data.frame(ES3)
+SES_dis$sites <- row.names(SES_dis)
+#join site-level environmental measurements to data
+
+SES <- select(cov, 1:15, shrub.site, sites) %>% distinct() %>% left_join(SES_dis, by = "sites")
+fdis$disp <- as.numeric(fdis$fdis)
+
+SES <- mutate(SES, esi_rev = esi * -1)
+
+ggplot(SES, aes(esi_rev, ES3)) + geom_smooth(method = 'lm')
+ggplot(SES, aes(esi, ES3, color = month)) + geom_smooth(method = 'lm')
+
+
+ggplot(SES, aes(Site, esi)) + geom_boxplot()
+ggplot(SES, aes(arid, esi)) + geom_smooth(method = 'lm')
+
+ggplot(SES, aes(arid, ES3)) + geom_smooth(method = 'lm')
+ggplot(SES, aes(mean.cover, ES3)) + geom_smooth(method = 'lm')
+ggplot(fdis, aes(Prec, disp)) + geom_smooth()
+ggplot(fdis, aes(esi, disp)) + geom_smooth()
+ggplot(fdis, aes(Temp, disp)) + geom_smooth()
+ggplot(SES, aes(Max, ES3)) + geom_smooth()
+ggplot(SES, aes(var.cover, ES3)) + geom_smooth()
+
+ggplot(fdis, aes(shrub.site, disp)) + geom_boxplot()
+ggplot(fdis, aes(arid, esi, color = Site)) + geom_point()
+
+t.test(SES$ES3)
+
+cor.test(SES$ES3, SES$esi)
+cor.test(SES$arid, SES$esi)
+cor.test(SES$arid, SES$Temp)
+cor.test(SES$ES3, SES$arid)
+cor.test(SES$ES3, SES$Temp)
+cor.test(SES$ES3, SES$Max)
+cor.test(SES$ES3, SES$mean.cover)
+cor.test(SES$esi, SES$mean.cover)
+cor.test(SES$ES3, SES$mean.height)
+cor.test(SES$ES3, SES$var.cover)
+
+m1 <- glmmTMB(ES3 ~ arid +(1|Site), family = gaussian(), data = SES)
+
+m2 <- glmmTMB(ES3 ~ esi+  (1|Site), family = gaussian(), data = SES)
+
+summary(m2)
+m3 <- glmmTMB(ES3 ~ mean.cover + shrub.site + (1|Site), family = gaussian(), data = SES)
+AIC(m1, m2, m3)
+
+summary(m1)
+shapiro.test(resid(m1))
+
+
+m1 <- dis %>% filter(shrub.site != 'open') %>% glm(dis2 ~ Microsite + month + ESI, family = 'gaussian', .)
+m1 <- glm(dis2 ~ Microsite+arid  + month , family = 'gaussian',  data = dis)
+summary(m1)
+
+
+ggplot(dis, aes(shrub.site, dis, fill = Microsite)) + geom_boxplot()
+
 ```
-db-RDA
+
+
+
+```{r}
+#let's do a null model for pitfall trap level, can randomize between sites?
+
+#for traits species should be rows, traits cols
+traits.spe <- select(traits.sp, -sd)
+traits.spe <- pivot_wider(traits.spe, names_from = Trait, values_from = mean)
+
+#only keep corrected traits (divided by body length)
+#only keep one head trait (keeping width)
+
+traits.spe <- select(traits.spe, 1, 3,5,8, 9, 11, 13, 14)
+traits.spe <- rename(traits.spe, species = X.1)
+traits.spe <- as.data.frame(traits.spe) %>% ungroup()
+traits.spe$species <- gsub(" ", "", traits.spe$species)
+row.names(traits.spe) <- traits.spe$species
+
+traits.spe <- select(traits.spe, -species)
+
+
+#remove zero rows
+spe.bin <- spe.bin[rowSums(spe.bin) > 0,]
+
+
+numberReps <- 100
+#Lets create a matrix to store results from each iteration (one column per iteration)
+resultsRandom2 <- matrix(NA, nrow = nrow(spe.bin), ncol = numberReps,
+                        dimnames = list(rownames(spe.bin),
+                                        paste0("Sim.", 1:numberReps)))
+for(rep in 1:numberReps){
+  randomizedFDis <- randomizeMatrix(samp = spe.bin, null.model = "independentswap")
+  simFDis <- dbFD(traits.spe, randomizedFDis, w.abun = TRUE)$FDis
+  resultsRandom2[, rep] <- simFDis
+}
+
+obsFDis <- dbFD(traits.spe, spe.bin, w.abun = TRUE)$FDis
+meanNull3 <- rowMeans(resultsRandom2)
+ES3 <- obsFDis - meanNull3
+sdNull3 <- apply(resultsRandom2, 1, sd)
+SES3 <- ES3 / sdNull3
+SES_dis_pit <- data.frame(ES3)
+SES_dis_pit$sites <- row.names(SES_dis_pit)
+#join site-level environmental measurements to data
+
+
+
+mean(SES_dis_pit$ES3)
+SES_dis_pit$uniID <- SES_dis_pit$sites
+
+
+SES_pit <- left_join(SES_dis_pit, cov, by = "uniID")
+
+ggplot(SES_pit, aes(Microsite, ES3)) + geom_boxplot()
+ggplot(SES_pit, aes(esi, ES3, color = Microsite)) + geom_smooth(method = "lm")
+ggplot(SES_pit, aes(esi, ES3, color = shrub.site)) + geom_smooth(method = "lm")
+
+m1 <- glmmTMB(ES3 ~ esi + Microsite+ arid + dry.veg.percent  +  shrub.site+ mean.cover + (1|Site) + (1|month), family = "gaussian", data = SES_pit)
+
+summary(m1)
+shapiro.test(resid(m1))
+plot(resid(m1))
+
+
+t.test(SES_pit$ES3~ SES_pit$Microsite)
+
+fdis$disp <- as.numeric(fdis$fdis)
+
+m2 <- glmmTMB(Species ~ esi + Microsite+ arid + dry.veg.percent  +  shrub.site+ mean.cover + (1|Site) + (1|month), family = "poisson", data = SES_pit)
+
+summary(m2)
+
+```
 
 
 ```{r}
@@ -599,54 +768,7 @@ print(plot.4th)
 ```
 
 
-## Functional diversity
 
-
-
-```{r}
-
-
-library(FD)
-
-#need a species by trait matrix, but I want to use the population means
-#make species name the name + site
-
-trait.pop <- traits.ag
-trait.pop$spepop <- paste(trait.pop$species, trait.pop$Site)
-trait.pop <- ungroup(trait.pop) %>% select(spepop, Trait, mean)
-trait.pop <- pivot_wider(trait.pop, names_from = Trait, values_from = mean)
-trait.pop <- select(trait.pop, 1, 3, 5, 7, 8, 11, 13, 14)
-
-# need a species by site matrix with the species pop names
-
-long.pop <- long.pres
-long.pop$spepop <- paste(long.pop$species, long.pop$Site)
-long.pop <- select(long.pop, 1, 8, 5)
-
-
-
-wide.pop <- pivot_wider(long.pop, names_from = spepop, values_from = count.bin)
-wide.pop[is.na(wide.pop)] <- 0
-sites <- wide.pop$uniID
-
-wide.pop <- ungroup(wide.pop) %>% select(-uniID)
-wide.pop <- wide.pop[which(colSums(wide.pop) !=0)]
-wide.pop <- cbind(sites, wide.pop)
-row.names(wide.pop) <- wide.pop$sites
-wide.pop <- select(wide.pop, -sites)
-
-wide.pop <- wide.pop[which(rowSums(wide.pop) !=0),]
-
-
-#check to ensure names are matched correctly between dataframes
-spec <- colnames(wide.pop)
-all.equal(spec, trait.pop$spepop)
-trait.pop <- as.data.frame(trait.pop)
-row.names(trait.pop) <- trait.pop$spepop
-trait.pop <- select(trait.pop, -spepop)
-fun <- dbFD(trait.pop, wide.pop)
-
-```
 
 # Sorenson
 
