@@ -68,3 +68,21 @@ envz <- select(zeroenv,2,  3:9, 12, 15, 17, 23, 29, 34)
 # summary(m1)
 # anova.cca(m1, by = "margin")
 ```
+
+
+traits.spe <- select(traits.sp, -sd)
+traits.spe <- pivot_wider(traits.spe, names_from = Trait, values_from = mean)
+
+#only keep corrected traits (divided by body length)
+#only keep one head trait (keeping width)
+
+traits.spe <- select(traits.spe, 1, 3,5,8, 9, 11, 13, 14)
+traits.spe <- rename(traits.spe, species = X.1)
+traits.spe <- as.data.frame(traits.spe) %>% ungroup()
+traits.spe$species <- gsub(" ", "", traits.spe$species)
+row.names(traits.spe) <- traits.spe$species
+traits.spe <- select(traits.spe, -species)
+
+spe.bin <- as.data.frame(spe.bin)
+row.names(spe.bin) <- spe.bin$uniID
+spe.bin <- select(spe.bin, -uniID)
