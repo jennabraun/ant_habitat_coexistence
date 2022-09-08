@@ -20,7 +20,6 @@ library(nlme)
 library(ape)
 library(vegan)
 library(ggvegan)
-#library(TPD)
 ```
 
 
@@ -56,7 +55,6 @@ ndvi <- select(ndvi, 7:17) %>%
 ndvi$Site <- gsub("MoV", "Mov", ndvi$Site)
 cov <- right_join(cov, ndvi, by = c("Site", "month"))
 ```
-
 
 
 
@@ -251,8 +249,6 @@ autoplot(env.pca2, xlab = "PCA 49.48%", ylab = "PCA 17.8%")
 
 sitescores <- scores(env.pca2, c(1,2, 3), 'sites')
 
-ggplot(env2, aes(site, esi)) + geom_boxplot()
-
 env2noesi <- select(env2, -esi)
 
 env.d2noesi <- decostand(env2noesi, method = "standardize")
@@ -264,6 +260,25 @@ autoplot(env.pcanoesi, xlab = "PCA 50.66%", ylab = "PCA 18.8%")
 sitescores2 <- scores(env.pcanoesi, c(1,2, 3), 'sites')
 
 speciesscore <- scores(env.pca2, c(1,2, 3), 'species')
+
+
+
+env1soil <- select(env2, -esi,  -10, -12, -13, -14)
+
+env.d1soil <- decostand(env1soil, method = "standardize")
+env.pca1soil <- rda(env.d1soil)
+    
+summary(env.pca1soil)
+autoplot(env.pca1soil, xlab = "PCA 51.42%", ylab = "PCA 16.7%")
+
+sitescores3 <- scores(env.pca1soil, c(1,2, 3), 'sites')
+
+#speciesscore <- scores(env.pca2, c(1,2, 3), 'species')
+
+
+
+
+
 
 ```
 
@@ -359,7 +374,7 @@ SES <- select(cov, 1:15, shrub.site, sites, 37:43) %>% distinct() %>% left_join(
 ## Functional dispersion  EDA
 ```{r}
 
-ggplot(SES, aes(esi, SES3, color = month)) + geom_smooth(method = 'lm')
+
 ggplot(SES, aes(NDVI, SES3)) + geom_smooth(method = 'lm')
 
 ggplot(SES, aes(Site, esi)) + geom_boxplot()
@@ -379,29 +394,27 @@ cor.test(SES$SES3, SES$SBIO1_05)
 cor.test(SES$SES3, SES$arid)
 
 
-cor.test(SES$arid, SES$esi)
-cor.test(SES$NDVI, SES$esi)
-cor.test(SES$NDVI, SES$arid)
-cor.test(SES$NDVI, SES$SES3)
-cor.test(SES$arid, SES$Temp)
-cor.test(SES$SES3, SES$Temp)
-cor.test(SES$SES3, SES$Max)
 
-cor.test(SES$SES3, SES$mean.cover)
-cor.test(SES$esi, SES$mean.cover)
-cor.test(SES$SES3, SES$mean.height)
-cor.test(SES$SES3, SES$var.cover)
-cor.test(SES$SES3, SES$var.height)
 
-SES2 <- cbind(SES, sitescores)
+SES2 <- cbind(SES, sitescores3)
 
-m1 <- lm(SES3 ~ PC1, data = SES2)
+m1 <- lm(SES3 ~ PC1 + PC2, data = SES2)
 summary(m1)
+m2 <- lm(SES3 ~ esi, data = SES2)
+summary(m2)
 
-
-
+m1 <- lm(SES3 ~ PC1 + PC2 + PC3, data = SES2)
+summary(m1)
 ggplot(SES2, aes(PC1, SES3)) + geom_smooth(method = "lm")
 
+
+m1 <- lm(SES3 ~ var.cover, data = SES2)
+summary(m1)
+
+#new heat map
+mat3 <- select(SES2, esi, 4,5, 12:15, 18, 24, 25:28)
+M3 <- cor(mat3)
+corrplot::corrplot(M3, method = "number")
 
 
 m1 <- glmmTMB(SES3 ~ arid +(1|Site) + (1|month), family = gaussian(), data = SES)
@@ -427,7 +440,7 @@ summary(m1)
 
 ```
 
-#this actually takes the species-level traits instead of population level
+
 
 ### Functional dispersion - pitfall trap level null model calculations
 
@@ -485,7 +498,7 @@ SES_dis_pit <- left_join(SES_dis_pit, cov, by = "uniID")
 #join site-level environmental measurements to data
 
 
-SES_dis_pit <- cbind(SES_dis_pit, score2)
+#SES_dis_pit <- cbind(SES_dis_pit, score2)
 
 ```
 ## Functional dispersion pitfall EDA
@@ -510,6 +523,20 @@ shapiro.test(resid(m1))
 plot(resid(m1))
 
 ```
+
+## Alpha diversity - species richness
+
+```{r}
+
+
+
+
+m2 <- glmmTMB(Species ~ esi + Microsite+ arid + dry.veg.percent  + NDVI + SBIO7__515 + (1|Site) + (1|month), family = "poisson", data = cov)
+
+summary(m2)
+
+```
+
 
 ## Co-occurrence null models
 
@@ -543,15 +570,20 @@ c_null <- map(c_data, ~.x %>%
 
 
 c_null <- data.frame(do.call(rbind, c_null))
+
 c_obs <- c_null$Obs
 c_obs <- as.data.frame(c_obs)
 c_obs <- t(c_obs)
 
-c_sims <- as.data.frame(c_sims)
+c_sims <- as.data.frame(c_null$Sim)
+c_sims <- t(c_sims)
 multiple.func <- function(x) {
       c(mean = mean(x), sd = sd(x))
 }
+
 c_sim <- apply(c_sims, 1, multiple.func)
+
+
 c_sim <- t(c_sim)
 c_obs <- cbind(c_obs, c_sim)
 c_obs <- as.data.frame(c_obs)
@@ -578,21 +610,6 @@ ggplot(SES, aes(arid, SES_C)) + geom_smooth(method = "lm")
 
 ```
 
-## Alpha diversity - species richness
-
-```{r}
-
-
-#site level
-
-
-sites <- cov %>% drop_na()
-
-m2 <- glmmTMB(Species ~ esi + Microsite+ arid + dry.veg.percent  + NDVI + SBIO1_05 + (1|Site) + (1|month), family = "poisson", data = cov)
-
-summary(m2)
-
-```
 
 ## db-RDA
 
@@ -629,37 +646,6 @@ vif.cca(m2)
 
 plot(m2)
 
-#for traits species should be rows, traits cols
-traits.spe <- select(traits.sp, -sd)
-traits.spe <- pivot_wider(traits.spe, names_from = Trait, values_from = mean)
-
-#only keep corrected traits (divided by body length)
-#only keep one head trait (keeping width)
-
-traits.spe <- select(traits.spe, 1, 3,5, 9, 11, 13, 14)
-traits.spe <- rename(traits.spe, species = X.1)
-row.names(traits.spe) <- traits.spe$species
-traits.spe <- as.data.frame(traits.spe) %>% ungroup()
-traits.spe <- select(traits.spe, -species)
-#I want veg height but there are NAs ugh
-
-env4 <- select(cov, uniID, 2, 3, 4, 5,12, 13,15,  17, 23, 29, 34)
-env4$Microsite <- as.factor(env4$Microsite)
-
-naveg <- env4[is.na(env4$veg..height),]
-
-#make a vector of NA values
-naveg <- naveg$uniID
-`%!in%` <- Negate(`%in%`)
-
-#remove those NA rows from the species table
-spe <- spe[spe$uniID %!in% naveg, ]
-env4 <- env4[env4$uniID %!in% naveg, ]
-
-row.names(env4) <- env4$uniID
-env4 <- env4[,-1]
-
-
 
 ```
 
@@ -669,8 +655,12 @@ env4 <- env4[,-1]
 
 
 
-```{r}
+
 library(betapart)
+
+spe.bin <- as.data.frame(spe.bin)
+row.names(spe.bin) <- spe.bin$uniID
+spe.bin <- select(spe.bin, -uniID)
 
 spe.bin.core <- betapart.core(spe.bin)
 spe.bin.multi <- beta.multi(spe.bin)
@@ -679,13 +669,26 @@ spe.bin.samp <- beta.sample(spe.bin.core, sites = 9, samples = 100)
 
 dist <- beta.pair(spe.bin, index.family = "sorensen")
 
-bd <- vegan::betadisper(dist[[3]], env4$shrub.site)
+bd <- vegan::betadisper(dist[[3]], cov$shrub.site)
 
 boxplot(bd)
 anova(bd)
 # difference in dispersion between the three
 TukeyHSD(bd)
 # contrasts not significant. ok.
+
+
+
+bd <- vegan::betadisper(dist[[3]], cov$Microsite)
+
+boxplot(bd)
+anova(bd)
+TukeyHSD(bd)
+
+
+
+
+
 
 library(FD)
 library(vegan)
@@ -790,105 +793,7 @@ plot(n)
 
 
 
-m0  <- capscale(cwm.comm ~ 1+ Condition(Site), data = cwm.env, dist = "bray")
 
-
-
-m1 <- capscale(cwm.comm ~ Prec + esi +mean.cover +dry.veg.percent+  + month+ Condition(Site), data = cwm.env, dist = "bray")
-
-
-m1 <- capscale(cwm.comm ~ arid + esi  +mean.cover +dry.veg.percent+  Microsite  + Condition(Site), data = cwm.env, dist = "bray")
-
-RsquareAdj(m1)$r.squared
-m1
-plot.cca(m1)
-
-
-cor.test(cwm.env$esi, cwm.env$arid)
-plot(cwm.env$esi, cwm.env$arid)
-
-ggplot(cwm.env, aes(esi, arid)) + geom_smooth()
-
-plot(m1, type = "n", scaling = "sites")
-text(m1, dis = "cn", scaling = "sites")
-text(m1, dis = "sp", scaling = "sites", col = "red")
-
-autoplot(m1, scaling = 1)
-
-summary(m1)
-anova(m1)
-anova.cca(m1, by = "terms", strata = cwm.env$Site)
-anova.cca(m1, by = "margin", strata = cwm.env$Site)
-anova.cca(m1, by = "axis", strata = cwm.env$Site)
-ordiplot(m1)
-arrows(m1, "species")
-pl <- ordiplot(m1, type = "none")
-points(pl, "sites", pch=21, col="red", bg="yellow")
-text(pl, "species", col="blue", cex=0.9, arrows = TRUE)
-arrows(p1, "sites")
-
-```
-
-
-
-env4$Site <- as.factor(env4$Site)
-evn4C <- select(env4, 2, 3, 7, 8, 9, 11)
-#evn4C <- select(env4, 2:11)
-#evn4C <- select(evn4C, 1, 3)
-
-
-#shrub and open are really close
-#gotta add shrub type
-
-library(mvabund)
-fit <- traitglm(spe.bin, evn4C, traits.spe, family = "binomial", method = "manyglm")
-fit$fourth #notice LASSO penalty has shrunk many interactions to zero
-
-#summary(fit, blcok = env4)
-
-anova(fit, block = env4$Site, resamp = "case", nBoot = 99)
-#signficant trait*env but takes 36 minutes to run
-
-library(lattice)
-a        = max( abs(fit$fourth.corner) )
-colort   = colorRampPalette(c("blue","white","red")) 
-plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variables",
- ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
- scales = list( x= list(rot = 45)))
-print(plot.4th)
-
-library(jtools)
-summ(fit)
-#test again for presence/absence
-#ant abundance may be more related to colony size which is a trait
-
-
-
-
-four.comb.ants.adj <- fourthcorner(env4, spe.bin,
-traits.spe, modeltype = 6, p.adjust.method.G = "none",
-p.adjust.method.D = "fdr", nrepet = 999)
-
-four.comb.ants.adj 
-plot(four.comb.ants.adj, alpha = 0.05, stat = "D2")
-#why are the p adj so different for a bivariate correlation? 
-#not sure
-
-
-fit <- traitglm(spe.bin, env4, traits.spe,family = "binomial")
-#summary(fit)
-fit$fourth #notice LASSO penalty has shrunk many interactions to zero
-
-a        = max( abs(fit$fourth.corner) )
-colort   = colorRampPalette(c("blue","white","red")) 
-plot.4th = levelplot(t(as.matrix(fit$fourth.corner)), xlab="Environmental Variables",
- ylab="Species traits", col.regions=colort(100), at=seq(-a, a, length=100),
- scales = list( x= list(rot = 45)))
-print(plot.4th)
-
-
-
-```
 # Turnover vs ITV
 
 Community mean trait values can shift along gradients due to differences in the species composition at the sites, and also due to intraspecific variation
@@ -1066,39 +971,14 @@ above.
 
 # Beta-diversity
 
-```
-# Co-occurence
 
-Make dist dataframes for pairwise C-scores at site and pitfall trap level
-
-
-pitlabels <- select(wide, 1 ,2)
-pitwide <- wide
-pitwide <- select(pitwide, -1, -2)
-#make dataframe presence/absence
-pitwide[pitwide > 1] <- 1
-#calculate pairwise C-Scores
-pitc <- designdist(t(pitwide), "(A-J)*(B-J)", "binary")
-pitc <- as.matrix(pitc)
-
-#let's try with a package
-library(ecospat)
-library(bipartite)
-
-c <- C.score(pitwide, normalise = TRUE, FUN = hist)
-C.score(pitwide, normalise = TRUE, FUN = print)
-?C.score
-
-library(eco)
-
-```
 
 
 # Models
 ## Ant abundance
 
 ```{r}
-cov %>% group_by(month) %>% summarise(sum = sum(abun))
+
 
 
 m1.m11 <- glmmTMB(abun ~ dry.veg.percent + Microsite + month + mean.cover + Prec + (1|Site), family = "poisson", data = cov)
@@ -1121,8 +1001,11 @@ ggplot(cov, aes(arid, dry.veg.percent)) + geom_smooth()
 
 ```{r}
 m1 <- glmmTMB(Species ~ arid +mean.cover +dry.veg.percent + Microsite  + shrub.site + month + (1|Site) , family = "poisson", data = cov)
-m2 <- glmmTMB(Species ~ arid dry.veg.percent + var.cover +Microsite  + shrub.site + month + (1|Site) , family = "poisson", data = cov)
+
+m2 <- glmmTMB(Species ~ arid dry.veg.percent + var.cover +Microsite  + shrub.site + month + (1|Site), family = "poisson", data = cov)
+
 m3 <- glmmTMB(Species ~ arid +mean.cover +dry.veg.percent + var.cover +Microsite  + shrub.site + month + esi + (1|Site) , family = "poisson", data = cov)
+
 m4 <- glmmTMB(Species ~ arid +mean.cover +dry.veg.percent  +Microsite  + shrub.site + month + esi + (1|Site) , family = "poisson", data = cov)
 
 
@@ -1165,25 +1048,6 @@ ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = 
 
 ```
 
-ggplot(veg, aes(Microsite, dry.veg.percent)) + geom_violin() + geom_boxplot(width = 0.05) + theme(axis.text.x=element_text(angle=90, vjust=.5)) + ylab("Percent Cover Vegetation") + xlab("")  + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))
-  
-var <- dplyr::select(ants,1, 11:15, 17)
-row.names(var) <- var$X
-var <- dplyr::select(var, -X)
-var$veg..height[is.na(var$veg..height)] <- 0
-
-
-cov <- dplyr::select(ants, 1, 2, 3, 5)
-
-
-pca1<- prcomp(var)
-summary(pca1)
-pca1
-
-library(ggfortify)
-autoplot(pca1, data = cov, colour = "Microsite", loadings = TRUE, loadings.label = TRUE)
-
 
 
 ## Functional richness
@@ -1221,18 +1085,6 @@ mean(SES$SES_ric, na.rm = TRUE)
 
 
 
-
 ```
 
 
-
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
