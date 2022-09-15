@@ -254,3 +254,218 @@ summary(m2)
 
 AIC(m1, m2)
 ```
+
+
+
+
+
+## Beta-diversity taxonomic
+
+
+
+
+
+
+spe.bin <- as.data.frame(spe.bin)
+row.names(spe.bin) <- spe.bin$uniID
+spe.bin <- select(spe.bin, -uniID)
+
+spe.bin.core <- betapart.core(spe.bin)
+spe.bin.multi <- beta.multi(spe.bin)
+spe.bin.samp <- beta.sample(spe.bin.core, sites = 9, samples = 100)
+
+
+dist <- beta.pair(spe.bin, index.family = "sorensen")
+
+bd <- vegan::betadisper(dist[[3]], cov$shrub.site)
+
+boxplot(bd)
+anova(bd)
+# difference in dispersion between the three
+TukeyHSD(bd)
+# contrasts not significant. ok.
+
+
+
+bd <- vegan::betadisper(dist[[3]], cov$Microsite)
+
+boxplot(bd)
+anova(bd)
+TukeyHSD(bd)
+
+
+
+
+
+
+library(FD)
+library(vegan)
+gow <- gowdis(env4)
+euc <- dist(env4, "euclidean")
+gow <- as.matrix(gow)
+sor <- dist[[3]]
+sor <- as.matrix(sor)
+
+sor.mean <- rowMeans(sor, na.rm = TRUE)
+sim <- as.matrix(dist[[1]])
+sim.mean <- rowMeans(sim, na.rm = TRUE)
+sne <- as.matrix(dist[[2]])
+sne.mean <- rowMeans(sne, na.rm = TRUE)
+
+envbeta <- cbind(env4, sor.mean, sim.mean, sne.mean)
+
+
+mb <- glmmTMB(sim.mean ~  arid  + esi + mean.cover +dry.veg.percent+  Microsite  + shrub.site + (1|Site), data = envbeta)
+shapiro.test(resid(msor))
+plot(resid(mb))
+summary(mb)
+check_collinearity(mb)
+
+ggplot(envbeta, aes(arid, sor.mean)) + geom_smooth() 
+
+
+msor <- glmmTMB(sor.mean ~  arid  + esi + mean.cover +dry.veg.percent+  Microsite  + shrub.site + (1|Site), data = envbeta)
+summary(msor)
+msor2 <- glmmTMB(sor.mean ~  arid  + esi + mean.cover +dry.veg.percent+  Microsite  + shrub.site , data = envbeta)
+
+summary(msor2)
+
+AIC(msor, msor2)
+
+plot(resid(mb) ~ envbeta$sim.mean)
+mb2 <- glmmTMB(sne.mean ~  arid   +mean.cover +dry.veg.percent+  Microsite  + shrub.site +(1|Site), data = envbeta)
+
+size <- filter(CWM.pres, Trait == "Webers")
+m1 <- glmmTMB(cwm ~ esi + (1|Site.x), data = size)
+summary(m1)
+
+m2 <- glmmTMB(cwm ~ arid + (1|Site.x), data = size)
+summary(m2)
+
+ggplot(size, aes(arid, cwm)) + geom_smooth(method = lm)
+
+
+summary(mb)
+summary(mb2)
+
+
+envlong <- pivot_longer(envbeta, 11:13, names_to = "beta", values_to = "mean")
+
+envlong <- pivot_longer(envlong, c(1:6, 8, 9), names_to = "env", values_to = "value")
+
+ggplot(envlong, aes(value,mean , color = beta)) +
+  stat_smooth(method = "lm") + facet_wrap(~env, scales = "free")
+
+
+
+euc.dry <-dist(env4$dry.veg.percent, "euclidean")
+euc.Prec <- dist(env4$Prec, "euclidean")
+euc.esi <- dist(env4$esi, "euclidean")
+euc.vegheight <- dist(env4$veg..height, "euclidean")
+euc.temp <- dist(env4$Temp, "euclidean")
+euc.siteveg <- dist(env4$mean.bare, "euclidean")
+euc.arid <- dist(env4$arid, "euclidean")
+
+mantel(euc.dry, sor, method = "spearman", permutations = 999, na.rm = TRUE)
+
+
+mantel(euc.Prec, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.Prec, gow, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.vegheight, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.temp, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.siteveg, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+mantel(euc.arid, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+mantel(euc.esi, sor, method = "spearman", permutations = 99, na.rm = TRUE)
+
+n <- mantel(euc.arid, sim, method = "spearman", permutations = 99, na.rm = TRUE)
+mantel(euc.esi, sim, method = "spearman", permutations = 99, na.rm = TRUE)
+
+plot(n)
+
+# dry.veg. percent matters
+# site level differences do
+
+#yes, beta diversity (species composition) is correlated with the environment
+
+## Beta-diversity functional
+
+## db-RDA
+
+
+
+
+
+# Sorenson
+
+However, in this study we used
+the C-score to evaluate co-occurrence between each pair
+of species as C-score = (a − c) (b − c), where a is the total
+number of occurrences of one species, b is the total number
+of occurrences of a second species, and c is the number of
+sites that contain both species
+
+
+
+
+Contrarily, the Sørensen index
+(Dice 1945) measures the mean number of shared sites (i.e.,
+                                                      grid cells in our study) between a species pair, calculated
+as S𝜙r = 2c∕(2c + a + b), where a, b and c are defined as
+above. 
+
+
+
+
+# Ant-habitat associations
+## Indicator species analysis
+
+- microsite
+- shrub type at site
+- study site
+
+# Beta-diversity
+
+
+
+
+
+
+
+## Functional richness
+
+
+
+numberReps <- 100
+
+#Lets create a matrix to store results from each iteration (one column per iteration)
+resultsRandom4 <- matrix(NA, nrow = nrow(wide.pop), ncol = numberReps,
+                         dimnames = list(rownames(wide.pop),
+                                         paste0("Sim.", 1:numberReps)))
+for(rep in 1:numberReps){
+  randomizedFDis <- randomizeMatrix(samp = wide.pop, null.model = "independentswap")
+  simFDis <- dbFD(trait.pop, randomizedFDis, w.abun = TRUE)$Q
+  resultsRandom4[, rep] <- simFDis
+}
+
+obsFDis <- dbFD(trait.pop, wide.pop, w.abun = TRUE)$CWM
+meanNull3 <- rowMeans(resultsRandom4)
+ES3 <- obsFDis - meanNull3
+sdNull3 <- apply(resultsRandom4, 1, sd)
+SES3 <- ES3 / sdNull3
+SES_rich <- data.frame(SES3)
+SES_rich$sites <- row.names(SES_rich)
+#join site-level environmental measurements to data
+
+SES_rich <- rename(SES_rich, SES_ric = SES3)
+SES <- left_join(SES_rich, SES, by = "sites")
+
+
+
+
+mean(SES$SES_ric, na.rm = TRUE)
+

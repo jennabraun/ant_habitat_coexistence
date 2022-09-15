@@ -6,30 +6,38 @@ output:
       highlight: kate
 ---
 
-```{r setup}
-library(EcoSimR)
+```{r setup, error = FALSE, warning = FALSE, message = FALSE, results = "hide"}
 library(dplyr)
-detach("package:dplyr")
-library("dplyr")
 library(tidyr)
 library(ggplot2)
 library(performance)
 library(glmmTMB)
-library(ade4)
-library(nlme)
-library(ape)
 library(vegan)
 library(ggvegan)
+library(FD)
+library(picante)
+library(purrr)
+library(gridExtra)
 ```
 
+### Functions
+
+```{r}
+
+
+multiple.func <- function(x) {
+      c(mean = mean(x), sd = sd(x))
+}
+```
+# Data Cleaning
 
 ```{r}
 
 #see Cleaning.R in scripts folder for data cleaning
 wide <- read.csv("Clean Data/ants_wide.csv")
 cov <- read.csv("Clean Data/ants.csv")
-sites <- read.csv("Clean Data/sites_joined.csv")
-cov <- right_join(sites, cov, by = c("Site", "month"))
+site_data <- read.csv("Clean Data/sites_joined.csv")
+cov <- right_join(site_data, cov, by = c("Site", "month"))
 
 cov <- dplyr::select(cov, 3:10, 14:19, 22:36, 39:41)
 
@@ -54,6 +62,7 @@ ndvi <- select(ndvi, 7:17) %>%
   rename(Site = site)
 ndvi$Site <- gsub("MoV", "Mov", ndvi$Site)
 cov <- right_join(cov, ndvi, by = c("Site", "month"))
+cov$sites <- paste(cov$Site, cov$month)
 ```
 
 
@@ -67,7 +76,7 @@ traits <- read.csv("raw data/Traits.csv")
 unique(traits$Trait)
 #I don't trust the eye width measurements because they were measured from the front
 traits <- filter(traits, Trait != "Eye width")
-unique(traits$Photo)
+#unique(traits$Photo)
 
 #extract site IDs from photo names
 traits <- separate(traits, Photo, c("Site", "Slide", "Specimen"))
@@ -100,7 +109,7 @@ traits.sp <- group_by(traits, X.1, Trait) %>%
 
 ```
 
-## CWM - Presence/absence
+## Calculations
 
 ```{r}
 #we could also try to log transform the abundances to reduce the impact of colony size 
@@ -160,17 +169,13 @@ mat <- drop_na(mat)
 M <- cor(mat)
 corrplot::corrplot(M, method = "number")
 
-#just esi and env
-mat2 <- select(mat, 1:11, 18:24)
-M2 <- cor(mat2)
-corrplot::corrplot(M2, method = "number")
 ```
 
 
 
-## PCA for traits
+# PCA for traits
 
-### Invidividuals
+## Invidividuals
 
 ```{r}
 # I want the PCA on traits
@@ -191,7 +196,7 @@ autoplot(traits.pca, xlab = "PCA 33.9%", ylab = "PCA 32.9%")
 ```
 
 
-### Populations
+## Populations
 
 ```{r}
 
@@ -212,87 +217,84 @@ autoplot(trait.pop.pca, xlab = "PCA 35.8%", ylab = "PCA 32.2 %")
 
 ```{r}
 
-env <- select(cov, 3:9, 12:15, 23:27, 29, 37:43) %>% drop_na()
-#env.labels <- select(cov, 1:2)
-#options(scipen = 999)
-#env.pca <- rda(env, scaling = TRUE)
-#summary(env.pca)
-#autoplot(env.pca)
-#doesn't look good
+env <- select(cov, 4:9, 12:14, 23:27, 29, 37:43, uniID) %>% drop_na()
+env_sitelabels <- env$uniID
+env <- select(env, -uniID)
 
 #standardize to mean of zero etc
-#not sure if correct
+
 env.d <- decostand(env, method = "standardize")
 env.pca <- rda(env.d)
     
-summary(env.pca)
-autoplot(env.pca, xlab = "PCA 37.65%", ylab = "PCA 16.2%")
+a <- summary(env.pca)
+b <- a$cont$importance
+prop1 <- b[2,1] * 100 
+prop1 <- round(prop1, digits = 2)
+prop2 <- b[2,2] * 100
+prop2 <- round(prop2, digits = 2)
+
+autoplot(env.pca, xlab = paste("PCA", prop1), ylab = paste("PCA", prop2))
 score2 <- scores(env.pca, c(1,2, 3), 'sites')
+score2 <- as.data.frame(cbind(score2, env_sitelabels))
 ```
 
 
-### Sites - site-level
+## Sites - site-level
 
 
 ```{r}
 
-env2 <- select(cov, 3:5, 8, 12:15, 37:43) %>% drop_na() %>% distinct()
-
+env2 <- select(cov, 3:5, 8, 12:15, 37:43, sites) %>% drop_na() %>% distinct()
+env2_sitelabels <- env2$sites
+env2 <- select(env2, -sites)
 
 #standardize to mean of zero etc
 
 env.d2 <- decostand(env2, method = "standardize")
 env.pca2 <- rda(env.d2)
-    
-summary(env.pca2)
-autoplot(env.pca2, xlab = "PCA 49.48%", ylab = "PCA 17.8%")
 
-sitescores <- scores(env.pca2, c(1,2, 3), 'sites')
-
-env2noesi <- select(env2, -esi)
-
-env.d2noesi <- decostand(env2noesi, method = "standardize")
-env.pcanoesi <- rda(env.d2noesi)
-    
-summary(env.pcanoesi)
-autoplot(env.pcanoesi, xlab = "PCA 50.66%", ylab = "PCA 18.8%")
-
-sitescores2 <- scores(env.pcanoesi, c(1,2, 3), 'sites')
-
-speciesscore <- scores(env.pca2, c(1,2, 3), 'species')
+a <- summary(env.pca2)
+b <- a$cont$importance
+prop1 <- b[2,1] * 100 
+prop1 <- round(prop1, digits = 2)
+prop2 <- b[2,2] * 100
+prop2 <- round(prop2, digits = 2)    
+#summary(env.pca2)
+autoplot(env.pca2, xlab = paste("PCA", prop1), ylab = paste("PCA", prop2))
+#sitescores <- scores(env.pca2, c(1,2, 3), 'sites')
 
 
+envreduce <- select(env2, -esi, -arid, -10, -12, -13, -14)
 
-env1soil <- select(env2, -esi,  -10, -12, -13, -14)
+env.reduce <- decostand(envreduce, method = "standardize")
+env.pcareduce <- rda(env.reduce)
+a <- summary(env.pcareduce)
 
-env.d1soil <- decostand(env1soil, method = "standardize")
-env.pca1soil <- rda(env.d1soil)
-    
-summary(env.pca1soil)
-autoplot(env.pca1soil, xlab = "PCA 51.42%", ylab = "PCA 16.7%")
+b <- a$cont$importance
+prop1 <- b[2,1] * 100 
+prop1 <- round(prop1, digits = 2)
+prop2 <- b[2,2] * 100
+prop2 <- round(prop2, digits = 2)    
+#summary(env.pcareduce)
 
-sitescores3 <- scores(env.pca1soil, c(1,2, 3), 'sites')
+autoplot(env.pcareduce , xlab = paste("PCA", prop1), ylab = paste("PCA", prop2) )
 
-#speciesscore <- scores(env.pca2, c(1,2, 3), 'species')
-
-
-
-
+sitescores <- scores(env.pcareduce, c(1,2, 3), 'sites')
+sitescores <- as.data.frame(cbind(sitescores, env2_sitelabels))
 
 
 ```
 
-# Alpha diversity
+# Site-level
+
+## Functional dispersion
 
 ### more data wrangling
 ```{r}
 
 
-library(FD)
-
 #need a species by trait matrix, but I want to use the population means
 #make species name the name + site
-
 
 site.pop <- select(cov, 1, 2, 31) %>% left_join(long.pres, ., by = 'uniID')
 
@@ -303,7 +305,6 @@ counts <- counts %>% group_by(Site.x, month) %>% count()
 site.pop <- site.pop %>% group_by(Site.x, month, species) %>% summarize(total = sum(count.bin)) 
 
 site.pop <- left_join(site.pop, counts, by = c("Site.x", "month"))
-
 
 site.pop <- mutate(site.pop, pit.abun = total/n)
 site.pop <- select(site.pop, 1:3, 6)
@@ -327,7 +328,6 @@ wide.pop <- select(wide.pop, -sites)
 
 wide.pop <- select(wide.pop, -36, -42)
 
-
 #check to ensure names are matched correctly between dataframes
 spec <- colnames(wide.pop)
 
@@ -338,23 +338,34 @@ trait.pop <- select(trait.pop, -spepop)
 all.equal(spec, row.names(trait.pop))
 
 ```
-### Null model/SES calculation
+## Null model/SES calculation
 
 ### Functional dispersion
-```{r}
-library(picante)
 
+```{r, echo=FALSE}
 
-numberReps <- 100
 #Lets create a matrix to store results from each iteration (one column per iteration)
-resultsRandom <- matrix(NA, nrow = nrow(wide.pop), ncol = numberReps,
-                        dimnames = list(rownames(wide.pop),
-                                        paste0("Sim.", 1:numberReps)))
-for(rep in 1:numberReps){
-  randomizedFDis <- randomizeMatrix(samp = wide.pop, null.model = "independentswap")
-  simFDis <- dbFD(trait.pop, randomizedFDis, w.abun = TRUE)$FDis
-  resultsRandom[, rep] <- simFDis
-}
+
+#saving the randomization as an R object to cut down knit time
+# numberReps <- 100
+# resultsRandom <- matrix(NA, nrow = nrow(wide.pop), ncol = numberReps,
+#                         dimnames = list(rownames(wide.pop),
+#                                         paste0("Sim.", 1:numberReps)))
+# for(rep in 1:numberReps){
+#   randomizedFDis <- randomizeMatrix(samp = wide.pop, null.model = "independentswap")
+#   simFDis <- dbFD(trait.pop, randomizedFDis, w.abun = TRUE)$FDis
+#   resultsRandom[, rep] <- simFDis
+# }
+
+
+#saveRDS(resultsRandom, file = "Clean Data/objects/FDispRandom_sites.rds")
+
+
+```
+
+
+```{r}
+resultsRandom <- readRDS("Clean Data/objects/FDispRandom_sites.rds")
 
 obsFDis <- dbFD(trait.pop, wide.pop, w.abun = TRUE)$FDis
 meanNull3 <- rowMeans(resultsRandom)
@@ -364,6 +375,28 @@ SES3 <- ES3 / sdNull3
 SES_dis <- data.frame(SES3)
 SES_dis$sites <- row.names(SES_dis)
 
+#make random values negative
+resultsRandom_neg <- resultsRandom * -1
+diff <- sweep(resultsRandom_neg, 1, obsFDis, "+")
+diff_ses <- sweep(diff, 1, meanNull3, "/")
+diff_ses_ag <- apply(diff_ses, 1, multiple.func)
+diff_ses_ag <- t(diff_ses_ag)
+diff_ses_ag <- cbind(diff_ses_ag, SES_dis$sites)
+
+#get rid of last row
+diff_ses_ag <- head(diff_ses_ag, 27)
+
+test <- cbind(sdNull3, diff_ses_ag)
+test <- as.data.frame(test)
+test$sd <- as.numeric(test$sd)
+test <- rename(test, sdrand = sdNull3)
+test$sdrand <- as.numeric(test$sdrand)
+
+cor.test(test$sd, test$sdrand)
+
+#variation in SES values is the same as the random variation in fdisp calculated from a null model
+
+
 #join site-level environmental measurements to data
 
 cov$sites <- paste(cov$Site, cov$month)
@@ -371,80 +404,367 @@ SES <- select(cov, 1:15, shrub.site, sites, 37:43) %>% distinct() %>% left_join(
 
 ```
 
-## Functional dispersion  EDA
+## Functional dispersion and PC gradient
 ```{r}
 
+SES2 <- cbind(SES, sitescores)
+SES2$PC1 <- as.numeric(SES2$PC1)
+SES2$PC2 <- as.numeric(SES2$PC2)
+SES2$PC3 <- as.numeric(SES2$PC3)
 
-ggplot(SES, aes(NDVI, SES3)) + geom_smooth(method = 'lm')
+#need to add raw FDisp score
 
-ggplot(SES, aes(Site, esi)) + geom_boxplot()
-ggplot(SES, aes(arid, esi)) + geom_smooth(method = 'lm')
 
-ggplot(SES, aes(arid, SES3)) + geom_smooth(method = 'lm')
-ggplot(SES, aes(mean.cover, SES3)) + geom_smooth(method = 'lm')
-ggplot(SES, aes(Max, SES3)) + geom_smooth()
-ggplot(SES, aes(var.cover, SES3)) + geom_smooth()
 
 
 mean(SES$SES3)
 t.test(SES$SES3)
 
-cor.test(SES$SES3, SES$esi)
-cor.test(SES$SES3, SES$SBIO1_05)
-cor.test(SES$SES3, SES$arid)
 
-
-
-
-SES2 <- cbind(SES, sitescores3)
 
 m1 <- lm(SES3 ~ PC1 + PC2, data = SES2)
 summary(m1)
-m2 <- lm(SES3 ~ esi, data = SES2)
+shapiro.test(resid(m1))
+ggplot(SES2, aes(PC1, SES3)) + geom_smooth(method = 'lm')
+ggplot(SES2, aes(PC1, SES3, color = shrub.site)) + geom_smooth(method = 'lm')
+
+
+SES2 <- mutate(SES2, shrub = ifelse(shrub.site == "atriplex", "shrub", (ifelse(shrub.site == "ephedra", "shrub", "open"))))
+
+
+
+
+ggplot(SES2, aes(PC1, SES3, color = shrub)) + geom_smooth(method = 'lm')
+
+
+
+ggplot(SES2, aes(PC1,SES3, color = shrub)) + geom_point()
+ggplot(SES2, aes(PC1,SES3, color = Site)) + geom_point()
+
+
+
+
+
+
+
+m2 <- lm(SES3 ~ arid, data = SES2)
 summary(m2)
 
-m1 <- lm(SES3 ~ PC1 + PC2 + PC3, data = SES2)
-summary(m1)
-ggplot(SES2, aes(PC1, SES3)) + geom_smooth(method = "lm")
+ggplot(SES2, aes(arid, SES3)) + geom_smooth(method = 'lm')
+ggplot(SES2, aes(Temp, SES3)) + geom_smooth(method = 'lm')
+ggplot(SES2, aes(Max, SES3)) + geom_smooth()
+ggplot(SES2, aes(NDVI, SES3)) + geom_smooth(method = 'lm')
+ggplot(SES2, aes(mean.cover, SES3)) + geom_smooth(method = 'lm')
+ggplot(SES2, aes(var.cover, SES3)) + geom_smooth()
 
 
-m1 <- lm(SES3 ~ var.cover, data = SES2)
-summary(m1)
 
 #new heat map
-mat3 <- select(SES2, esi, 4,5, 12:15, 18, 24, 25:28)
+mat3 <- select(SES2, esi, 4,5, 8, 12:15, 18, 24, 24:28)
 M3 <- cor(mat3)
 corrplot::corrplot(M3, method = "number")
 
 
-m1 <- glmmTMB(SES3 ~ arid +(1|Site) + (1|month), family = gaussian(), data = SES)
-summary(m1)
 
-m2 <- glmmTMB(SES3 ~  NDVI + SBIO1_05 + (1|Site), family = gaussian(), data = SES)
+```
+
+
+## Alpha richness ~ PC1
+
+```{r}
+
+#use long pres
+#join month by identifier
+#remove the two singletons?
+#sum presences per site
+
+
+alpha <- select(cov, uniID, month) %>% right_join(long.pres, by = "uniID")
+alpha$sites <- paste(alpha$Site, alpha$month)
+alpha <- filter(alpha, species != "Solenopsisaurea" & species != "Solenopsismolesta")
+alpha <- select(alpha, sites, species, count.bin)
+alpha <- distinct(alpha)
+alpha <- alpha %>% group_by(sites) %>% summarise(richness = sum(count.bin))
+
+
+
+alpha <- right_join(alpha, SES2, by = "sites")
+
+#same GLM or GLMM
+m1 <- glmmTMB(richness ~ PC1 + PC2 + PC3 + (1|Site), family = "poisson", data = alpha)
+summary(m1)
+shapiro.test(resid(m1))
+
+m2 <- glm(richness ~ Prec, family = "poisson", data = alpha)
 summary(m2)
 
+#maybe should use an abundance weighted diversity index for this
 
-m3 <- glmmTMB(ES3 ~ mean.cover + shrub.site + (1|Site), family = gaussian(), data = SES)
-AIC(m1, m2, m3)
+```
 
-summary(m3)
-summary(m1)
-shapiro.test(resid(m2))
+## Taxonomic beta diversity
 
-SES4 <- select(SES2, 1:25)
-SESno <-cbind(SES4, sitescores2)
+```{r}
 
-ggplot(SESno, aes(PC1, SES3)) + geom_smooth(method = "lm")
-m1 <- lm(SES3 ~ PC1 + PC2 + PC3, data = SESno)
-summary(m1)
+#functional indices are weighted so use abundance weighted beta-diversity
+
+
+library(betapart)
+# baselgi methods for beta-diversity
+
+#we can use the occupancy population dateframe
+#drop half of species name after space
+#filter out two singletons
+
+
+sites_species <- site.pop
+sites_species <- separate(sites_species, spepop, into = c("species", "month"), sep = " ")
+sites_species <- filter(sites_species, species != "Solenopsisaurea" & species != "Solenopsismolesta")
+sites_species <- select(sites_species, -month)
+# need wide
+
+
+sites_species <- pivot_wider(sites_species, names_from = "species", values_from = "pit.abun") %>% as.data.frame()
+row.names(sites_species) <- sites_species$site.name
+sites_species <- select(sites_species, -site.name)
+
+#balanced variation in abundance is turnover
+#abundance gradients are nestedness
+
+beta.core <- betapart.core.abund(sites_species)
+betapair <- beta.pair.abund(beta.core)
+
+betamulti <- beta.multi.abund(beta.core)
+
+#turnover component
+betamulti$beta.BRAY.BAL
+
+#nestedness component
+betamulti$beta.BRAY.GRA
+
+#combined
+betamulti$beta.BRAY
+
+
+#mostly turnover, some nestedness
+
+#betapair are dist objects
+
+tdis <- betapair$beta.bray.bal
+ndis <- betapair$beta.bray.gra
+#let's use the standardized environmental variables from the pca scores
+
+envbeta <- cbind(env.reduce, env2_sitelabels)
+
+#sort envbeta to same order as site_species
+envbeta <- envbeta[order(match(envbeta[,10], row.names(sites_species))),]
+row.names(envbeta) <- envbeta$env2_sitelabels
+envbeta <- select(envbeta, -env2_sitelabels)
+
+env_dist <- dist(envbeta, "euclidean")
+
+
+mantel(tdis, env_dist)
+mantel(ndis, env_dist)
+
+
+
+#turnover NOT related to env gradient
+#nestedness - this is changes to abundance is related
+
+#can I do mean at each site and plot against environment?
 
 ```
 
 
 
-### Functional dispersion - pitfall trap level null model calculations
+## Variance partitioning
 
 ```{r}
+
+
+#look at me I'm varpart
+
+
+library(adespatial)
+library(SoDA)
+
+#convert our degrees in lat long to cartesian
+
+
+sites.xy <- geoXY(SES2$Lat.x, SES2$Long.x)
+mem <- dbmem(sites.xy)
+
+var_df <- cbind(SES2, sites.xy)
+
+disp <- SES2$SES3
+
+env <- select(SES2, 4, 5, 8, 12:14, 18, 19, 24)
+
+v1 <- varpart(Y =disp, X = env, sites.xy)
+summary(v1)
+#showvarparts(v1)
+plot(v1)
+#rda(v1)
+
+```
+
+
+
+## db-RDA
+
+
+```{r}
+
+# use FD to calculate the CWM from occupancies
+
+site_cwm <- dbFD(trait.pop, wide.pop, w.abun = TRUE)$CWM
+
+env2 <- select(cov, 3:5, 8, 12:15, 37:43, sites) %>% drop_na() %>% distinct()
+env2 <- env2[order(match(env2[,16], row.names(site_cwm))),]
+
+
+m2 <- capscale(site_cwm~  mean.cover + var.cover +mean.height+ Temp+ Prec+ Max + NDVI +SBIO1_05 + SBIO7__515, data = env2, dist = "bray", metaMDSdist = TRUE)
+
+m3 <- ordistep(m2, direction = "both")
+summary(m3)
+anova.cca(m3, by = "margin", model = "reduced")
+
+vif.cca(m3)
+plot(m3)
+
+#colinearity is a problem this though
+```
+
+
+## CWM and pca1 regressions
+
+```{r}
+
+
+cwm <- site_cwm
+cwm$sites <- row.names(cwm)  
+  
+
+cwm <- select(SES2, sites, PC1, PC2, PC3) %>% left_join(cwm, by = 'sites')
+
+```
+
+```{r}
+
+fit1 <- lm(Webers ~ PC1, cwm)
+a <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 1, y = 1.3),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM Weber's Body Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
+a
+
+
+
+fit1 <- lm(Femur.w ~ PC1, cwm)
+b <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 1, y = 1.1),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM Femur Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+b
+
+
+fit1 <- lm(Headl.w ~ PC1, cwm)
+c <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 1, y = 0.8),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM Head Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+c
+
+
+fit1 <- lm(Eyel.w ~ PC1, cwm)
+d <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 1, y = 0.2),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM Eye Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+d
+
+
+fit1 <- lm(Headw.w ~ PC1, cwm)
+e <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 1, y = 0.8),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + ylab("CWM Head Width (mm)")+ theme(text = element_text(size = 18))
+e
+
+
+fit1 <- lm(Scape.w ~ PC1, cwm)
+f <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 1, y = 0.8),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM Scape Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
+f
+
+fit1 <- lm(Mandible.w ~ PC1, cwm)
+g <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 1, y = 0.5),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM Mandible Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+g
+
+
+```
+
+
+```{r}
+plots <- list(a,b,c,d,e,f,g)
+grobs <- list()
+widths <- list()
+
+for (i in 1:length(plots)){
+    grobs[[i]] <- ggplotGrob(plots[[i]])
+    widths[[i]] <- grobs[[i]]$widths[2:5]
+}
+
+maxwidth <- do.call(grid::unit.pmax, widths)
+for (i in 1:length(grobs)){
+     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+}
+
+p <- do.call("grid.arrange", c(grobs, ncol = 2))
+p
+
+
+
+
+```
+
+
+![](Figures/CWMfig.jpeg)
+
+
+
+# Trap level
+
+## Functional dispersion - pitfall trap level null model calculations
+
+```{r, echo=FALSE}
 #let's do a null model for pitfall trap level, can randomize between sites?
 
 #need a presence/absence matrix at the pitfall trap level, and want population-level means for this analysis, go from long.pres
@@ -473,16 +793,21 @@ wide.pit.pop <- wide.pit.pop[rowSums(wide.pit.pop) > 0,]
 spec <- colnames(wide.pit.pop)
 all.equal(spec, row.names(trait.pop))
 
-numberReps <- 100
-#Lets create a matrix to store results from each iteration (one column per iteration)
-resultsRandom3 <- matrix(NA, nrow = nrow(wide.pit.pop), ncol = numberReps,
-                        dimnames = list(rownames(wide.pit.pop),
-                                        paste0("Sim.", 1:numberReps)))
-for(rep in 1:numberReps){
-  randomizedFDis <- randomizeMatrix(samp = wide.pit.pop, null.model = "independentswap")
-  simFDis <- dbFD(trait.pop, randomizedFDis, w.abun = TRUE)$FDis
-  resultsRandom3[, rep] <- simFDis
-}
+# numberReps <- 100
+# #Lets create a matrix to store results from each iteration (one column per iteration)
+# resultsRandom3 <- matrix(NA, nrow = nrow(wide.pit.pop), ncol = numberReps,
+#                         dimnames = list(rownames(wide.pit.pop),
+#                                         paste0("Sim.", 1:numberReps)))
+# for(rep in 1:numberReps){
+#   randomizedFDis <- randomizeMatrix(samp = wide.pit.pop, null.model = "independentswap")
+#   simFDis <- dbFD(trait.pop, randomizedFDis, w.abun = TRUE)$FDis
+#   resultsRandom3[, rep] <- simFDis
+# }
+# 
+# saveRDS(resultsRandom3, file = "Clean Data/objects/FDispRandom_pitfall.rds")
+
+resultsRandom3 <- readRDS("Clean Data/objects/FDispRandom_pitfall.rds")
+
 
 obsFDis <- dbFD(trait.pop, wide.pit.pop, w.abun = TRUE)$FDis
 meanNull3 <- rowMeans(resultsRandom3)
@@ -524,6 +849,7 @@ plot(resid(m1))
 
 ```
 
+
 ## Alpha diversity - species richness
 
 ```{r}
@@ -531,20 +857,18 @@ plot(resid(m1))
 
 
 
-m2 <- glmmTMB(Species ~ esi + Microsite+ arid + dry.veg.percent  + NDVI + SBIO7__515 + (1|Site) + (1|month), family = "poisson", data = cov)
 
-summary(m2)
 
 ```
 
 
 ## Co-occurrence null models
 
-```{r}
+```{r, echo = FALSE}
 
 #rows are species and the columns are sites
 
-library(purrr)
+
 
 #join site-month codes to spebin
 
@@ -562,12 +886,16 @@ c_data <- map(c_data, ~ .x %>%
         t()) 
 
 
-c_data$`Aven Aug`
+#takes a while to run, save as object and read in
 
+# 
+# c_null <- map(c_data, ~.x %>%
+#                 cooc_null_model(., algo = "sim2", metric = "c_score", nReps = 999))
+# 
+# 
+# saveRDS(c_null, file = "Clean Data/objects/c_score_null_pitfall.rds")
 
-c_null <- map(c_data, ~.x %>%
-                cooc_null_model(., algo = "sim2", metric = "c_score", nReps = 999))
-
+c_null <- readRDS("Clean Data/objects/c_score_null_pitfall.rds")
 
 c_null <- data.frame(do.call(rbind, c_null))
 
@@ -577,9 +905,6 @@ c_obs <- t(c_obs)
 
 c_sims <- as.data.frame(c_null$Sim)
 c_sims <- t(c_sims)
-multiple.func <- function(x) {
-      c(mean = mean(x), sd = sd(x))
-}
 
 c_sim <- apply(c_sims, 1, multiple.func)
 
@@ -623,172 +948,30 @@ ggplot(SES, aes(arid, SES_C)) + geom_smooth(method = "lm")
 cwm_wide <- CWM.pres %>% pivot_wider(names_from = Trait, values_from = cwm)
 
 #drop non-standardized traits
-cwm_wide <- select(cwm_wide, -45, -47, -49, -50, -53, -55)
+cwm_wide <- select(cwm_wide, -46, -48, -49, -50, -51, -54, -56, -59)
 
 #remove rows with zero abundance
 cwm_wide <- filter(cwm_wide, abun > 0)
-cwm_wide <- select(cwm_wide, 1, 2, 5:11, 14:17, 19, 25, 31, 35, 38:51)
+cwm_wide <- select(cwm_wide, 1, 2, 6,7, 10, 14:16, 19, 25, 31, 35, 38, 40, 44, 46:51)
 # drop rows with NA values
-cwm_wide <- drop_na(cwm_wide)
 cwm_wide <- filter(cwm_wide, Webers > 0)
-cwm_traits <- cwm_wide %>% ungroup() %>% select(25:31) 
-cwm_env <- cwm_wide %>% ungroup() %>% select(1, 3:24)
+cwm_wide <- drop_na(cwm_wide) 
+
+cwm_traits <- cwm_wide  %>% ungroup %>% select(16:21) 
+cwm_env <- cwm_wide %>% ungroup() %>% select(1, 3:15)
 
 
 m2 <- capscale(cwm_traits~  Prec+   Microsite +  NDVI   + Temp  + var.cover + Condition(Site.x), data = cwm_env, dist = "bray", metaMDSdist = TRUE)
 
 m3 <- ordistep(m2, direction = "both")
-summary(m2)
-anova.cca(m2, by = "margin", model = "reduced", strata = cwm_env$Site.x)
+#summary(m2)
+a3 <- anova.cca(m2, by = "margin", model = "reduced", strata = cwm_env$Site.x)
 
-vif.cca(m2)
-
-
-plot(m2)
+vif.cca(m3)
+plot(m3)
 
 
 ```
-
-
-
-## Beta-diversity taxonomic
-
-
-
-
-library(betapart)
-
-spe.bin <- as.data.frame(spe.bin)
-row.names(spe.bin) <- spe.bin$uniID
-spe.bin <- select(spe.bin, -uniID)
-
-spe.bin.core <- betapart.core(spe.bin)
-spe.bin.multi <- beta.multi(spe.bin)
-spe.bin.samp <- beta.sample(spe.bin.core, sites = 9, samples = 100)
-
-
-dist <- beta.pair(spe.bin, index.family = "sorensen")
-
-bd <- vegan::betadisper(dist[[3]], cov$shrub.site)
-
-boxplot(bd)
-anova(bd)
-# difference in dispersion between the three
-TukeyHSD(bd)
-# contrasts not significant. ok.
-
-
-
-bd <- vegan::betadisper(dist[[3]], cov$Microsite)
-
-boxplot(bd)
-anova(bd)
-TukeyHSD(bd)
-
-
-
-
-
-
-library(FD)
-library(vegan)
-gow <- gowdis(env4)
-euc <- dist(env4, "euclidean")
-gow <- as.matrix(gow)
-sor <- dist[[3]]
-sor <- as.matrix(sor)
-
-sor.mean <- rowMeans(sor, na.rm = TRUE)
-sim <- as.matrix(dist[[1]])
-sim.mean <- rowMeans(sim, na.rm = TRUE)
-sne <- as.matrix(dist[[2]])
-sne.mean <- rowMeans(sne, na.rm = TRUE)
-
-envbeta <- cbind(env4, sor.mean, sim.mean, sne.mean)
-
-
-mb <- glmmTMB(sim.mean ~  arid  + esi + mean.cover +dry.veg.percent+  Microsite  + shrub.site + (1|Site), data = envbeta)
-shapiro.test(resid(msor))
-plot(resid(mb))
-summary(mb)
-check_collinearity(mb)
-
-ggplot(envbeta, aes(arid, sor.mean)) + geom_smooth() 
-
-
-msor <- glmmTMB(sor.mean ~  arid  + esi + mean.cover +dry.veg.percent+  Microsite  + shrub.site + (1|Site), data = envbeta)
-summary(msor)
-msor2 <- glmmTMB(sor.mean ~  arid  + esi + mean.cover +dry.veg.percent+  Microsite  + shrub.site , data = envbeta)
-
-summary(msor2)
-
-AIC(msor, msor2)
-
-plot(resid(mb) ~ envbeta$sim.mean)
-mb2 <- glmmTMB(sne.mean ~  arid   +mean.cover +dry.veg.percent+  Microsite  + shrub.site +(1|Site), data = envbeta)
-
-size <- filter(CWM.pres, Trait == "Webers")
-m1 <- glmmTMB(cwm ~ esi + (1|Site.x), data = size)
-summary(m1)
-
-m2 <- glmmTMB(cwm ~ arid + (1|Site.x), data = size)
-summary(m2)
-
-ggplot(size, aes(arid, cwm)) + geom_smooth(method = lm)
-
-
-summary(mb)
-summary(mb2)
-
-
-envlong <- pivot_longer(envbeta, 11:13, names_to = "beta", values_to = "mean")
-
-envlong <- pivot_longer(envlong, c(1:6, 8, 9), names_to = "env", values_to = "value")
-
-ggplot(envlong, aes(value,mean , color = beta)) +
-  stat_smooth(method = "lm") + facet_wrap(~env, scales = "free")
-
-
-
-euc.dry <-dist(env4$dry.veg.percent, "euclidean")
-euc.Prec <- dist(env4$Prec, "euclidean")
-euc.esi <- dist(env4$esi, "euclidean")
-euc.vegheight <- dist(env4$veg..height, "euclidean")
-euc.temp <- dist(env4$Temp, "euclidean")
-euc.siteveg <- dist(env4$mean.bare, "euclidean")
-euc.arid <- dist(env4$arid, "euclidean")
-
-mantel(euc.dry, sor, method = "spearman", permutations = 999, na.rm = TRUE)
-
-
-mantel(euc.Prec, sor, method = "spearman", permutations = 99, na.rm = TRUE)
-
-mantel(euc.Prec, gow, method = "spearman", permutations = 99, na.rm = TRUE)
-
-mantel(euc.vegheight, sor, method = "spearman", permutations = 99, na.rm = TRUE)
-
-mantel(euc.temp, sor, method = "spearman", permutations = 99, na.rm = TRUE)
-
-mantel(euc.siteveg, sor, method = "spearman", permutations = 99, na.rm = TRUE)
-
-mantel(euc.arid, sor, method = "spearman", permutations = 99, na.rm = TRUE)
-mantel(euc.esi, sor, method = "spearman", permutations = 99, na.rm = TRUE)
-
-n <- mantel(euc.arid, sim, method = "spearman", permutations = 99, na.rm = TRUE)
-mantel(euc.esi, sim, method = "spearman", permutations = 99, na.rm = TRUE)
-
-plot(n)
-
-# dry.veg. percent matters
-# site level differences do
-
-#yes, beta diversity (species composition) is correlated with the environment
-
-## Beta-diversity functional
-
-## db-RDA
-
-
 
 
 
@@ -806,6 +989,7 @@ Compare shifts in CWM measured along a gradient using site-specific trait values
 Intraspecific trait variation
 
 ## Body size
+
 ```{r}
 
 itv <- data.frame()
@@ -941,40 +1125,28 @@ partition <- aov(Measure~X.1, data = hl)
 summary(partition)
 ```
 
-# Sorenson
 
-However, in this study we used
-the C-score to evaluate co-occurrence between each pair
-of species as C-score = (a − c) (b − c), where a is the total
-number of occurrences of one species, b is the total number
-of occurrences of a second species, and c is the number of
-sites that contain both species
+## ITV Plots
 
+```{r}
 
+itv <- read.csv("raw data/itv.csv")
+itv <- itv %>% mutate(total = Species + ITV) %>% mutate(sp.rel = Species/total, itv.rel = ITV/total)
 
+itv = pivot_longer(itv, 5:6, names_to = "rel.itv", values_to = "val")
 
-Contrarily, the Sørensen index
-(Dice 1945) measures the mean number of shared sites (i.e.,
-grid cells in our study) between a species pair, calculated
-as S𝜙r = 2c∕(2c + a + b), where a, b and c are defined as
-above. 
+itv$Trait <- factor(itv$Trait, levels = unique(itv$Trait[order(itv$val)]))
+
+ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = "identity", aes(fill = rel.itv)) + ylab("Proportion variation explained by species") +
+  theme(legend.position="none") + scale_fill_manual(values = c("gray", "black")) + theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
 
 
-
-
-# Ant-habitat associations
-## Indicator species analysis
-
-- microsite
-- shrub type at site
-- study site
-
-# Beta-diversity
-
-
+```
 
 
 # Models
+
 ## Ant abundance
 
 ```{r}
@@ -997,94 +1169,12 @@ ggplot(cov, aes(arid, dry.veg.percent)) + geom_smooth()
 
 ```
 
-## Ant richness
-
-```{r}
-m1 <- glmmTMB(Species ~ arid +mean.cover +dry.veg.percent + Microsite  + shrub.site + month + (1|Site) , family = "poisson", data = cov)
-
-m2 <- glmmTMB(Species ~ arid dry.veg.percent + var.cover +Microsite  + shrub.site + month + (1|Site), family = "poisson", data = cov)
-
-m3 <- glmmTMB(Species ~ arid +mean.cover +dry.veg.percent + var.cover +Microsite  + shrub.site + month + esi + (1|Site) , family = "poisson", data = cov)
-
-m4 <- glmmTMB(Species ~ arid +mean.cover +dry.veg.percent  +Microsite  + shrub.site + month + esi + (1|Site) , family = "poisson", data = cov)
-
-
-
-m5 <- glmmTMB(Species ~ mean.cover +dry.veg.percent  +Microsite  + shrub.site +  esi + arid + (1|Site) , family = "poisson", data = cov)
-summary(m5)
-AIC(m1,m2, m3, m4, m5)
-
-ggplot(cov, aes(arid, Species)) + geom_smooth()
-
-
-
-cor.test(cov$mean.cover, cov$var.cover)
-
-summary(m2)
-library(performance)
-
-check_collinearity(m5)
-m2 <- glmmTMB(Species ~ dry.veg.percent + Microsite  + mean.cover +  esi + mean.height +  shrub.site + arid + month + (1|Site) , family = "nbinom2", data = cov)
-summary(m2)
-
-AIC(m1, m2)
-```
-
-## ITV Plots
-
-```{r}
-
-itv <- read.csv("raw data/itv.csv")
-itv <- itv %>% mutate(total = Species + ITV) %>% mutate(sp.rel = Species/total, itv.rel = ITV/total)
-
-itv = pivot_longer(itv, 5:6, names_to = "rel.itv", values_to = "val")
-
-itv$Trait <- factor(itv$Trait, levels = unique(itv$Trait[order(itv$val)]))
-
-ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = "identity", aes(fill = rel.itv)) + ylab("Proportion variation explained by species") +
-  theme(legend.position="none") + scale_fill_manual(values = c("gray", "black")) + theme(axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-
-```
-
-
-
-## Functional richness
-
-```{r}
-
-numberReps <- 100
-
-#Lets create a matrix to store results from each iteration (one column per iteration)
-resultsRandom4 <- matrix(NA, nrow = nrow(wide.pop), ncol = numberReps,
-                        dimnames = list(rownames(wide.pop),
-                                        paste0("Sim.", 1:numberReps)))
-for(rep in 1:numberReps){
-  randomizedFDis <- randomizeMatrix(samp = wide.pop, null.model = "independentswap")
-  simFDis <- dbFD(trait.pop, randomizedFDis, w.abun = TRUE)$FRic
-  resultsRandom4[, rep] <- simFDis
-}
-
-obsFDis <- dbFD(trait.pop, wide.pop, w.abun = TRUE)$FRic
-meanNull3 <- rowMeans(resultsRandom4)
-ES3 <- obsFDis - meanNull3
-sdNull3 <- apply(resultsRandom4, 1, sd)
-SES3 <- ES3 / sdNull3
-SES_rich <- data.frame(SES3)
-SES_rich$sites <- row.names(SES_rich)
-#join site-level environmental measurements to data
-
-SES_rich <- rename(SES_rich, SES_ric = SES3)
-SES <- left_join(SES_rich, SES, by = "sites")
 
 
 
 
-mean(SES$SES_ric, na.rm = TRUE)
 
 
 
-```
 
 
