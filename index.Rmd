@@ -209,7 +209,8 @@ trait.pop <- select(trait.pop, 1, 3, 5, 8, 9, 11, 13, 14)
 trait.pop.st <- select(trait.pop, -1) %>% decostand(method = "standardize")
 trait.pop.pca <- rda(trait.pop.st)
 #summary(trait.pop.pca)
-autoplot(trait.pop.pca, xlab = "PCA 35.8%", ylab = "PCA 32.2 %")
+autoplot(trait.pop.pca, xlab = "PCA 35.8%", ylab = "PCA 32.2 %") +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 #PCA3 ~ 16%
 ```
 
@@ -233,7 +234,10 @@ prop1 <- round(prop1, digits = 2)
 prop2 <- b[2,2] * 100
 prop2 <- round(prop2, digits = 2)
 
-autoplot(env.pca, xlab = paste("PCA", prop1), ylab = paste("PCA", prop2))
+autoplot(env.pca, xlab = paste("PCA", prop1), ylab = paste("PCA", prop2)) +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black")) 
+
+
 score2 <- scores(env.pca, c(1,2, 3), 'sites')
 score2 <- as.data.frame(cbind(score2, env_sitelabels))
 ```
@@ -443,7 +447,8 @@ ggplot(SES2, aes(PC1,SES3, color = Site)) + geom_point()
 
 
 
-
+ggplot(SES2, aes(PC1, SES3)) + geom_point() + stat_smooth(method = "lm") + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black")) + ylab("SES Functional dispersion")
 
 
 
