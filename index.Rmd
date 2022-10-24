@@ -435,8 +435,8 @@ ggplot(SES2, aes(PC1, SES3, color = shrub.site)) + geom_smooth(method = 'lm')
 
 SES2 <- mutate(SES2, shrub = ifelse(shrub.site == "atriplex", "shrub", (ifelse(shrub.site == "ephedra", "shrub", "open"))))
 
-
-
+m <- lm(SES3 ~  shrub, data = SES2)
+summary(m)
 
 ggplot(SES2, aes(PC1, SES3, color = shrub)) + geom_smooth(method = 'lm')
 
@@ -496,7 +496,7 @@ alpha <- alpha %>% group_by(sites) %>% summarise(richness = sum(count.bin))
 alpha <- right_join(alpha, SES2, by = "sites")
 
 #same GLM or GLMM
-m1 <- glmmTMB(richness ~ PC1 + PC2 + PC3 + (1|Site), family = "poisson", data = alpha)
+m1 <- glmmTMB(richness ~ PC1 + PC2, family = "poisson", data = alpha)
 summary(m1)
 shapiro.test(resid(m1))
 
