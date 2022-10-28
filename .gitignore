@@ -3,3 +3,8 @@
 .RData
 .Ruserdata
 raw data/GABI_Data_Release1.0_18012020.csv
+*.bil
+*.hdr
+wc2-5/bio_2-5m_bil.zip
+*.tif
+*.ovr
