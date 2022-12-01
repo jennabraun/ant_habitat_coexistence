@@ -29,6 +29,7 @@ multiple.func <- function(x) {
       c(mean = mean(x), sd = sd(x))
 }
 ```
+
 # Data Cleaning
 
 ```{r}
@@ -64,8 +65,6 @@ ndvi$Site <- gsub("MoV", "Mov", ndvi$Site)
 cov <- right_join(cov, ndvi, by = c("Site", "month"))
 cov$sites <- paste(cov$Site, cov$month)
 ```
-
-
 
 ```{r}
 
@@ -171,8 +170,6 @@ corrplot::corrplot(M, method = "number")
 
 ```
 
-
-
 # PCA for traits
 
 ## Invidividuals
@@ -194,7 +191,6 @@ autoplot(traits.pca, xlab = "PCA 33.9%", ylab = "PCA 32.9%")
 #PC3 is ~15%
 
 ```
-
 
 ## Populations
 
@@ -242,9 +238,7 @@ score2 <- scores(env.pca, c(1,2, 3), 'sites')
 score2 <- as.data.frame(cbind(score2, env_sitelabels))
 ```
 
-
 ## Sites - site-level
-
 
 ```{r}
 
@@ -272,6 +266,7 @@ envreduce <- select(env2, -esi, -arid, -10, -12, -13, -14)
 
 env.reduce <- decostand(envreduce, method = "standardize")
 env.pcareduce <- rda(env.reduce)
+
 a <- summary(env.pcareduce)
 
 b <- a$cont$importance
@@ -279,7 +274,7 @@ prop1 <- b[2,1] * 100
 prop1 <- round(prop1, digits = 2)
 prop2 <- b[2,2] * 100
 prop2 <- round(prop2, digits = 2)    
-#summary(env.pcareduce)
+summary(env.pcareduce)
 
 autoplot(env.pcareduce , xlab = paste("PCA", prop1), ylab = paste("PCA", prop2) )
 
@@ -294,6 +289,7 @@ sitescores <- as.data.frame(cbind(sitescores, env2_sitelabels))
 ## Functional dispersion
 
 ### more data wrangling
+
 ```{r}
 
 
@@ -342,6 +338,7 @@ trait.pop <- select(trait.pop, -spepop)
 all.equal(spec, row.names(trait.pop))
 
 ```
+
 ## Null model/SES calculation
 
 ### Functional dispersion
@@ -366,7 +363,6 @@ all.equal(spec, row.names(trait.pop))
 
 
 ```
-
 
 ```{r}
 resultsRandom <- readRDS("Clean Data/objects/FDispRandom_sites.rds")
@@ -409,6 +405,7 @@ SES <- select(cov, 1:15, shrub.site, sites, 37:43) %>% distinct() %>% left_join(
 ```
 
 ## Functional dispersion and PC gradient
+
 ```{r}
 
 SES2 <- cbind(SES, sitescores)
@@ -473,8 +470,7 @@ corrplot::corrplot(M3, method = "number")
 
 ```
 
-
-## Alpha richness ~ PC1
+## Alpha richness \~ PC1
 
 ```{r}
 
@@ -502,6 +498,17 @@ shapiro.test(resid(m1))
 
 m2 <- glm(richness ~ Prec, family = "poisson", data = alpha)
 summary(m2)
+
+
+m3 <- glm(richness ~ month, family = "poisson", data = alpha)
+summary(m3)
+car::Anova(m3)
+tb <- table(alpha$richness, alpha$sites)
+chisq.test(alpha$richness, alpha$Site)
+
+
+
+
 
 #maybe should use an abundance weighted diversity index for this
 
@@ -581,8 +588,6 @@ mantel(ndis, env_dist)
 
 ```
 
-
-
 ## Variance partitioning
 
 ```{r}
@@ -614,10 +619,7 @@ plot(v1)
 
 ```
 
-
-
 ## db-RDA
-
 
 ```{r}
 
@@ -640,7 +642,6 @@ plot(m3)
 
 #colinearity is a problem this though
 ```
-
 
 ## CWM and pca1 regressions
 
@@ -736,7 +737,6 @@ g
 
 ```
 
-
 ```{r}
 plots <- list(a,b,c,d,e,f,g)
 grobs <- list()
@@ -760,8 +760,133 @@ p
 
 ```
 
-
 ![](Figures/CWMfig.jpeg)
+
+
+
+
+## CWM Traits vs PC2
+```{r}
+
+fit1 <- lm(Webers ~ PC2, cwm)
+a <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 0.75, y = 1.3),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM Weber's \nBody Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
+a
+
+
+
+fit1 <- lm(Femur.w ~ PC2, cwm)
+b <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 0.8, y = 1.1),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM \nFemur Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+b
+
+
+fit1 <- lm(Headl.w ~ PC2, cwm)
+c <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 0.75, y = 0.86),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM \nHead Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+c
+
+
+fit1 <- lm(Eyel.w ~ PC2, cwm)
+d <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 0.75, y = 0.2),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM \nEye Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+d
+
+
+fit1 <- lm(Headw.w ~ PC2, cwm)
+e <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 0.75, y = 0.8),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + ylab("CWM \nHead Width (mm)")+ theme(text = element_text(size = 18))
+e
+
+
+fit1 <- lm(Scape.w ~ PC2, cwm)
+f <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 0.8, y = 0.85),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM \nScape Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
+f
+
+fit1 <- lm(Mandible.w ~ PC2, cwm)
+g <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  geom_label(aes(x = 0.75, y = 0.5),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 5),
+ " \nP =",signif(summary(fit1)$coef[2,4], 5))) + ylab("CWM \nMandible Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+g
+
+```
+
+
+```{r}
+
+plots <- list(a,b,c,d,e,f,g)
+grobs <- list()
+widths <- list()
+
+for (i in 1:length(plots)){
+    grobs[[i]] <- ggplotGrob(plots[[i]])
+    widths[[i]] <- grobs[[i]]$widths[2:5]
+}
+
+maxwidth <- do.call(grid::unit.pmax, widths)
+for (i in 1:length(grobs)){
+     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+}
+
+p <- do.call("grid.arrange", c(grobs, ncol = 2))
+p
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -831,8 +956,8 @@ SES_dis_pit <- left_join(SES_dis_pit, cov, by = "uniID")
 #SES_dis_pit <- cbind(SES_dis_pit, score2)
 
 ```
-## Functional dispersion pitfall EDA
 
+## Functional dispersion pitfall EDA
 
 ```{r}
 mean(SES_dis_pit$SES_disp_pit, na.rm = TRUE)
@@ -854,7 +979,6 @@ plot(resid(m1))
 
 ```
 
-
 ## Alpha diversity - species richness
 
 ```{r}
@@ -865,7 +989,6 @@ plot(resid(m1))
 
 
 ```
-
 
 ## Co-occurrence null models
 
@@ -940,9 +1063,7 @@ ggplot(SES, aes(arid, SES_C)) + geom_smooth(method = "lm")
 
 ```
 
-
 ## db-RDA
-
 
 ```{r}
 
@@ -978,16 +1099,11 @@ plot(m3)
 
 ```
 
-
-
-
-
 # Turnover vs ITV
 
 Community mean trait values can shift along gradients due to differences in the species composition at the sites, and also due to intraspecific variation
 
 Compare shifts in CWM measured along a gradient using site-specific trait values to global trait values
-
 
 # ITV
 
@@ -1104,7 +1220,6 @@ varcompEL
 
 ## Head width
 
-
 ```{r}
 #head width
 
@@ -1130,7 +1245,6 @@ partition <- aov(Measure~X.1, data = hl)
 summary(partition)
 ```
 
-
 ## ITV Plots
 
 ```{r}
@@ -1148,7 +1262,6 @@ ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = 
 
 
 ```
-
 
 # Models
 
@@ -1173,13 +1286,3 @@ summary(v1)
 ggplot(cov, aes(arid, dry.veg.percent)) + geom_smooth()
 
 ```
-
-
-
-
-
-
-
-
-
-

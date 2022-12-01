@@ -5,6 +5,7 @@ library(ENMeval)
 library(raster)
 library(dplyr)
 library(sf)
+library(tidyr)
 
 # Set a random seed in order to be able to reproduce this analysis.
 set.seed(48)
@@ -57,8 +58,8 @@ plot(envs[[5]])
 #let's make some functions instead of doing this at least 11 times
 
 #cleans data
-cleangabi <- function(x, df, env.rast){
-  df <- filter(df, valid_species_name == x)
+cleangabi <- function(name, df, env.rast){
+  df <- filter(df, valid_species_name == name)
   df <- filter(df, dubious != "Dubious")
   df <- filter(df, dec_lat != "")
   print(unique(df$country))
@@ -85,7 +86,7 @@ generate_bg <- function(x, env.rast){
 
 
 # run the SDM and extract prediction raster of best model AUC
-sdm_seq <- function(occ, env.rast, bgpoints){
+sdm_seq <- function(occ, env.rast, bgpoints, name){
   occs <- as.data.frame(st_coordinates(occ))
   colnames(bgpoints) <- colnames(occs)
   e.mx <- ENMevaluate(occs, env.rast, bgpoints, 
@@ -94,27 +95,31 @@ sdm_seq <- function(occ, env.rast, bgpoints){
   res <- eval.results(e.mx)
   opt.aicc <- res %>% filter(delta.AICc == 0)
   print(opt.aicc)
-  opt.seq <- res %>% 
-    filter(or.10p.avg == min(or.10p.avg)) %>% 
-    filter(auc.val.avg == max(auc.val.avg))
-  print(opt.seq)
+  #opt.seq <- res %>% 
+    #filter(or.10p.avg == min(or.10p.avg)) %>% 
+    #filter(auc.val.avg == max(auc.val.avg))
+  #print(opt.seq)
   preds <- eval.predictions(e.mx)[[opt.aicc$tune.args]]
 }
 
+
+# x <- "test.test"
+# paste0("Clean Data/objects/", x, "_sdmresults.rds", sep = "")
+
 #put the functions together into one!
 
-predraster <- function(x, df, env.rast){
-  cleanant <- cleangabi(x, df, env.rast)
+predraster <- function(name, df, env.rast){
+  cleanant <- cleangabi(name, df, env.rast)
   occ <- thin_occ(cleanant, env.rast)
   b <- generate_bg(occ, env.rast)
-  sdm <- sdm_seq(occ, env.rast, b)
+  sdm <- sdm_seq(occ, env.rast, b, name)
 }
 
 
 #need to make decisions about partition and how to choose models
 #can choose AICc model, and then report AUC in paper
 
-
+cyph <- cleangabi("Cyphomyrmex.wheeleri", ants, envs)
 
 ## Solenopsis xyloni
 
@@ -138,13 +143,12 @@ doryin <- predraster("Dorymyrmex.insanus", ants, envs)
 plot(doryin)
 
 cypho <- predraster("Cyphomyrmex.wheeleri", ants, envs)
+
 myrmeco <- predraster("Myrmecocystus.kennedyi", ants, envs)
+
 pogo <- predraster("Pogonomyrmex.hoelldobleri", ants, envs)
 temno <- predraster("Temnothorax.andrei", ants, envs)
 forel <- predraster("Forelius.pruinosus", ants, envs)
-
-
-
 messandrei <- predraster("Veromessor.andrei", ants, envs)
 messper <- predraster("Veromessor.pergandei", ants, envs)
 
@@ -211,3 +215,23 @@ saveRDS(overdis, file = "Clean Data/objects/overlap_dissim.rds")
 #save overlap as an object
 
 mantel(gow, overdis)
+
+
+
+#extracting model info from rds files
+cw <- readRDS("Clean Data/objects/Cyphomyrmex.wheeleri_sdmresults.rds")
+res <- eval.results(cw)
+opt.aicc <- res %>% filter(delta.AICc == 0)
+opt.aicc
+eval.variable.importance(cw)[[opt.aicc$tune.args]]
+m <- cw@models$fc.H_rm.2
+eval.variable.importance(m)
+eval.varimp(cw)
+modcw <- mod.seq <- eval.models(cw)[[opt.aicc$tune.args]]
+modcw$betas
+plot(modcw, type = "cloglog")
+eval.variable.importance(modcw)
+var <- cw@variable.importance
+
+aic.mod <- cw@models[[which(cw@results$delta.AICc==0)]]
+eval.variable.importance(aic.mod)
