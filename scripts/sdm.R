@@ -170,6 +170,7 @@ messandrei@data@names <- "Messor andrei"
 messper@data@names <- "Messor pergandei"
 
 two <- raster::stack(dorybi, doryin, pheidole, xyloni, cypho, myrmeco, pogo, temno, forel, messandrei, messper)
+nocypo <- raster::stack(dorybi, doryin, pheidole, xyloni, myrmeco, pogo, temno, forel, messandrei, messper)
 #let's save the prediction raster stack too
 
 saveRDS(two, file = "Clean Data/objects/predictionrasters.rds")
@@ -188,13 +189,13 @@ over2 <- as.matrix(over2)
 #bring in species-level trait data
 
 
-traits.sp <- traits.sp %>%
+traits.sp1 <- traits.sp %>%
   select(.,-sd) %>%
   pivot_wider(names_from = Trait, values_from = mean) %>%
   as.data.frame(traits.sp)
 
-traits.sp <- select(traits.sp, 1, 3, 5, 8, 9, 11, 13, 14)
-traits.sp$X.1 <- gsub(" ", ".", traits.sp$X.1)
+traits.sp1 <- select(traits.sp1, 1, 3, 5, 8, 9, 11, 13, 14)
+traits.sp1$X.1 <- gsub(" ", ".", traits.sp$X.1)
 
 species.name <- traits.sp$X.1
 
@@ -215,6 +216,43 @@ saveRDS(overdis, file = "Clean Data/objects/overlap_dissim.rds")
 #save overlap as an object
 
 mantel(gow, overdis)
+
+
+
+
+#try again without cyphomyrmex
+
+
+overlapnocyph <- calc.niche.overlap(nocypo, overlapStat = "D")
+overlapnocyph <- forceSymmetric(overlapnocyph, "L")
+overlapnocyph <- as.matrix(overlapnocyph)
+
+
+traits.sp.n <- traits.sp %>%
+  select(.,-sd) %>%
+  filter(X.1 != "Cyphomyrmex wheeleri")%>%
+  pivot_wider(names_from = Trait, values_from = mean) %>%
+  as.data.frame(traits.sp.n)
+
+
+traits.sp.n <- select(traits.sp.n, 1, 3, 5, 8, 9, 11, 13, 14)
+traits.sp.n$X.1 <- gsub(" ", ".", traits.sp.n$X.1)
+
+
+gow2 <- gowdis(traits.sp.n)  
+gow2 <- as.matrix(gow2)
+row.names(gow2) <- species.name
+euc2 <- dist(traits.sp.n, "euclidean")
+#size <- dist(traits.sp$Femur.w, "euclidean")
+
+overlapnocyph <- as.matrix(overlapnocyph[order(row.names(overlapnocyph)),])
+overlapnocyph <- overlapnocyph[,order(colnames(overlapnocyph))]
+
+overdis2 <- 1 - overlapnocyph
+
+
+
+mantel(gow2, overdis2)
 
 
 
