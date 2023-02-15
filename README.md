@@ -1,4 +1,4 @@
-# Ant habitat use and coexistence
+# Environmental filtering mediates desert ant community assembly
 
 ## Getting Started
 
