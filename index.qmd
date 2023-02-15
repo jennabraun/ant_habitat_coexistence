@@ -395,10 +395,10 @@ SES2 <- mutate(SES2, shrub = ifelse(shrub.site == "atriplex", "shrub", (ifelse(s
 m <- lm(SES3 ~  shrub, data = SES2)
 summary(m)
 
+SES2 %>% group_by(shrub) %>% summarize(mean = mean(SES3), sd = sd(SES3))
 
 
-
-#new heat map
+ #new heat map
 mat3 <- select(SES2, esi, 4,5, 8, 12:15, 18, 24, 24:28)
 M3 <- cor(mat3)
 corrplot::corrplot(M3, method = "number")
