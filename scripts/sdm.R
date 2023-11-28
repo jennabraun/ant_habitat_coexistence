@@ -173,17 +173,18 @@ two <- raster::stack(dorybi, doryin, pheidole, xyloni, cypho, myrmeco, pogo, tem
 nocypo <- raster::stack(dorybi, doryin, pheidole, xyloni, myrmeco, pogo, temno, forel, messandrei, messper)
 #let's save the prediction raster stack too
 
-saveRDS(two, file = "Clean Data/objects/predictionrasters.rds")
 
+
+saveRDS(two, file = "Clean Data/objects/predictionrasters.rds")
+two <- readRDS(file = "Clean Data/objects/predictionrasters.rds")
 overlap <- calc.niche.overlap(two, overlapStat = "D")
-overlap
+testover <- 1 - overlap
 
 library(Matrix)
 over <- overlap
 
 over2 <- forceSymmetric(over, "L")
 over2 <- as.matrix(over2)
-
 
 
 #bring in species-level trait data
@@ -195,32 +196,52 @@ traits.sp1 <- traits.sp %>%
   as.data.frame(traits.sp)
 
 traits.sp1 <- select(traits.sp1, 1, 3, 5, 8, 9, 11, 13, 14)
-traits.sp1$X.1 <- gsub(" ", ".", traits.sp$X.1)
+traits.sp1$X.1 <- gsub(" ", ".", traits.sp1$X.1)
 
-species.name <- traits.sp$X.1
-
+species.name <- traits.sp1$X.1
+traits.sp1 <- select(traits.sp1, -X.1)
 #gower dissimilarity?
-gow <- gowdis(traits.sp)  
+gow <- gowdis(traits.sp1)  
 gow <- as.matrix(gow)
 row.names(gow) <- species.name
-euc <- dist(traits.sp, "euclidean")
-size <- dist(traits.sp$Femur.w, "euclidean")
+
 
 over2 <- as.matrix(over2[order(row.names(over2)),])
 over2 <- over2[,order(colnames(over2))]
 
 overdis <- 1 - over2
 
+#save overlap as an object
 saveRDS(overdis, file = "Clean Data/objects/overlap_dissim.rds")
 
-#save overlap as an object
+overdis <- readRDS(file = "Clean Data/objects/overlap_dissim.rds")
+
+
+gow1 <- as.matrix(gow) 
+gow1 <- gow1[lower.tri(gow1)]
+
+overdis1 <- overdis[lower.tri(overdis)]
+overdis1 <- as.dist(overdis)
+gow1 <- as.matrix(gow1)
+mantel(gow, overdis1)
+a
 
 mantel(gow, overdis)
-
-
-
-
 #try again without cyphomyrmex
+
+mdata <- cbind(gow, overdis1)
+mdata <- as.data.frame(mdata)
+
+
+ggplot(mdata, aes(overdis1, gow)) +
+  geom_point() + 
+  geom_smooth(method = "lm", colour = "black") + xlab("Climatic Niche Dissimilarity (Complement of Shoener's D)") + 
+  ylab("Trait Dissimilarity (Gower Distance)") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          panel.background = element_blank(), axis.line = element_line(colour = "black")) 
+
+
+
 
 
 overlapnocyph <- calc.niche.overlap(nocypo, overlapStat = "D")

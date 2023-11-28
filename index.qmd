@@ -377,12 +377,13 @@ mean(SES$SES3)
 t.test(SES$SES3)
 library(glmmTMB)
 
-m1 <- glmmTMB(SES3 ~  PC1 + PC2 + (1|Site), data = SES2)
+m1 <- glmmTMB(SES3 ~  PC1 + PC2 + shrub + (1|Site), data = SES2)
 summary(m1)
 
-m1 <- lm(SES3 ~  PC1 + PC2 , data = SES2)
+m2 <- glmmTMB(SES3 ~  PC1 + PC2, data = SES2)
+summary(m2)
 
-
+AIC(m1, m2)
 fit1 <- lm(SES3 ~  PC1, data = SES2)
 summary(fit1)
 
@@ -394,7 +395,7 @@ panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line 
 
 SES2 <- mutate(SES2, shrub = ifelse(shrub.site == "atriplex", "shrub", (ifelse(shrub.site == "ephedra", "shrub", "open"))))
 
-m <- lm(SES3 ~  shrub, data = SES2)
+m <- glmmTMB(SES3 ~shrub + (1|Site), data = SES2)
 summary(m)
 
 SES2 %>% group_by(shrub) %>% summarize(mean = mean(SES3), sd = sd(SES3))
@@ -455,11 +456,13 @@ alpha <- right_join(alpha, SES2, by = "sites")
 #same GLM or GLMM
 m1 <- glmmTMB(richness ~ PC1 + PC2 +  (1|Site), family = "poisson", data = alpha)
 summary(m1)
+check_overdispersion(m1)
 
-m2 <- glm(richness ~ Prec, family = "poisson", data = alpha)
+
+m2 <- glmmTMB(richness ~ PC1 + PC2, family = "poisson", data = alpha)
 summary(m2)
 
-
+AIC(m1, m2)
 m3 <- glm(richness ~ month, family = "poisson", data = alpha)
 summary(m3)
 car::Anova(m3)
@@ -633,16 +636,26 @@ cwm <- site_cwm
 cwm$sites <- row.names(cwm)  
   
 
-cwm <- select(SES2, sites, PC1, PC2, PC3) %>% left_join(cwm, by = 'sites')
+cwm <- select(SES2, Site, sites, PC1, PC2, PC3) %>% left_join(cwm, by = 'sites')
 
 ```
 
 ```{r}
 
 fit1 <- lm(Webers ~ PC1, cwm)
-a <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+
+fit1 <- glmmTMB(Webers ~ PC1, cwm)
+summary(fit1)
+
+fit2 <- glmmTMB(Webers ~ PC1 + (1|Site), cwm)
+summary(fit2)
+model_performance(fit2)
+AIC(fit1, fit2)
+
+a <- ggplot(fit2$frame, aes_string(x = names(fit2$frame)[2], y = names(fit2$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue") +
+  stat_smooth(method = "lm", col = "blue") 
+
   geom_label(aes(x = 0.75, y = 1.4),vjust=1, hjust = 0, 
              label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
  " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM Weber's \nBody Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),

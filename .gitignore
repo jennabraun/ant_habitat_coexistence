@@ -8,3 +8,14 @@ raw data/GABI_Data_Release1.0_18012020.csv
 wc2-5/bio_2-5m_bil.zip
 *.tif
 *.ovr
+Clean Data/objects/Cyphomyrmex.wheeleri_sdmresults.rds
+Clean Data/objects/Dorymyrmex.bicolor_sdmresults.rds
+Clean Data/objects/Dorymyrmex.insanus_sdmresults.rds
+Clean Data/objects/Forelius.pruinosus_sdmresults.rds
+Clean Data/objects/Myrmecocystus.kennedyi_sdmresults.rds
+Clean Data/objects/Pheidole.hyatti_sdmresults.rds
+Clean Data/objects/Pogonomyrmex.hoelldobleri_sdmresults.rds
+Clean Data/objects/Solenopsis.xyloni_sdmresults.rds
+Clean Data/objects/Temnothorax.andrei_sdmresults.rds
+Clean Data/objects/Veromessor.andrei_sdmresults.rds
+Clean Data/objects/Veromessor.pergandei_sdmresults.rds
