@@ -130,8 +130,7 @@ traits.ag$species <- gsub(" ", "", traits.ag$species)
 long.pres <- cov %>% select(Site, uniID) %>% right_join(long.pres, . , by = 'uniID')
 #this adds NA traits to 0 abundances - species isn't found at pitfall or site
 
-  
-join.right <- right_join(traits.ag, long.pres, by = c("Site", "species"))
+
 ```
 
 ```{r}
@@ -178,7 +177,7 @@ trait.pop.st <- select(trait.pop, -1) %>% decostand(method = "standardize")
 #rename the column names for the figure
 colnames(trait.pop.st) <- c("Eye length", "Femur length", "Head \n length", "Head\n Width", "Mandible\n length", "Scape length", "Weber's \nbody length")
 trait.pop.pca <- rda(trait.pop.st)
-#summary(trait.pop.pca)
+summary(trait.pop.pca)
 pcplot1 <- autoplot(trait.pop.pca, xlab = "PCA Axis 1 (35.8%)", ylab = "PCA Axis 2 (32.2%)") +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + theme(legend.position = "none")  + xlim(-1.5, 1.8)
 
 
@@ -186,7 +185,6 @@ pcplot1
 
 #PCA3 ~ 16%
 ```
-
 
 ## Sites - site-level
 
@@ -208,7 +206,7 @@ prop1 <- round(prop1, digits = 2)
 prop2 <- b[2,2] * 100
 prop2 <- round(prop2, digits = 2)    
 #summary(env.pca2)
-autoplot(env.pca2, xlab = paste("PCA", prop1), ylab = paste("PCA", prop2))
+#autoplot(env.pca2, xlab = paste("PCA", prop1), ylab = paste("PCA", prop2))
 #sitescores <- scores(env.pca2, c(1,2, 3), 'sites')
 
 envreduce <- select(env2, -esi, -arid, -10, -12, -13, -14)
@@ -229,7 +227,7 @@ summary(env.pcareduce)
 pcplot2 <- autoplot(env.pcareduce , xlab = paste("PCA Axis 1 (", prop1, "%)", sep = ""), ylab = paste("PCA Axis 2 (", prop2, "%)", sep = "")) + xlim(-1.5, 1.6) +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + theme(legend.position = "none")  
 
 
-
+pcplot2
 
 
 sitescores <- scores(env.pcareduce, c(1,2, 3), 'sites')
@@ -237,7 +235,6 @@ sitescores <- as.data.frame(cbind(sitescores, env2_sitelabels))
 
 
 ```
-
 
 ```{r}
 
@@ -252,6 +249,7 @@ grid::grid.draw(rbind(gA, gB))
 
 
 ```
+
 # Functional dispersion
 
 ```{r}
@@ -377,9 +375,13 @@ SES2$PC3 <- as.numeric(SES2$PC3)
 
 mean(SES$SES3)
 t.test(SES$SES3)
+library(glmmTMB)
+
+m1 <- glmmTMB(SES3 ~  PC1 + PC2 + (1|Site), data = SES2)
+summary(m1)
 
 m1 <- lm(SES3 ~  PC1 + PC2 , data = SES2)
-summary(m1)
+
 
 fit1 <- lm(SES3 ~  PC1, data = SES2)
 summary(fit1)
@@ -432,6 +434,7 @@ plot(v1)
 ```
 
 # Taxonomic diversity
+
 ## Species richness \~ PC1
 
 ```{r}
@@ -450,7 +453,7 @@ alpha <- alpha %>% group_by(sites) %>% summarise(richness = sum(count.bin))
 alpha <- right_join(alpha, SES2, by = "sites")
 
 #same GLM or GLMM
-m1 <- glmmTMB(richness ~ PC1 + PC2, family = "poisson", data = alpha)
+m1 <- glmmTMB(richness ~ PC1 + PC2 +  (1|Site), family = "poisson", data = alpha)
 summary(m1)
 
 m2 <- glm(richness ~ Prec, family = "poisson", data = alpha)
@@ -464,6 +467,89 @@ tb <- table(alpha$richness, alpha$sites)
 chisq.test(alpha$richness, alpha$Site)
 ```
 
+
+## Accumulation curves
+
+```{r}
+
+spec <-wide
+sitespec <- left_join(wide, cov, by = "uniID")
+sitespec <- select(sitespec, 2:14, 17)
+par(mfrow=c(5,2))
+
+
+all <- select(sitespec, -Site)
+#xi <- specaccum(all,  method = "rarefaction", permutations = 100)
+xs <- specaccum(all,  method = "random", permutations = 100)
+#plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", ci.type = "line", cex.lab = 1.5)
+title("All Sites Pooled", adj = 0)
+
+av <- filter(sitespec, Site == "Aven") %>% select(-Site)
+# xi <- specaccum(av,  method = "rarefaction", permutations = 100)
+xs <- specaccum(av,  method = "random", permutations = 1000)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Avenal", adj = 0)
+
+cas <- filter(sitespec, Site == "CaS") %>% select(-Site)
+# xi <- specaccum(cas,  method = "rarefaction", permutations = 100)
+xs <- specaccum(cas,  method = "exact", permutations = 100)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Carrizo - Shrubs", adj = 0)
+
+casl <- filter(sitespec, Site == "CaSl") %>% select(-Site)
+# xi <- specaccum(casl,  method = "rarefaction", permutations = 100)
+xs <- specaccum(casl,  method = "exact", permutations = 100)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Carrizo - Shrubless", adj = 0)
+
+coal <- filter(sitespec, Site == "Coal") %>% select(-Site)
+# xi <- specaccum(coal,  method = "rarefaction", permutations = 100)
+xs <- specaccum(coal,  method = "exact", permutations = 100)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Coalinga", adj = 0)
+
+lok <- filter(sitespec, Site == "Lok") %>% select(-Site)
+# xi <- specaccum(lok,  method = "rarefaction", permutations = 100)
+xs <- specaccum(lok,  method = "exact", permutations = 100)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Lokern", adj = 0)
+
+mov <- filter(sitespec, Site == "Mov") %>% select(-Site)
+# xi <- specaccum(mov,  method = "rarefaction", permutations = 100)
+xs <- specaccum(mov,  method = "exact", permutations = 100)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Mountainview Rd", adj = 0)
+
+papl <- filter(sitespec, Site == "PaPl") %>% select(-Site)
+# xi <- specaccum(papl,  method = "rarefaction", permutations = 100)
+xs <- specaccum(papl,  method = "exact", permutations = 100)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Panoche Hills", adj = 0)
+
+semit <- filter(sitespec, Site == "SemiT") %>% select(-Site)
+# xi <- specaccum(semit,  method = "rarefaction", permutations = 100)
+xs <- specaccum(semit,  method = "exact", permutations = 100)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Semitropic", adj = 0)
+
+sicr <- filter(sitespec, Site == "SiCr") %>% select(-Site)
+# xi <- specaccum(sicr,  method = "rarefaction", permutations = 100)
+xs <- specaccum(sicr,  method = "exact", permutations = 100)
+# plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
+plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
+title("Silver Creek Ranch", adj = 0)
+
+
+```
 ## Taxonomic beta diversity
 
 ```{r}
@@ -538,8 +624,7 @@ mantel(ndis, env_dist)
 
 ```
 
-#CWM-environment 
-## CWM ~ PC1
+#CWM-environment \## CWM \~ PC1
 
 ```{r}
 
@@ -570,7 +655,7 @@ fit1 <- lm(Femur.w ~ PC1, cwm)
 b <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue") +
-  geom_label(aes(x = 0.8, y = 1.1),vjust=1, hjust = 0, 
+  geom_label(aes(x = 0.7, y = 1.1),vjust=1, hjust = 0, 
              label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
  " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nFemur Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
@@ -653,9 +738,7 @@ p
 
 ```
 
-
-
-## CWM ~ PC2
+## CWM \~ PC2
 
 ```{r}
 
@@ -675,7 +758,7 @@ fit1 <- lm(Femur.w ~ PC2, cwm)
 b <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
-  geom_label(aes(x = 0.7, y = 1.1),vjust=1, hjust = 0, 
+  geom_label(aes(x = 0.65, y = 1.1),vjust=1, hjust = 0, 
              label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
  " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nFemur Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
@@ -911,7 +994,8 @@ itv$Trait <- factor(itv$Trait, levels = unique(itv$Trait[order(itv$val)]))
 
 ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = "identity", aes(fill = rel.itv)) + ylab("Proportion variation explained by species") +
   theme(legend.position="none") + scale_fill_manual(values = c("gray", "black")) + theme(axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
+        axis.title=element_text(size=14,face="bold")) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
 
 ```
