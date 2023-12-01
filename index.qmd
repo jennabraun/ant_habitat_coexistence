@@ -211,7 +211,7 @@ prop2 <- round(prop2, digits = 2)
 
 envreduce <- select(env2, -esi, -arid, -10, -12, -13, -14)
 env.reduce <- decostand(envreduce, method = "standardize")
-colnames(env.reduce) <- c("Mean Cover", "Variation Cover", "Mean Veg Height", "Mean Annual \n Temperature", "Mean Annual Precipitation", "Maximum \n Temperature", "NDVI", "Mean Soil Temp", "Range Soil Temp")
+colnames(env.reduce) <- c("Mean Cover", "Variation Cover", "Mean Veg Height", "Mean Annual \n Temperature", "Mean Annual \n Precipitation", "Maximum \n Temperature", "NDVI", "Mean Soil Temp", "Range Soil Temp")
   
 env.pcareduce <- rda(env.reduce)
 
@@ -377,11 +377,14 @@ mean(SES$SES3)
 t.test(SES$SES3)
 library(glmmTMB)
 
-m1 <- glmmTMB(SES3 ~  PC1 + PC2 + shrub + (1|Site), data = SES2)
+m1 <- glmmTMB(SES3 ~  PC1 + PC2 + (1|Site), data = SES2)
 summary(m1)
+performance(m1)
+
 
 m2 <- glmmTMB(SES3 ~  PC1 + PC2, data = SES2)
 summary(m2)
+performance(m1)
 
 AIC(m1, m2)
 fit1 <- lm(SES3 ~  PC1, data = SES2)
@@ -457,10 +460,12 @@ alpha <- right_join(alpha, SES2, by = "sites")
 m1 <- glmmTMB(richness ~ PC1 + PC2 +  (1|Site), family = "poisson", data = alpha)
 summary(m1)
 check_overdispersion(m1)
-
+performance(m1)
 
 m2 <- glmmTMB(richness ~ PC1 + PC2, family = "poisson", data = alpha)
 summary(m2)
+
+
 
 AIC(m1, m2)
 m3 <- glm(richness ~ month, family = "poisson", data = alpha)
@@ -664,7 +669,10 @@ a
 
 
 
-fit1 <- lm(Femur.w ~ PC1, cwm)
+fit1 <- glmmTMB(Femur.w ~ PC1 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 b <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue") +
@@ -675,7 +683,10 @@ panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 b
 
 
-fit1 <- lm(Headl.w ~ PC1, cwm)
+fit1 <- glmmTMB(Headl.w ~ PC1+ (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 c <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -686,7 +697,10 @@ panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 c
 
 
-fit1 <- lm(Eyel.w ~ PC1, cwm)
+fit1 <- glmmTMB(Eyel.w ~ PC1 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 d <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -697,7 +711,10 @@ panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 d
 
 
-fit1 <- lm(Headw.w ~ PC1, cwm)
+fit1 <- glmmTMB(Headw.w ~ PC1 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 e <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -708,7 +725,10 @@ panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 e
 
 
-fit1 <- lm(Scape.w ~ PC1, cwm)
+fit1 <- glmmTMB(Scape.w ~ PC1 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 f <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -718,7 +738,9 @@ f <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$mod
 panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
 f
 
-fit1 <- lm(Mandible.w ~ PC1, cwm)
+fit1 <- glmmTMB(Mandible.w ~ PC1+ (1|Site), cwm)
+summary(fit1)
+performance(fit1)
 g <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -755,7 +777,16 @@ p
 
 ```{r}
 
-fit1 <- lm(Webers ~ PC2, cwm)
+fit1 <- glmmTMB(Webers ~ PC2 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
+
+fit1 <- lm(Webers ~ PC2 , cwm)
+summary(fit1)
+
+
+
 a <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -767,7 +798,10 @@ a
 
 
 
-fit1 <- lm(Femur.w ~ PC2, cwm)
+fit1 <- glmmTMB(Femur.w ~ PC2 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 b <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -778,7 +812,10 @@ panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 b
 
 
-fit1 <- lm(Headl.w ~ PC2, cwm)
+fit1 <- glmmTMB(Headl.w ~ PC2 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 c <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -789,7 +826,10 @@ panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 c
 
 
-fit1 <- lm(Eyel.w ~ PC2, cwm)
+fit1 <- glmmTMB(Eyel.w ~ PC2 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 d <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -800,7 +840,10 @@ panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 d
 
 
-fit1 <- lm(Headw.w ~ PC2, cwm)
+fit1 <- glmmTMB(Headw.w ~ PC2 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 e <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -811,7 +854,10 @@ panel.background = element_blank(), axis.line = element_line(colour = "black")) 
 e
 
 
-fit1 <- lm(Scape.w ~ PC2, cwm)
+fit1 <- glmmTMB(Scape.w ~ PC2 + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
 f <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
@@ -821,7 +867,11 @@ f <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$mod
 panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
 f
 
-fit1 <- lm(Mandible.w ~ PC2, cwm)
+fit1 <- glmmTMB(Mandible.w ~ PC2  + (1|Site), cwm)
+summary(fit1)
+performance(fit1)
+
+
 g <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue") +
@@ -1010,5 +1060,41 @@ ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = 
         axis.title=element_text(size=14,face="bold")) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
+
+```
+
+## Phylogenetic signal
+
+```{r}
+install.packages("phytools")
+install.packages("picante")
+library(picante)
+library(phytools)
+library(tidyr)
+genusv <- c("Cyphomyrmex", "Dorymyrmex", "Forelius", "Messor", "Myrmecocystus", "Pheidole", "Pogonomyrmex", "Solenopsis", "Temnothorax")
+
+#import nexus tree
+tree <- read.nexus("moreau/moreaubeast.nex")
+str(tree)
+plot(tree)
+tree
+labels <- tree[["tip.label"]]
+labels <- as.data.frame(labels)
+full <- labels$labels
+labels <- separate_wider_delim(labels, cols = 1, delim ="_", names = c("genus", "sp", "csm"), too_few = "align_start", too_many = "merge")
+labels <- cbind(full, labels)
+labels <- subset(labels, genus %in% genusv)
+keep <- labels$full
+df <- data.frame(matrix(ncol = 19, nrow = 1))
+colnames(df) <- keep
+df[is.na(df)] <- 1
+df <- dplyr::select(df, 1, 4, 6, 8, 11, 12, 13, 16, 17, 18, 19)
+pruned <- prune.sample(df, tree)
+pruned
+pruned[["tip.label"]] <- c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") 
+plot(pruned)
+# 
+
+# add missing species
 
 ```
