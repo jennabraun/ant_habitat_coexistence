@@ -224,11 +224,12 @@ prop2 <- b[2,2] * 100
 prop2 <- round(prop2, digits = 2)    
 summary(env.pcareduce)
 
-pcplot2 <- autoplot(env.pcareduce , xlab = paste("PCA Axis 1 (", prop1, "%)", sep = ""), ylab = paste("PCA Axis 2 (", prop2, "%)", sep = "")) + xlim(-1.5, 1.6) +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + theme(legend.position = "none")  
+pcplot2 <- autoplot(env.pcareduce , xlab = paste("PCA Axis 1 (", prop1, "%)", sep = ""), ylab = paste("PCA Axis 2 (", prop2, "%)", sep = "")) + xlim(-1.5, 1.6) +  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + theme(legend.position = "none") + theme(text=element_text(size=13))  
 
 
 pcplot2
 
+ggsave("")
 
 sitescores <- scores(env.pcareduce, c(1,2, 3), 'sites')
 sitescores <- as.data.frame(cbind(sitescores, env2_sitelabels))
@@ -431,12 +432,50 @@ env <- select(SES2, 4, 5, 8, 12:14, 18, 19, 24)
 
 v1 <- varpart(Y =disp, X = env, sites.xy)
 summary(v1)
-#showvarparts(v1)
+showvarparts(v1)
 plot(v1)
-#rda(v1)
+v1
+
+rda.all <- rda(disp ~ env + sites.xy)
+anova.cca(rda(disp, env))
+anova.cca(rda(disp, env, sites.xy))
 
 ```
 
+
+## Calculate distances between sites
+
+```{r}
+
+library(sf)
+library(purrr)
+sites_sf <- var_df %>% select(Site, Lat.x, Long.x)
+sites_sf <- st_as_sf(sites_sf, coords=c("Lat.x","Long.x"),crs=4326)
+
+sites_m <- sites_sf %>% split(.$Site) %>% map(st_distance) %>% map(as.matrix) %>% map(.[upper.tri(.)])
+
+sites_m$SemiT
+sites_m$SiCr
+m <- lapply(sites_m, f)
+
+f <- function(x) {
+  y <- x[upper.tri(x)]
+  mean(y)
+}
+
+mean(sites_m$Aven[upper.tri(sites_m$Aven)])
+
+mean(m)
+
+sites_dist <- st_distance(sites_sf)
+plot(sites_sf)
+
+sites_dist
+
+sites_dist <- as.matrix(sites_dist)
+row.names(sites_dist) <- sites_sf$Site
+col.names(sites_dist) <- sites_sf$Site
+```
 # Taxonomic diversity
 
 ## Species richness \~ PC1
@@ -647,107 +686,95 @@ cwm <- select(SES2, Site, sites, PC1, PC2, PC3) %>% left_join(cwm, by = 'sites')
 
 ```{r}
 
-fit1 <- lm(Webers ~ PC1, cwm)
 
-fit1 <- glmmTMB(Webers ~ PC1, cwm)
-summary(fit1)
 
 fit2 <- glmmTMB(Webers ~ PC1 + (1|Site), cwm)
 summary(fit2)
 model_performance(fit2)
-AIC(fit1, fit2)
+t <- model_performance(fit2)
 
 a <- ggplot(fit2$frame, aes_string(x = names(fit2$frame)[2], y = names(fit2$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue") 
-
-  geom_label(aes(x = 0.75, y = 1.4),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM Weber's \nBody Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
+  stat_smooth(method = "lm", col = "blue") + geom_label(aes(x = 0.75, y = 1.4),vjust=1, hjust = 0, 
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM Weber's \nBody Length (mm)") + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 19))
 a
 
 
 
 fit1 <- glmmTMB(Femur.w ~ PC1 + (1|Site), cwm)
 summary(fit1)
-performance(fit1)
+t <- model_performance(fit1)
 
-b <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+b <-  ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
   stat_smooth(method = "lm", col = "blue") +
   geom_label(aes(x = 0.7, y = 1.1),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nFemur Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nFemur Length (mm)") + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 19))
 b
 
 
 fit1 <- glmmTMB(Headl.w ~ PC1+ (1|Site), cwm)
 summary(fit1)
-performance(fit1)
+t <- model_performance(fit1)
 
-c <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+c <- ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed", se = FALSE) +
   geom_label(aes(x = 0.65, y = 0.86),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nHead Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nHead Length (mm)") + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 19))
 c
 
 
 fit1 <- glmmTMB(Eyel.w ~ PC1 + (1|Site), cwm)
 summary(fit1)
-performance(fit1)
+t <- model_performance(fit1)
 
-d <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+d <-  ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed", se = FALSE) +
   geom_label(aes(x = 0.65, y = 0.2),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nEye Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nEye Length (mm)") + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 19))
 d
 
 
 fit1 <- glmmTMB(Headw.w ~ PC1 + (1|Site), cwm)
 summary(fit1)
-performance(fit1)
+t <- model_performance(fit1)
 
-e <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+e <- ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed", se = FALSE) +
   geom_label(aes(x = 0.65, y = 0.8),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + ylab("CWM \nHead Width (mm)")+ theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + ylab("CWM \nHead Width (mm)")+ xlab("PC1") + theme(text = element_text(size = 19))
 e
 
 
 fit1 <- glmmTMB(Scape.w ~ PC1 + (1|Site), cwm)
 summary(fit1)
-performance(fit1)
+t <- model_performance(fit1)
 
-f <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+f <-  ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed", se = FALSE) +
   geom_label(aes(x = 0.7, y = 0.85),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nScape Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nScape Length (mm)") + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 19))
 f
 
 fit1 <- glmmTMB(Mandible.w ~ PC1+ (1|Site), cwm)
 summary(fit1)
-performance(fit1)
-g <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+t <- model_performance(fit1)
+g <- ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed", se = FALSE) +
   geom_label(aes(x = 0.65, y = 0.5),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nMandible Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nMandible Length (mm)") + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 19))
 g
 
 
@@ -780,20 +807,17 @@ p
 fit1 <- glmmTMB(Webers ~ PC2 + (1|Site), cwm)
 summary(fit1)
 performance(fit1)
-
-
-fit1 <- lm(Webers ~ PC2 , cwm)
-summary(fit1)
+t <- model_performance(fit1)
 
 
 
-a <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+
+a <- ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed", se = FALSE) +
   geom_label(aes(x = 0.75, y = 1.3),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM Weber's \nBody Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM Weber's \nBody Length (mm)") + xlab("PC2") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,2,0,0), "mm")) + theme(text = element_text(size = 19))
 a
 
 
@@ -801,84 +825,78 @@ a
 fit1 <- glmmTMB(Femur.w ~ PC2 + (1|Site), cwm)
 summary(fit1)
 performance(fit1)
-
-b <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+t <- model_performance(fit1)
+b <-  ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "blue") +
   geom_label(aes(x = 0.65, y = 1.1),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nFemur Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nFemur Length (mm)") + xlab("PC2") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,2,0,0), "mm"))+ theme(text = element_text(size = 19))
 b
 
 
 fit1 <- glmmTMB(Headl.w ~ PC2 + (1|Site), cwm)
 summary(fit1)
 performance(fit1)
-
-c <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+t <- model_performance(fit1)
+c <- ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
-  geom_label(aes(x = 0.75, y = 0.86),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nHead Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+  stat_smooth(method = "lm", col = "blue") +
+  geom_label(aes(x = 0.65, y = 0.9),vjust=1, hjust = 0, 
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5)  + ylab("CWM \nHead Length (mm)") + xlab("PC2") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,2,0,0), "mm"))+ theme(text = element_text(size = 19))
 c
 
 
 fit1 <- glmmTMB(Eyel.w ~ PC2 + (1|Site), cwm)
 summary(fit1)
 performance(fit1)
-
-d <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+t <- model_performance(fit1)
+d <-  ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
-  geom_label(aes(x = 0.75, y = 0.2),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nEye Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed", se = FALSE) +
+  geom_label(aes(x = 0.65, y = 0.2),vjust=1, hjust = 0, 
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nEye Length (mm)") + xlab("PC2") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,2,0,0), "mm"))+ theme(text = element_text(size = 19))
 d
 
 
 fit1 <- glmmTMB(Headw.w ~ PC2 + (1|Site), cwm)
 summary(fit1)
 performance(fit1)
-
-e <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+t <- model_performance(fit1)
+e <- ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed", se = FALSE) +
   geom_label(aes(x = 0.75, y = 0.8),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + ylab("CWM \nHead Width (mm)")+ theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + xlab("PC2") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,2,0,0), "mm")) + ylab("CWM \nHead Width (mm)")+ theme(text = element_text(size = 19))
 e
 
 
 fit1 <- glmmTMB(Scape.w ~ PC2 + (1|Site), cwm)
 summary(fit1)
 performance(fit1)
-
-f <-  ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+t <- model_performance(fit1)
+f <-  ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue", linetype = "dashed") +
+  stat_smooth(method = "lm", col = "blue") +
   geom_label(aes(x = 0.75, y = 0.85),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nScape Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm")) + theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nScape Length (mm)") + xlab("PC2") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,2,0,0), "mm")) + theme(text = element_text(size = 19))
 f
 
 fit1 <- glmmTMB(Mandible.w ~ PC2  + (1|Site), cwm)
 summary(fit1)
 performance(fit1)
+AIC(fit1, t1)
 
-
-g <- ggplot(fit1$model, aes_string(x = names(fit1$model)[2], y = names(fit1$model)[1])) + 
+g <- ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
-  stat_smooth(method = "lm", col = "blue") +
+  stat_smooth(method = "lm", col = "#3C4142", linetype = "dashed") +
   geom_label(aes(x = 0.75, y = 0.5),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3))) + ylab("CWM \nMandible Length (mm)") + xlab("") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+ theme(text = element_text(size = 18))
+             label = paste("Marginal \nr2 = ",signif(t$R2_marginal, 2)), size = 5) + ylab("CWM \nMandible Length (mm)") + xlab("PC2") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))  + theme(plot.margin=grid::unit(c(0,1,0,0), "mm"))+ theme(text = element_text(size = 19))
 g
 
 ```
@@ -1093,8 +1111,177 @@ pruned <- prune.sample(df, tree)
 pruned
 pruned[["tip.label"]] <- c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") 
 plot(pruned)
+
+labelorder <- c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") 
+plot(pruned)
 # 
 
-# add missing species
 
+traitphy <- traits.sp1
+row.names(traitphy) <- traitphy$X.1
+traitphy <- select(traitphy, -X.1)
+
+names <- sort(c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") )
+
+row.names(traitphy) <- names
+
+
+traitphy <- traitphy[match(labelorder, row.names(traitphy)),]
+
+
+row.names(traitphy)
+pruned[["tip.label"]]
+
+par(mfrow=c(2,2))
+for (i in names(traitphy)) {
+plot(pruned, show.tip.label=FALSE, main=i)
+tiplabels(pch=22, col=traitphy[,i]+1, bg=traitphy[,i]+1, cex=1.5)
+}
+
+multiPhylosignal(traitphy, pruned)
+
+ps <- multiPhylosignal(traitphy, pruned)
+write.csv(ps, "Clean Data/phylo.csv")
+ps
+
+tree2 <- read.tree("moreau/treejb2.nwk")
+tree2
+plot(tree2)
+plot(pruned)
+
+tree2[["tip.label"]]
+
+labelorder <- c("Pogonomyrmexcalifornicus", "Pheidolehyatti", "Messorpergandei", "Messorandrei", "Solenopsisxyloni", "Cyphomyrmexwheeleri", "Temnothoraxandrei", "Foreliuspruinosis", "Dorymyrmexinsanus", "Dorymyrmexbicolor", "Myrmecocystus")
+traitphy <- traitphy[match(labelorder, row.names(traitphy)),]
+tree2[["tip.label"]] <- labelorder
+phy <- multi2di(pruned)
+multiPhylosignal(traitphy, phy)
+
+library(adephylo)
+
+library(phylosignal)
+library(phylobase)
+p4d <- phylo4d(pruned, traitphy)
+barplot.phylo4d(p4d, tree.type = "phylo", tree.ladderize = TRUE)
+phyloSignal(p4d = p4d, method = "all")
+
+is.ultrametric(pruned)
+
+
+sespd <- ses.pd(sites_species, pruned, null.model = "independentswap")
+
+ses.mpd.result <- ses.mpd(sites_species, pdist, null.model="independentswap", abundance.weighted=TRUE, runs=99)
+ses.mpd.result$sites <- row.names(ses.mpd.result)
+
+test <- left_join(SES2, ses.mpd.result, by = "sites")
+
+m1 <- glmmTMB(SES3 ~ mpd.obs.z + PC1 + PC2 +(1|Site), data = test)
+summary(m1)
+performance(m1)
+
+m1 <- glmmTMB(mpd.obs.z ~ SES3 + PC1 + PC2 + (1|Site), data = test)
+summary(m1)
+performance(m1)
+
+cor.test(test$mpd.obs.z, test$PC1)
+
+t.test(test$mpd.obs.z)
+
+ggplot(test, aes(SES3, mpd.obs.z)) + geom_smooth(method = "lm")
+
+ggplot(test, aes(PC1, mpd.obs.z)) + geom_smooth(method = "lm")
+
+ggplot(test, aes(PC1, SES3)) + geom_smooth(method = "lm")
+
+
+Test.Kmult<-function(x,phy,iter=999){
+library(ape)
+Kmult<-function(x,phy){
+  x<-as.matrix(x)
+  N<-length(phy$tip.label)
+  ones<-array(1,N)
+  C<-vcv.phylo(phy)
+  C<-C[row.names(x),row.names(x)]
+  a.obs<-colSums(solve(C))%*%x/sum(solve(C))
+#evol.vcv code
+  distmat<-as.matrix(dist(rbind(as.matrix(x),a.obs)))
+  MSEobs.d <- sum(distmat[(1:N),(N+1)]^2)
+  
+  #sum distances root vs. tips
+  eigC <- eigen(C)
+  D.mat<-solve(eigC$vectors
+  %*% diag(sqrt(eigC$values))
+  %*% t(eigC$vectors))
+  dist.adj<-as.matrix(dist(rbind((D.mat
+  %*%(x-(ones%*%a.obs))),0)))
+  MSE.d<-sum(dist.adj[(1:N),(N+1)]^2)
+  #sum distances for transformed data)
+  K.denom<-(sum(diag(C))-
+  N*solve(t(ones)%*%solve(C)%*%ones)) / (N-1)
+  K.stat<-(MSEobs.d/MSE.d)/K.denom
+  return(K.stat)
+}
+K.obs<-Kmult(x,phy)
+P.val <- 1
+K.val <- rep(0, iter)
+for (i in 1:iter){
+x.r<-as.matrix(x[sample(nrow(x)),])
+rownames(x.r)<-rownames(x)
+K.rand<-Kmult(x.r,phy)
+P.val<-ifelse(K.rand>=K.obs, P.val+1,P.val)
+K.val[i] <- K.rand
+}
+P.val <- P.val/(iter + 1)
+K.val[iter + 1] = K.obs
+hist(K.val, 30, freq = TRUE, col = "gray",
+xlab = "Phylogenetic Signal")
+arrows(K.obs, 50, K.obs, 5, length = 0.1, lwd = 2)
+return(list(phy.signal = K.obs, pvalue = P.val))
+}
+
+traitphystand <- decostand(traitphy, method = "standardize")
+Test.Kmult(traitphystand, pruned)
+```
+
+## Phylo and functional plots together
+```{r}
+
+
+test2 <- pivot_longer(test, cols = c("SES3", "mpd.obs.z"), names_to = "type", values_to = "value")
+
+
+test2$type <- factor(test2$type, levels = c("SES3", "mpd.obs.z"))
+
+a <- ggplot(test2, aes(PC1, value, color = type)) + geom_point(aes(color = type)) + stat_smooth(data = filter(test2, type == "SES3"), method = "lm") + stat_smooth(data = filter(test2, type == "mpd.obs.z"), method = "lm", linetype = "dashed", se = FALSE) + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + ylab("Standardized Effect Size Dispersion") + geom_hline(yintercept = 0, linetype = "dashed") + scale_color_manual(values = c( "#DF7861", "#94B49F"), labels = c("Functional", "Phylogenetic")) + theme(legend.position= c(0.8, 0.9)) + theme(legend.title=element_blank())
+  
+a
+
+b <- ggplot(test, aes(mpd.obs.z, SES3)) + stat_smooth(method = "lm", color = "black") + geom_point() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + xlab("Phylogenetic Dispersion (SES MPD)") + ylab("Functional Dispersion (SES FDisp)")
+
+
+
+
+plots <- list(a,b)
+grobs <- list()
+widths <- list()
+
+for (i in 1:length(plots)){
+    grobs[[i]] <- ggplotGrob(plots[[i]])
+    widths[[i]] <- grobs[[i]]$widths[2:5]
+}
+
+maxwidth <- do.call(grid::unit.pmax, widths)
+for (i in 1:length(grobs)){
+     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+}
+
+p <- do.call("grid.arrange", c(grobs, ncol = 2))
+p
+
+
+geom_label(aes(x = 0.75, y = 2),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
+ " \nP =",signif(summary(fit1)$coef[2,4], 3)))
 ```
