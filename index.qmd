@@ -229,7 +229,7 @@ pcplot2 <- autoplot(env.pcareduce , xlab = paste("PCA Axis 1 (", prop1, "%)", se
 
 pcplot2
 
-ggsave("")
+
 
 sitescores <- scores(env.pcareduce, c(1,2, 3), 'sites')
 sitescores <- as.data.frame(cbind(sitescores, env2_sitelabels))
@@ -424,21 +424,28 @@ library(SoDA)
 sites.xy <- geoXY(SES2$Lat.x, SES2$Long.x)
 mem <- dbmem(sites.xy)
 
-var_df <- cbind(SES2, sites.xy)
+
 
 disp <- SES2$SES3
 
 env <- select(SES2, 4, 5, 8, 12:14, 18, 19, 24)
-
-v1 <- varpart(Y =disp, X = env, sites.xy)
+pses <- test$mpd.obs.z
+v1 <- varpart(Y =disp, X = env, mem, pses)
 summary(v1)
 showvarparts(v1)
-plot(v1)
-v1
+plot(v1, Xnames = NA)
+text(0.1, 1, labels = "Environment")
 
-rda.all <- rda(disp ~ env + sites.xy)
+
+v1
+v1$part
+
+rda.all <- rda(disp ~ env + mem)
 anova.cca(rda(disp, env))
-anova.cca(rda(disp, env, sites.xy))
+anova.cca(rda(disp, mem))
+anova.cca(rda(disp, env, pses))
+
+
 
 ```
 
@@ -1073,6 +1080,8 @@ itv = pivot_longer(itv, 5:6, names_to = "rel.itv", values_to = "val")
 
 itv$Trait <- factor(itv$Trait, levels = unique(itv$Trait[order(itv$val)]))
 
+itv %>% group_by(rel.itv) %>% summarize(mean = mean(val), sd = sd(val))
+
 ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = "identity", aes(fill = rel.itv)) + ylab("Proportion variation explained by species") +
   theme(legend.position="none") + scale_fill_manual(values = c("gray", "black")) + theme(axis.text=element_text(size=12),
         axis.title=element_text(size=14,face="bold")) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -1084,8 +1093,8 @@ panel.background = element_blank(), axis.line = element_line(colour = "black"))
 ## Phylogenetic signal
 
 ```{r}
-install.packages("phytools")
-install.packages("picante")
+#install.packages("phytools")
+#install.packages("picante")
 library(picante)
 library(phytools)
 library(tidyr)
@@ -1115,6 +1124,7 @@ plot(pruned)
 labelorder <- c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") 
 plot(pruned)
 # 
+
 
 
 traitphy <- traits.sp1
@@ -1169,7 +1179,7 @@ is.ultrametric(pruned)
 
 
 sespd <- ses.pd(sites_species, pruned, null.model = "independentswap")
-
+pdist <- cophenetic.phylo(pruned)
 ses.mpd.result <- ses.mpd(sites_species, pdist, null.model="independentswap", abundance.weighted=TRUE, runs=99)
 ses.mpd.result$sites <- row.names(ses.mpd.result)
 
