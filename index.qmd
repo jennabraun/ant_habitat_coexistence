@@ -429,6 +429,7 @@ mem <- dbmem(sites.xy)
 disp <- SES2$SES3
 
 env <- select(SES2, 4, 5, 8, 12:14, 18, 19, 24)
+env <- decostand(env, method = "standardize")
 pses <- test$mpd.obs.z
 v1 <- varpart(Y =disp, X = env, mem, pses)
 summary(v1)
@@ -438,7 +439,8 @@ text(0.1, 1, labels = "Environment")
 
 
 v1
-v1$part
+fract <- v1$part$fract
+ind <- v1$part$indfract
 
 rda.all <- rda(disp ~ env + mem)
 anova.cca(rda(disp, env))
@@ -534,7 +536,7 @@ par(mfrow=c(5,2))
 
 all <- select(sitespec, -Site)
 #xi <- specaccum(all,  method = "rarefaction", permutations = 100)
-xs <- specaccum(all,  method = "random", permutations = 100)
+xs <- specaccum(all,  method = "random", permutations = 1000)
 #plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", ci.type = "line", cex.lab = 1.5)
 title("All Sites Pooled", adj = 0)
@@ -548,56 +550,56 @@ title("Avenal", adj = 0)
 
 cas <- filter(sitespec, Site == "CaS") %>% select(-Site)
 # xi <- specaccum(cas,  method = "rarefaction", permutations = 100)
-xs <- specaccum(cas,  method = "exact", permutations = 100)
+xs <- specaccum(cas,  method = "random", permutations = 1000)
 # plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
 title("Carrizo - Shrubs", adj = 0)
 
 casl <- filter(sitespec, Site == "CaSl") %>% select(-Site)
 # xi <- specaccum(casl,  method = "rarefaction", permutations = 100)
-xs <- specaccum(casl,  method = "exact", permutations = 100)
+xs <- specaccum(casl,  method = "random", permutations = 1000)
 # plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
 title("Carrizo - Shrubless", adj = 0)
 
 coal <- filter(sitespec, Site == "Coal") %>% select(-Site)
 # xi <- specaccum(coal,  method = "rarefaction", permutations = 100)
-xs <- specaccum(coal,  method = "exact", permutations = 100)
+xs <- specaccum(coal,  method = "random", permutations = 1000)
 # plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
 title("Coalinga", adj = 0)
 
 lok <- filter(sitespec, Site == "Lok") %>% select(-Site)
 # xi <- specaccum(lok,  method = "rarefaction", permutations = 100)
-xs <- specaccum(lok,  method = "exact", permutations = 100)
+xs <- specaccum(lok,  method = "random", permutations = 1000)
 # plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
 title("Lokern", adj = 0)
 
 mov <- filter(sitespec, Site == "Mov") %>% select(-Site)
 # xi <- specaccum(mov,  method = "rarefaction", permutations = 100)
-xs <- specaccum(mov,  method = "exact", permutations = 100)
+xs <- specaccum(mov,  method = "random", permutations = 1000)
 # plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
 title("Mountainview Rd", adj = 0)
 
 papl <- filter(sitespec, Site == "PaPl") %>% select(-Site)
 # xi <- specaccum(papl,  method = "rarefaction", permutations = 100)
-xs <- specaccum(papl,  method = "exact", permutations = 100)
+xs <- specaccum(papl,  method = "random", permutations = 1000)
 # plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
 title("Panoche Hills", adj = 0)
 
 semit <- filter(sitespec, Site == "SemiT") %>% select(-Site)
 # xi <- specaccum(semit,  method = "rarefaction", permutations = 100)
-xs <- specaccum(semit,  method = "exact", permutations = 100)
+xs <- specaccum(semit,  method = "random", permutations = 1000)
 # plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
 title("Semitropic", adj = 0)
 
 sicr <- filter(sitespec, Site == "SiCr") %>% select(-Site)
 # xi <- specaccum(sicr,  method = "rarefaction", permutations = 100)
-xs <- specaccum(sicr,  method = "exact", permutations = 100)
+xs <- specaccum(sicr,  method = "random", permutations = 1000)
 # plot(xi, xlab = "Number of Individuals", ylab = "Species Richness")
 plot(xs, xlab = "Number of Pitfall Samples", ylab = "Species Richness", cex.lab = 1.5)
 title("Silver Creek Ranch", adj = 0)
