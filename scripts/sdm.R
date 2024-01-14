@@ -191,15 +191,15 @@ over2 <- as.matrix(over2)
 
 
 traits.sp1 <- traits.sp %>%
-  select(.,-sd) %>%
+  dplyr::select(.,-sd) %>%
   pivot_wider(names_from = Trait, values_from = mean) %>%
   as.data.frame(traits.sp)
 
-traits.sp1 <- select(traits.sp1, 1, 3, 5, 8, 9, 11, 13, 14)
+traits.sp1 <- dplyr::select(traits.sp1, 1, 3, 5, 8, 9, 11, 13, 14)
 traits.sp1$X.1 <- gsub(" ", ".", traits.sp1$X.1)
 
 species.name <- traits.sp1$X.1
-traits.sp1 <- select(traits.sp1, -X.1)
+traits.sp1 <- dplyr::select(traits.sp1, -X.1)
 #gower dissimilarity?
 gow <- gowdis(traits.sp1)  
 gow <- as.matrix(gow)
@@ -224,21 +224,23 @@ overdis1 <- overdis[lower.tri(overdis)]
 overdis1 <- as.dist(overdis)
 gow1 <- as.matrix(gow1)
 mantel(gow, overdis1)
-a
+
 
 mantel(gow, overdis)
 #try again without cyphomyrmex
 
-mdata <- cbind(gow, overdis1)
+mdata <- cbind(gow1, overdis1)
 mdata <- as.data.frame(mdata)
 
 
-ggplot(mdata, aes(overdis1, gow)) +
+ggplot(mdata, aes(overdis1, V1)) +
   geom_point() + 
   geom_smooth(method = "lm", colour = "black") + xlab("Climatic Niche Dissimilarity (Complement of Shoener's D)") + 
   ylab("Trait Dissimilarity (Gower Distance)") +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-          panel.background = element_blank(), axis.line = element_line(colour = "black")) 
+          panel.background = element_blank(), axis.line = element_line(colour = "black")) + theme(text = element_text(size = 13)) +
+  geom_label(aes(x = 0.70, y = 0.58),vjust=1, hjust = 0, 
+             label = "Mantel r = 0.378, \np = 0.028")
 
 
 

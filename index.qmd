@@ -231,7 +231,7 @@ pcplot2
 
 
 
-sitescores <- scores(env.pcareduce, c(1,2, 3), 'sites')
+sitescores <- scores(env.pcareduce, c(1,2), display = 'sites')
 sitescores <- as.data.frame(cbind(sitescores, env2_sitelabels))
 
 
@@ -250,6 +250,8 @@ grid::grid.draw(rbind(gA, gB))
 
 
 ```
+
+
 
 # Functional dispersion
 
@@ -352,8 +354,6 @@ test$sdrand <- as.numeric(test$sdrand)
 
 cor.test(test$sd, test$sdrand)
 
-#variation in SES values is the same as the random variation in fdisp calculated from a null model
-
 
 #join site-level environmental measurements to data
 
@@ -369,7 +369,7 @@ SES <- select(cov, 1:15, shrub.site, sites, 37:43) %>% distinct() %>% left_join(
 SES2 <- cbind(SES, sitescores)
 SES2$PC1 <- as.numeric(SES2$PC1)
 SES2$PC2 <- as.numeric(SES2$PC2)
-SES2$PC3 <- as.numeric(SES2$PC3)
+
 
 #need to add raw FDisp score
 
@@ -405,86 +405,10 @@ summary(m)
 SES2 %>% group_by(shrub) %>% summarize(mean = mean(SES3), sd = sd(SES3))
 
 
- #new heat map
-mat3 <- select(SES2, esi, 4,5, 8, 12:15, 18, 24, 24:28)
-M3 <- cor(mat3)
-corrplot::corrplot(M3, method = "number")
-
-```
-
-## Variance partitioning
-
-```{r}
-library(adespatial)
-library(SoDA)
-
-#convert our degrees in lat long to cartesian
-
-
-sites.xy <- geoXY(SES2$Lat.x, SES2$Long.x)
-mem <- dbmem(sites.xy)
-
-
-
-disp <- SES2$SES3
-
-env <- select(SES2, 4, 5, 8, 12:14, 18, 19, 24)
-env <- decostand(env, method = "standardize")
-pses <- test$mpd.obs.z
-v1 <- varpart(Y =disp, X = env, mem, pses)
-summary(v1)
-showvarparts(v1)
-plot(v1, Xnames = NA)
-text(0.1, 1, labels = "Environment")
-
-
-v1
-fract <- v1$part$fract
-ind <- v1$part$indfract
-
-rda.all <- rda(disp ~ env + mem)
-anova.cca(rda(disp, env))
-anova.cca(rda(disp, mem))
-anova.cca(rda(disp, env, pses))
-
-
 
 ```
 
 
-## Calculate distances between sites
-
-```{r}
-
-library(sf)
-library(purrr)
-sites_sf <- var_df %>% select(Site, Lat.x, Long.x)
-sites_sf <- st_as_sf(sites_sf, coords=c("Lat.x","Long.x"),crs=4326)
-
-sites_m <- sites_sf %>% split(.$Site) %>% map(st_distance) %>% map(as.matrix) %>% map(.[upper.tri(.)])
-
-sites_m$SemiT
-sites_m$SiCr
-m <- lapply(sites_m, f)
-
-f <- function(x) {
-  y <- x[upper.tri(x)]
-  mean(y)
-}
-
-mean(sites_m$Aven[upper.tri(sites_m$Aven)])
-
-mean(m)
-
-sites_dist <- st_distance(sites_sf)
-plot(sites_sf)
-
-sites_dist
-
-sites_dist <- as.matrix(sites_dist)
-row.names(sites_dist) <- sites_sf$Site
-col.names(sites_dist) <- sites_sf$Site
-```
 # Taxonomic diversity
 
 ## Species richness \~ PC1
@@ -679,6 +603,267 @@ mantel(ndis, env_dist)
 #can I do mean at each site and plot against environment?
 
 ```
+
+
+
+
+
+## Phylogenetic signal
+
+```{r}
+#install.packages("phytools")
+#install.packages("picante")
+library(picante)
+library(phytools)
+library(tidyr)
+genusv <- c("Cyphomyrmex", "Dorymyrmex", "Forelius", "Messor", "Myrmecocystus", "Pheidole", "Pogonomyrmex", "Solenopsis", "Temnothorax")
+
+#import nexus tree
+tree <- read.nexus("moreau/moreaubeast.nex")
+str(tree)
+plot(tree)
+tree
+labels <- tree[["tip.label"]]
+labels <- as.data.frame(labels)
+full <- labels$labels
+labels <- separate_wider_delim(labels, cols = 1, delim ="_", names = c("genus", "sp", "csm"), too_few = "align_start", too_many = "merge")
+labels <- cbind(full, labels)
+labels <- subset(labels, genus %in% genusv)
+keep <- labels$full
+df <- data.frame(matrix(ncol = 19, nrow = 1))
+colnames(df) <- keep
+df[is.na(df)] <- 1
+df <- dplyr::select(df, 1, 4, 6, 8, 11, 12, 13, 16, 17, 18, 19)
+pruned <- prune.sample(df, tree)
+pruned
+pruned[["tip.label"]] <- c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") 
+plot(pruned)
+
+labelorder <- c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") 
+plot(pruned)
+# 
+
+#get species level trait values
+
+traits.sp1 <- traits.sp %>%
+  select(.,-sd) %>%
+  pivot_wider(names_from = Trait, values_from = mean) %>%
+  as.data.frame(traits.sp)
+
+traits.sp1 <- select(traits.sp1, 1, 3, 5, 8, 9, 11, 13, 14)
+traits.sp1$X.1 <- gsub(" ", ".", traits.sp1$X.1)
+
+
+traitphy <- traits.sp1
+row.names(traitphy) <- traitphy$X.1
+traitphy <- select(traitphy, -X.1)
+
+names <- sort(c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") )
+
+row.names(traitphy) <- names
+
+
+traitphy <- traitphy[match(labelorder, row.names(traitphy)),]
+
+
+row.names(traitphy)
+pruned[["tip.label"]]
+
+par(mfrow=c(2,2))
+for (i in names(traitphy)) {
+plot(pruned, show.tip.label=FALSE, main=i)
+tiplabels(pch=22, col=traitphy[,i]+1, bg=traitphy[,i]+1, cex=1.5)
+}
+
+multiPhylosignal(traitphy, pruned)
+
+ps <- multiPhylosignal(traitphy, pruned)
+write.csv(ps, "Clean Data/phylo.csv")
+ps
+
+tree2 <- read.tree("moreau/treejb2.nwk")
+tree2
+plot(tree2)
+plot(pruned)
+
+tree2[["tip.label"]]
+
+labelorder <- c("Pogonomyrmexcalifornicus", "Pheidolehyatti", "Messorpergandei", "Messorandrei", "Solenopsisxyloni", "Cyphomyrmexwheeleri", "Temnothoraxandrei", "Foreliuspruinosis", "Dorymyrmexinsanus", "Dorymyrmexbicolor", "Myrmecocystus")
+traitphy <- traitphy[match(labelorder, row.names(traitphy)),]
+tree2[["tip.label"]] <- labelorder
+phy <- multi2di(pruned)
+multiPhylosignal(traitphy, phy)
+
+library(adephylo)
+
+library(phylosignal)
+library(phylobase)
+p4d <- phylo4d(pruned, traitphy)
+barplot.phylo4d(p4d, tree.type = "phylo", tree.ladderize = TRUE)
+phyloSignal(p4d = p4d, method = "all")
+
+is.ultrametric(pruned)
+
+
+sespd <- ses.pd(sites_species, pruned, null.model = "independentswap")
+pdist <- cophenetic.phylo(pruned)
+ses.mpd.result <- ses.mpd(sites_species, pdist, null.model="independentswap", abundance.weighted=TRUE, runs=99)
+ses.mpd.result$sites <- row.names(ses.mpd.result)
+
+test <- left_join(SES2, ses.mpd.result, by = "sites")
+
+m1 <- glmmTMB(SES3 ~ mpd.obs.z + PC1 + PC2 +(1|Site), data = test)
+summary(m1)
+performance(m1)
+
+m1 <- glmmTMB(mpd.obs.z ~ SES3 + PC1 + PC2 + (1|Site), data = test)
+summary(m1)
+performance(m1)
+
+cor.test(test$mpd.obs.z, test$PC1)
+
+t.test(test$mpd.obs.z)
+
+ggplot(test, aes(SES3, mpd.obs.z)) + geom_smooth(method = "lm")
+
+ggplot(test, aes(PC1, mpd.obs.z)) + geom_smooth(method = "lm")
+
+ggplot(test, aes(PC1, SES3)) + geom_smooth(method = "lm")
+
+
+Test.Kmult<-function(x,phy,iter=999){
+library(ape)
+Kmult<-function(x,phy){
+  x<-as.matrix(x)
+  N<-length(phy$tip.label)
+  ones<-array(1,N)
+  C<-vcv.phylo(phy)
+  C<-C[row.names(x),row.names(x)]
+  a.obs<-colSums(solve(C))%*%x/sum(solve(C))
+#evol.vcv code
+  distmat<-as.matrix(dist(rbind(as.matrix(x),a.obs)))
+  MSEobs.d <- sum(distmat[(1:N),(N+1)]^2)
+  
+  #sum distances root vs. tips
+  eigC <- eigen(C)
+  D.mat<-solve(eigC$vectors
+  %*% diag(sqrt(eigC$values))
+  %*% t(eigC$vectors))
+  dist.adj<-as.matrix(dist(rbind((D.mat
+  %*%(x-(ones%*%a.obs))),0)))
+  MSE.d<-sum(dist.adj[(1:N),(N+1)]^2)
+  #sum distances for transformed data)
+  K.denom<-(sum(diag(C))-
+  N*solve(t(ones)%*%solve(C)%*%ones)) / (N-1)
+  K.stat<-(MSEobs.d/MSE.d)/K.denom
+  return(K.stat)
+}
+K.obs<-Kmult(x,phy)
+P.val <- 1
+K.val <- rep(0, iter)
+for (i in 1:iter){
+x.r<-as.matrix(x[sample(nrow(x)),])
+rownames(x.r)<-rownames(x)
+K.rand<-Kmult(x.r,phy)
+P.val<-ifelse(K.rand>=K.obs, P.val+1,P.val)
+K.val[i] <- K.rand
+}
+P.val <- P.val/(iter + 1)
+K.val[iter + 1] = K.obs
+hist(K.val, 30, freq = TRUE, col = "gray",
+xlab = "Phylogenetic Signal")
+arrows(K.obs, 50, K.obs, 5, length = 0.1, lwd = 2)
+return(list(phy.signal = K.obs, pvalue = P.val))
+}
+
+traitphystand <- decostand(traitphy, method = "standardize")
+Test.Kmult(traitphystand, pruned)
+```
+
+## Phylo and functional plots together
+```{r}
+
+
+test2 <- pivot_longer(test, cols = c("SES3", "mpd.obs.z"), names_to = "type", values_to = "value")
+
+
+test2$type <- factor(test2$type, levels = c("SES3", "mpd.obs.z"))
+
+a <- ggplot(test2, aes(PC1, value, color = type)) + geom_point(aes(color = type)) + stat_smooth(data = filter(test2, type == "SES3"), method = "lm") + stat_smooth(data = filter(test2, type == "mpd.obs.z"), method = "lm", linetype = "dashed", se = FALSE) + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + ylab("Standardized Effect Size Dispersion") + geom_hline(yintercept = 0, linetype = "dashed") + scale_color_manual(values = c( "#DF7861", "#94B49F"), labels = c("Functional", "Phylogenetic")) + theme(legend.position= c(0.8, 0.9)) + theme(legend.title=element_blank()) + theme(text = element_text(size = 13))
+  
+a
+
+b <- ggplot(test, aes(mpd.obs.z, SES3)) + stat_smooth(method = "lm", color = "black") + geom_point() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + xlab("Phylogenetic Dispersion (SES MPD)") + ylab("Functional Dispersion (SES FDisp)") + theme(text = element_text(size = 13))
+
+
+
+
+plots <- list(a,b)
+grobs <- list()
+widths <- list()
+
+for (i in 1:length(plots)){
+    grobs[[i]] <- ggplotGrob(plots[[i]])
+    widths[[i]] <- grobs[[i]]$widths[2:5]
+}
+
+maxwidth <- do.call(grid::unit.pmax, widths)
+for (i in 1:length(grobs)){
+     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
+}
+
+p <- do.call("grid.arrange", c(grobs, ncol = 2))
+p
+
+
+geom_label(aes(x = 0.75, y = 2),vjust=1, hjust = 0, 
+             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
+ " \nP =",signif(summary(fit1)$coef[2,4], 3)))
+```
+
+## Variance partitioning
+
+```{r}
+library(adespatial)
+library(SoDA)
+
+#convert our degrees in lat long to cartesian
+
+
+sites.xy <- geoXY(SES2$Lat.x, SES2$Long.x)
+mem <- dbmem(sites.xy)
+
+
+
+disp <- SES2$SES3
+
+env <- select(SES2, 4, 5, 8, 12:14, 18, 19, 24)
+env <- decostand(env, method = "standardize")
+pses <- test$mpd.obs.z
+v1 <- varpart(Y =disp, X = env, mem, pses)
+summary(v1)
+showvarparts(v1)
+plot(v1, Xnames = NA)
+text(0.1, 1, labels = "Environment")
+
+
+v1
+fract <- v1$part$fract
+ind <- v1$part$indfract
+
+rda.all <- rda(disp ~ env + mem)
+anova.cca(rda(disp, env))
+anova.cca(rda(disp, mem))
+anova.cca(rda(disp, env, pses))
+
+
+```
+
+
+
+
 
 #CWM-environment \## CWM \~ PC1
 
@@ -1079,221 +1264,18 @@ itv <- read.csv("raw data/itv.csv")
 itv <- itv %>% mutate(total = Species + ITV) %>% mutate(sp.rel = Species/total, itv.rel = ITV/total)
 
 itv = pivot_longer(itv, 5:6, names_to = "rel.itv", values_to = "val")
-
+itv$Trait <- gsub("Weber", "Weber's \nBody Length", itv$Trait)
+itv$Trait <- gsub("Femur", "Femur Length", itv$Trait)
+itv$Trait <- gsub("Mandible", "Mandible\n Length", itv$Trait)
+itv$Trait <- gsub("Scape", "Scape Length", itv$Trait)
 itv$Trait <- factor(itv$Trait, levels = unique(itv$Trait[order(itv$val)]))
-
+itv$rel.itv <- factor(itv$rel.itv, levels = c("sp.rel", "itv.rel"))
 itv %>% group_by(rel.itv) %>% summarize(mean = mean(val), sd = sd(val))
 
-ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = "identity", aes(fill = rel.itv)) + ylab("Proportion variation explained by species") +
-  theme(legend.position="none") + scale_fill_manual(values = c("gray", "black")) + theme(axis.text=element_text(size=12),
+ggplot(itv, aes(Trait, val, fill = rel.itv)) +geom_bar(position="stack", stat = "identity", aes(fill = rel.itv)) + ylab("Proportion of trait variation explained") + scale_fill_manual(values = c("gray", "black"), labels = c("Interspecific", "Intraspecific")) + theme(axis.text=element_text(size=12),
         axis.title=element_text(size=14,face="bold")) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))
+panel.background = element_blank(), axis.line = element_line(colour = "black")) + theme(legend.position="top", legend.title = element_blank(), legend.text=element_text(size=12))
 
 
 ```
 
-## Phylogenetic signal
-
-```{r}
-#install.packages("phytools")
-#install.packages("picante")
-library(picante)
-library(phytools)
-library(tidyr)
-genusv <- c("Cyphomyrmex", "Dorymyrmex", "Forelius", "Messor", "Myrmecocystus", "Pheidole", "Pogonomyrmex", "Solenopsis", "Temnothorax")
-
-#import nexus tree
-tree <- read.nexus("moreau/moreaubeast.nex")
-str(tree)
-plot(tree)
-tree
-labels <- tree[["tip.label"]]
-labels <- as.data.frame(labels)
-full <- labels$labels
-labels <- separate_wider_delim(labels, cols = 1, delim ="_", names = c("genus", "sp", "csm"), too_few = "align_start", too_many = "merge")
-labels <- cbind(full, labels)
-labels <- subset(labels, genus %in% genusv)
-keep <- labels$full
-df <- data.frame(matrix(ncol = 19, nrow = 1))
-colnames(df) <- keep
-df[is.na(df)] <- 1
-df <- dplyr::select(df, 1, 4, 6, 8, 11, 12, 13, 16, 17, 18, 19)
-pruned <- prune.sample(df, tree)
-pruned
-pruned[["tip.label"]] <- c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") 
-plot(pruned)
-
-labelorder <- c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") 
-plot(pruned)
-# 
-
-
-
-traitphy <- traits.sp1
-row.names(traitphy) <- traitphy$X.1
-traitphy <- select(traitphy, -X.1)
-
-names <- sort(c("Temnothoraxandrei", "Pheidolehyatti", "Cyphomyrmexwheeleri", "Solenopsisxyloni", "Messorandrei", "Messorpergandei", "Pogonomyrmexcalifornicus", "Myrmecocystus", "Dorymyrmexbicolor", "Dorymyrmexinsanus", "Foreliuspruinosis") )
-
-row.names(traitphy) <- names
-
-
-traitphy <- traitphy[match(labelorder, row.names(traitphy)),]
-
-
-row.names(traitphy)
-pruned[["tip.label"]]
-
-par(mfrow=c(2,2))
-for (i in names(traitphy)) {
-plot(pruned, show.tip.label=FALSE, main=i)
-tiplabels(pch=22, col=traitphy[,i]+1, bg=traitphy[,i]+1, cex=1.5)
-}
-
-multiPhylosignal(traitphy, pruned)
-
-ps <- multiPhylosignal(traitphy, pruned)
-write.csv(ps, "Clean Data/phylo.csv")
-ps
-
-tree2 <- read.tree("moreau/treejb2.nwk")
-tree2
-plot(tree2)
-plot(pruned)
-
-tree2[["tip.label"]]
-
-labelorder <- c("Pogonomyrmexcalifornicus", "Pheidolehyatti", "Messorpergandei", "Messorandrei", "Solenopsisxyloni", "Cyphomyrmexwheeleri", "Temnothoraxandrei", "Foreliuspruinosis", "Dorymyrmexinsanus", "Dorymyrmexbicolor", "Myrmecocystus")
-traitphy <- traitphy[match(labelorder, row.names(traitphy)),]
-tree2[["tip.label"]] <- labelorder
-phy <- multi2di(pruned)
-multiPhylosignal(traitphy, phy)
-
-library(adephylo)
-
-library(phylosignal)
-library(phylobase)
-p4d <- phylo4d(pruned, traitphy)
-barplot.phylo4d(p4d, tree.type = "phylo", tree.ladderize = TRUE)
-phyloSignal(p4d = p4d, method = "all")
-
-is.ultrametric(pruned)
-
-
-sespd <- ses.pd(sites_species, pruned, null.model = "independentswap")
-pdist <- cophenetic.phylo(pruned)
-ses.mpd.result <- ses.mpd(sites_species, pdist, null.model="independentswap", abundance.weighted=TRUE, runs=99)
-ses.mpd.result$sites <- row.names(ses.mpd.result)
-
-test <- left_join(SES2, ses.mpd.result, by = "sites")
-
-m1 <- glmmTMB(SES3 ~ mpd.obs.z + PC1 + PC2 +(1|Site), data = test)
-summary(m1)
-performance(m1)
-
-m1 <- glmmTMB(mpd.obs.z ~ SES3 + PC1 + PC2 + (1|Site), data = test)
-summary(m1)
-performance(m1)
-
-cor.test(test$mpd.obs.z, test$PC1)
-
-t.test(test$mpd.obs.z)
-
-ggplot(test, aes(SES3, mpd.obs.z)) + geom_smooth(method = "lm")
-
-ggplot(test, aes(PC1, mpd.obs.z)) + geom_smooth(method = "lm")
-
-ggplot(test, aes(PC1, SES3)) + geom_smooth(method = "lm")
-
-
-Test.Kmult<-function(x,phy,iter=999){
-library(ape)
-Kmult<-function(x,phy){
-  x<-as.matrix(x)
-  N<-length(phy$tip.label)
-  ones<-array(1,N)
-  C<-vcv.phylo(phy)
-  C<-C[row.names(x),row.names(x)]
-  a.obs<-colSums(solve(C))%*%x/sum(solve(C))
-#evol.vcv code
-  distmat<-as.matrix(dist(rbind(as.matrix(x),a.obs)))
-  MSEobs.d <- sum(distmat[(1:N),(N+1)]^2)
-  
-  #sum distances root vs. tips
-  eigC <- eigen(C)
-  D.mat<-solve(eigC$vectors
-  %*% diag(sqrt(eigC$values))
-  %*% t(eigC$vectors))
-  dist.adj<-as.matrix(dist(rbind((D.mat
-  %*%(x-(ones%*%a.obs))),0)))
-  MSE.d<-sum(dist.adj[(1:N),(N+1)]^2)
-  #sum distances for transformed data)
-  K.denom<-(sum(diag(C))-
-  N*solve(t(ones)%*%solve(C)%*%ones)) / (N-1)
-  K.stat<-(MSEobs.d/MSE.d)/K.denom
-  return(K.stat)
-}
-K.obs<-Kmult(x,phy)
-P.val <- 1
-K.val <- rep(0, iter)
-for (i in 1:iter){
-x.r<-as.matrix(x[sample(nrow(x)),])
-rownames(x.r)<-rownames(x)
-K.rand<-Kmult(x.r,phy)
-P.val<-ifelse(K.rand>=K.obs, P.val+1,P.val)
-K.val[i] <- K.rand
-}
-P.val <- P.val/(iter + 1)
-K.val[iter + 1] = K.obs
-hist(K.val, 30, freq = TRUE, col = "gray",
-xlab = "Phylogenetic Signal")
-arrows(K.obs, 50, K.obs, 5, length = 0.1, lwd = 2)
-return(list(phy.signal = K.obs, pvalue = P.val))
-}
-
-traitphystand <- decostand(traitphy, method = "standardize")
-Test.Kmult(traitphystand, pruned)
-```
-
-## Phylo and functional plots together
-```{r}
-
-
-test2 <- pivot_longer(test, cols = c("SES3", "mpd.obs.z"), names_to = "type", values_to = "value")
-
-
-test2$type <- factor(test2$type, levels = c("SES3", "mpd.obs.z"))
-
-a <- ggplot(test2, aes(PC1, value, color = type)) + geom_point(aes(color = type)) + stat_smooth(data = filter(test2, type == "SES3"), method = "lm") + stat_smooth(data = filter(test2, type == "mpd.obs.z"), method = "lm", linetype = "dashed", se = FALSE) + xlab("PC1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + ylab("Standardized Effect Size Dispersion") + geom_hline(yintercept = 0, linetype = "dashed") + scale_color_manual(values = c( "#DF7861", "#94B49F"), labels = c("Functional", "Phylogenetic")) + theme(legend.position= c(0.8, 0.9)) + theme(legend.title=element_blank())
-  
-a
-
-b <- ggplot(test, aes(mpd.obs.z, SES3)) + stat_smooth(method = "lm", color = "black") + geom_point() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_rect(colour = "black", size=1, fill = NA), axis.line = element_line(colour = "black")) + xlab("Phylogenetic Dispersion (SES MPD)") + ylab("Functional Dispersion (SES FDisp)")
-
-
-
-
-plots <- list(a,b)
-grobs <- list()
-widths <- list()
-
-for (i in 1:length(plots)){
-    grobs[[i]] <- ggplotGrob(plots[[i]])
-    widths[[i]] <- grobs[[i]]$widths[2:5]
-}
-
-maxwidth <- do.call(grid::unit.pmax, widths)
-for (i in 1:length(grobs)){
-     grobs[[i]]$widths[2:5] <- as.list(maxwidth)
-}
-
-p <- do.call("grid.arrange", c(grobs, ncol = 2))
-p
-
-
-geom_label(aes(x = 0.75, y = 2),vjust=1, hjust = 0, 
-             label = paste("Adj r2 = ",signif(summary(fit1)$adj.r.squared, 3),
- " \nP =",signif(summary(fit1)$coef[2,4], 3)))
-```
