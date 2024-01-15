@@ -455,7 +455,7 @@ chisq.test(alpha$richness, alpha$Site)
 spec <-wide
 sitespec <- left_join(wide, cov, by = "uniID")
 sitespec <- select(sitespec, 2:14, 17)
-par(mfrow=c(5,2))
+#par(mfrow=c(5,2))
 
 
 all <- select(sitespec, -Site)
@@ -844,7 +844,7 @@ env <- decostand(env, method = "standardize")
 pses <- test$mpd.obs.z
 v1 <- varpart(Y =disp, X = env, mem, pses)
 summary(v1)
-showvarparts(v1)
+
 plot(v1, Xnames = NA)
 text(0.1, 1, labels = "Environment")
 
@@ -852,12 +852,6 @@ text(0.1, 1, labels = "Environment")
 v1
 fract <- v1$part$fract
 ind <- v1$part$indfract
-
-rda.all <- rda(disp ~ env + mem)
-anova.cca(rda(disp, env))
-anova.cca(rda(disp, mem))
-anova.cca(rda(disp, env, pses))
-
 
 ```
 
@@ -874,7 +868,7 @@ cwm <- site_cwm
 cwm$sites <- row.names(cwm)  
   
 
-cwm <- select(SES2, Site, sites, PC1, PC2, PC3) %>% left_join(cwm, by = 'sites')
+cwm <- select(SES2, Site, sites, PC1, PC2) %>% left_join(cwm, by = 'sites')
 
 ```
 
@@ -1083,7 +1077,7 @@ f
 fit1 <- glmmTMB(Mandible.w ~ PC2  + (1|Site), cwm)
 summary(fit1)
 performance(fit1)
-AIC(fit1, t1)
+
 
 g <- ggplot(fit1$frame, aes_string(x = names(fit1$frame)[2], y = names(fit1$frame)[1])) + 
   geom_point() +
